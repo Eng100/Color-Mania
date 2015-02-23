@@ -6,8 +6,6 @@ The objective of the game is to reach the Exit Sign located on the far right of 
 
 On the first level, the player will have 120 seconds and 3 lives to reach the Exit Sign. If either value runs out, the game will be over and the screen will display a message.
 
-Once the Exit Sign is reached, the player’s score will be displayed based on the time remaining in the level. 
-
 The first level of the game is not impossible to win, but if the gem power-ups are used too soon, it will become extremely difficult. 
 
 Gems:
