@@ -363,10 +363,10 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         CheckOutofBounds(player, first_level_height, first_level_length)
 
         if(player.is_dead(first_level_height, spawn)):
-            break; 
+            return 5; 
         
-        if (player.victory(goals)): 
-            break; 
+        if (player.victory(goals)):
+            return 5; 
         
         player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals)
         for sprite in allSprites: 
@@ -489,32 +489,63 @@ level_one= [
         "X         G      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X               FB   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
-platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
-
-sky = pygame.image.load('bg.png').convert()
-player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character()
-player_tutorial_sprite_vec.add(player_tutorial)
-pygame.mixer.init()
-
 
 gamestate = 1
+
+title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
-menus.append(Menu( (255,255,255),"PLAY.png", (150,200), -1))
-menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
-menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
+menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
+menus.append(Menu( (255,255,255),"Setting.png", (450,200), 0))
+menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
-men = pygame.display.set_mode([800, 600])
-while (gamestate != -1):
+
+end_men = []
+end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
+end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+
+done = False
+
+main_men = pygame.display.set_mode([800, 600])
+while (not done):
     quit_game = False
-    if (gamestate == 1):
-        men.fill([208,244,247]) 
+
+    if (gamestate == -1):
+        done = True
+    elif (gamestate == 0):
+        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
+
+        sky = pygame.image.load('bg.png').convert()
+        player_tutorial_sprite_vec = pygame.sprite.Group()
+        player_tutorial = Character()
+        player_tutorial_sprite_vec.add(player_tutorial)
+        pygame.mixer.init()
+
+        player_sprite_vec = pygame.sprite.Group()
+        player = Character()
+        player_sprite_vec.add(player)
+        pygame.mixer.init()
+
+        gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
+        
+        player.x =  0
+        player.y = 0
+        player.rect.x = 0
+        player.rect.y = 0
+        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
+        print(player.lives)
+
+        if (player.lives <= 0):
+            gamestate == 5
+
+    elif (gamestate == 1):
+        main_men.fill([208,244,247]) 
+        main_men.blit(title.image, title)
         for menu_item in menus:
-            men.blit(menu_item.image, menu_item)
+            main_men.blit(menu_item.image, menu_item)
         ev = pygame.event.get()
         for event in ev:
             if (event.type == pygame.MOUSEBUTTONDOWN):
@@ -523,48 +554,43 @@ while (gamestate != -1):
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
             elif (event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE)):
-                quit_game = True
+                gamestate = -1
         pygame.display.update()
     elif (gamestate == 2):
         #Change this to settings page
-        gamestate = -1
+        gamestate = 0
     elif(gamestate == 3):
         #Change this to customization page
-        gamestate = -1
+        gamestate = 0
     elif (gamestate == 4):
         #Change this to Instructions page
         Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial)
         gamestate = 1
-    if quit_game:
-        pygame.quit()
+    elif (gamestate == 5):
+        #End of game score, etc
+        end_screen = pygame.display.set_mode([800, 600])
+        
+        score = player.getTime() * 10
+        
+        end_screen.fill([208,244,247])
+        
+        if (player.complete): 
+            display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
+            display_box(end_screen, "Score: %d", 325, 270, score)
+        else: 
+            display_box(screen, "Better Luck Next Time!", 150, 250, 0)
+        
+        for men in end_men:
+            end_screen.blit(men.image, men)
+               
+        pygame.display.update()
 
-player_sprite_vec = pygame.sprite.Group()
-player = Character()
-player_sprite_vec.add(player)
-pygame.mixer.init()
-
-while (player.lives > 0): 
-    Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
-    if (player.complete):
-        print("HI")
-        break; 
-    player.x =  0
-    player.y = 0
-    player.rect.x = 0
-    player.rect.y = 0
-    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
-    print(player.lives)
-    
-    
-Level_Screens([],[],[],base_platforms_l1, player, level_one, sky, [], [])
-
-score = player.getTime() * 10
-if (player.complete): 
-    display_box(screen, "Great Job! Level Completed!", 150, 250, 0)
-    display_box(screen, "Score: %d", 325, 310, score)
-else: 
-    display_box(screen, "Better Luck Next Time!", 150, 250, 0)
-pygame.display.update()
-time.sleep(3)    
-    
-    
+        ev = pygame.event.get()
+        for event in ev:
+            if (event.type == pygame.MOUSEBUTTONDOWN):
+                pos = pygame.mouse.get_pos()
+                for men in end_men:
+                    if men.rect.collidepoint(pos):
+                        gamestate = men.type
+            elif (event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE)):
+                gamestate = -1
