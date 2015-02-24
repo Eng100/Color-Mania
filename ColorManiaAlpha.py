@@ -134,11 +134,8 @@ class Character(pygame.sprite.Sprite):
         self.onGround = False
         self.collide(0, self.yvel, platforms, gems, isInvisibility, base_platforms, goals)
         
-    def loseLife(self, level_height):
-        if (self.rect.top == level_height + 3): 
-            pass
-        else: 
-            self.lives -= 1
+    def loseLife(self):
+        self.lives -=1
     def setTime(self, val):
         self.time =  val
         
@@ -192,12 +189,17 @@ class Character(pygame.sprite.Sprite):
         
     def is_dead(self, level_height, spawn):
         if (self.rect.top >= level_height + 2): 
-            self.lives -= 1; 
             return True
         if ((150 - self.time + spawn) <= 0 ): 
-            self.lives -= 1; 
             return True
         return False
+    
+    def reset(self):
+        player.x =  0
+        player.y = 0
+        player.rect.x = 0
+        player.rect.y = 0
+        
 
 def display_box(screen, message, x, y, lives):
     font = pygame.font.SysFont("Courier New", 20)
@@ -363,7 +365,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         CheckOutofBounds(player, first_level_height, first_level_length)
 
         if(player.is_dead(first_level_height, spawn)):
-            return 5; 
+            player.loseLife()
+            return 0; 
         
         if (player.victory(goals)):
             return 5; 
@@ -465,7 +468,7 @@ level_tutorial= [
         "X                    CMMD    B                    B                          B           X",
         "X            CMMMD           B     CMMMMD    BB   B       CMMD               B           X",  
         "X                                            BB   B                          B           X", 
-        "X                                 G          BB   B                          B         F X",
+        "X                                 G          BB   B                          B           X",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -489,7 +492,7 @@ level_one= [
         "X         G      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X               FB   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -507,6 +510,17 @@ end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
+sky = pygame.image.load('bg.png').convert()
+player_tutorial_sprite_vec = pygame.sprite.Group()
+player_tutorial = Character()
+player_tutorial_sprite_vec.add(player_tutorial)
+pygame.mixer.init()
+
+player_sprite_vec = pygame.sprite.Group()
+player = Character()
+player_sprite_vec.add(player)
+pygame.mixer.init()
+
 done = False
 
 main_men = pygame.display.set_mode([800, 600])
@@ -517,29 +531,12 @@ while (not done):
         done = True
     elif (gamestate == 0):
         platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
-
-        sky = pygame.image.load('bg.png').convert()
-        player_tutorial_sprite_vec = pygame.sprite.Group()
-        player_tutorial = Character()
-        player_tutorial_sprite_vec.add(player_tutorial)
-        pygame.mixer.init()
-
-        player_sprite_vec = pygame.sprite.Group()
-        player = Character()
-        player_sprite_vec.add(player)
-        pygame.mixer.init()
-
         gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
-        
-        player.x =  0
-        player.y = 0
-        player.rect.x = 0
-        player.rect.y = 0
-        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
-        print(player.lives)
 
-        if (player.lives <= 0):
-            gamestate == 5
+        if (player.lives > 0):
+            player.reset()
+        else:
+            gamestate = 5
 
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
@@ -564,7 +561,8 @@ while (not done):
         gamestate = 0
     elif (gamestate == 4):
         #Change this to Instructions page
-        Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial)
+        platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
+        gamestate = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial)
         gamestate = 1
     elif (gamestate == 5):
         #End of game score, etc
@@ -578,7 +576,7 @@ while (not done):
             display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
         else: 
-            display_box(screen, "Better Luck Next Time!", 150, 250, 0)
+            display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
         
         for men in end_men:
             end_screen.blit(men.image, men)
