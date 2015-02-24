@@ -194,11 +194,11 @@ class Character(pygame.sprite.Sprite):
             return True
         return False
     
-    def reset(self):
-        player.x =  0
-        player.y = 0
-        player.rect.x = 0
-        player.rect.y = 0
+    def reset(self, loc):
+        player.x =  loc[0]
+        player.y = loc[1]
+        player.rect.x = loc[0]
+        player.rect.y = loc[1]
         
 
 def display_box(screen, message, x, y, lives):
@@ -534,7 +534,7 @@ while (not done):
         gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
 
         if (player.lives > 0):
-            player.reset()
+            player.reset([0,0])
         else:
             gamestate = 5
 
