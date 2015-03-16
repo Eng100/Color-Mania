@@ -311,6 +311,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
     first_level_height = len(level) * 70
     first_level_length = len(level[0]) * 70
     camera = Window(complex_camera, first_level_length, first_level_height)
+
+    pause = False
+    esclifted = True
     
     timer = pygame.time.Clock()
     gemActivate = False
@@ -323,7 +326,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         player.setTime(start)
         #pygame.mixer.music.play()
         for event in pygame.event.get():
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+            if event.type == QUIT:
                 raise SystemExit
                 active = False
                 return 
@@ -345,44 +348,61 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 right = False
             if event.type == KEYUP and event.key == K_LEFT:
                 left = False
+            if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
+                esclifted = False
+                pause  = not(pause)
+            if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
+                esclifted = True
     
         if (gemActivate): 
             if (player.gemsCollected[0].time <= 0): 
                 gemActivate = False
                 del player.gemsCollected[:]
                 #player.gemsCollected.remove(Gem)
- 
-        for k in range(15):
-            screen.blit(sky, [400, k * 70])
-        for k in range(15):
-            screen.blit(sky, [0, k * 70])
-        for k in range(15):
-            screen.blit(sky, [200, k * 70])
-        for k in range(15):
-            screen.blit(sky, [600, k * 70])
-            
-        camera.update(player)
-        CheckOutofBounds(player, first_level_height, first_level_length)
 
-        if(player.is_dead(first_level_height, spawn)):
-            player.loseLife()
-            return 0; 
-        
-        if (player.victory(goals)):
-            return 5; 
-        
-        player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals)
-        for sprite in allSprites: 
-            screen.blit(sprite.image, camera.apply(sprite))
-        for p in player_sprite_vec: 
-            screen.blit(p.image, camera.apply(p))
-        if(player.lives > 0): 
-            if (not(gamestate == 4)):
-                display_box(screen, "Lives: %d", 20, 10, player.lives)
-            display_box(screen, "Time: %d seconds", 20, 40, 150 - start + spawn)
+        if (pause):
+            screen.fill([208,244,247]) 
+            for men in pause_men:
+                screen.blit(men.image, men)
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    for men in pause_men:
+                        if men.rect.collidepoint(pos):
+        else:
+            for k in range(15):
+                screen.blit(sky, [400, k * 70])
+            for k in range(15):
+                screen.blit(sky, [0, k * 70])
+            for k in range(15):
+                screen.blit(sky, [200, k * 70])
+            for k in range(15):
+                screen.blit(sky, [600, k * 70])
+                
+            camera.update(player)
+            CheckOutofBounds(player, first_level_height, first_level_length)
+
+            if(player.is_dead(first_level_height, spawn)):
+                player.loseLife()
+                return 0; 
             
-        if (gamestate == 4):
-            Tutorial(gemActivate, player)
+            if (player.victory(goals)):
+                return 5; 
+            
+            player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals)
+            for sprite in allSprites: 
+                screen.blit(sprite.image, camera.apply(sprite))
+            for p in player_sprite_vec: 
+                screen.blit(p.image, camera.apply(p))
+            if(player.lives > 0): 
+                if (not(gamestate == 4)):
+                    display_box(screen, "Lives: %d", 20, 10, player.lives)
+                display_box(screen, "Time: %d seconds", 20, 40, 150 - start + spawn)
+                
+            if (gamestate == 4):
+                Tutorial(gemActivate, player)
     
         pygame.display.update()
         
@@ -506,6 +526,11 @@ menus.append(Menu( (255,255,255),"Setting.png", (450,200), 0))
 menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
+pause_men = []
+pause_men.append((Menu( (255,255,255),"PLAY.png", (250,150), 1)) )
+pause_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
+pause_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+
 end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
@@ -550,7 +575,7 @@ while (not done):
                 for menu_item in menus:
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
-            elif (event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE)):
+            elif (event.type == QUIT):
                 gamestate = -1
         pygame.display.update()
     elif (gamestate == 2):
@@ -590,5 +615,5 @@ while (not done):
                 for men in end_men:
                     if men.rect.collidepoint(pos):
                         gamestate = men.type
-            elif (event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE)):
+            elif (event.type == QUIT):
                 gamestate = -1
