@@ -319,25 +319,26 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
 
     pause = False
     esclifted = True
-    pauseTime = 0
+    totalPauseTime = 0
+    pauseStartTime = 0
+    pauseEndTime = 0
     
     timer = pygame.time.Clock()
     gemActivate = False
     active = True
     up = down = left = right = False
     spawn = time.clock()
-    while active:
+    while active:  
         timer.tick(60)
-        start = time.clock()
-        player.setTime(start)
+        start = time.clock() - spawn
+        player.setTime(start - totalPauseTime)
+        print(player.getTime())
         #pygame.mixer.music.play()
-        
         if (gemActivate): 
             if (player.gemsCollected[0].time <= 0): 
                 gemActivate = False
                 del player.gemsCollected[:]
                 #player.gemsCollected.remove(Gem)
-
         if (pause):
             screen.fill([208,244,247]) 
             for men in pause_men:
@@ -356,9 +357,12 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
+                    pauseEndTime = time.clock()
+                    totalPauseTime += pauseEndTime - pauseStartTime
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
         else:
+
             for event in pygame.event.get():
                 if event.type == QUIT:
                     raise SystemExit
@@ -385,7 +389,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
-                    pauseTime = time.clock()
+                    pauseStartTime = time.clock()
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
 
@@ -416,7 +420,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             if(player.lives > 0): 
                 if (not(gamestate == 4)):
                     display_box(screen, "Lives: %d", 20, 10, player.lives)
-                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - self.time)
+                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime())
 
                 
             if (gamestate == 4):
