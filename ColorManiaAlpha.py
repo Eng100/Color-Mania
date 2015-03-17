@@ -350,9 +350,18 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     return 
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     pos = pygame.mouse.get_pos()
+                    menSelect = 0
                     for men in pause_men:
                         if men.rect.collidepoint(pos):
-                            print("shit")
+                            menSelect = men.type
+                            if menSelect == 0:
+                                pause  = not(pause)
+                                pauseEndTime = time.clock()
+                                totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
+                            elif menSelect == 1:
+                                return 1
+                            elif menSelect == -1:
+                                return -1  
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
@@ -548,7 +557,7 @@ menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
-pause_men.append((Menu( (255,255,255),"PLAY.png", (250,150), 1)) )
+pause_men.append((Menu( (255,255,255),"PLAY.png", (250,150), 0)) )
 pause_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 pause_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
