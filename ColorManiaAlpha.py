@@ -317,11 +317,11 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
     first_level_length = len(level[0]) * 70
     camera = Window(complex_camera, first_level_length, first_level_height)
 
-    pause = False
-    esclifted = True
-    totalPauseTime = 0
-    pauseStartTime = 0
-    pauseEndTime = 0
+    pause = False #Controls when paused
+    esclifted = True #Tracks if the key is down for escape
+    totalPauseTime = 0 #Tracks the total paused time
+    pauseStartTime = 0 #Tracks when a paused is started
+    pauseEndTime = 0 #Tracks when a paused is ended
     
     timer = pygame.time.Clock()
     gemActivate = False
@@ -330,8 +330,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
     spawn = time.clock()
     while active:  
         timer.tick(60)
-        start = time.clock() - spawn
-        player.setTime(start - totalPauseTime)
+        start = time.clock() - spawn #Takes the time minus the time spent on the menu
+        player.setTime(start - totalPauseTime) #Sets the time minus the total time paused
         #pygame.mixer.music.play()
         if (gemActivate): 
             if (player.gemsCollected[0].time <= 0): 
@@ -357,7 +357,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     esclifted = False
                     pause  = not(pause)
                     pauseEndTime = time.clock()
-                    totalPauseTime += pauseEndTime - pauseStartTime
+                    totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
         else:
@@ -419,7 +419,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             if(player.lives > 0): 
                 if (not(gamestate == 4)):
                     display_box(screen, "Lives: %d", 20, 10, player.lives)
-                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime())
+                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime()) #now just takes total time minus player time
 
                 
             if (gamestate == 4):
