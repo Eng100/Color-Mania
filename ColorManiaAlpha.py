@@ -135,6 +135,9 @@ class Character(pygame.sprite.Sprite):
         self.rect.top += self.yvel
         self.onGround = False
         self.collide(0, self.yvel, platforms, gems, isInvisibility, base_platforms, goals)
+
+    def updateTime(self, val):
+        self.time += val
         
     def loseLife(self):
         self.lives -=1
@@ -413,7 +416,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             if(player.lives > 0): 
                 if (not(gamestate == 4)):
                     display_box(screen, "Lives: %d", 20, 10, player.lives)
-                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - start + spawn)
+                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - self.time)
 
                 
             if (gamestate == 4):
