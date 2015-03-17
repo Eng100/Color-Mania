@@ -3,6 +3,8 @@ from pygame.locals import*
 global screen
 pygame.init()
 
+TOTALTIME = 150
+
 Tile_Length = 70
 
 View_Height = 600
@@ -190,7 +192,7 @@ class Character(pygame.sprite.Sprite):
     def is_dead(self, level_height, spawn):
         if (self.rect.top >= level_height + 2): 
             return True
-        if ((150 - self.time + spawn) <= 0 ): 
+        if ((TOTALTIME - self.time + spawn) <= 0 ): 
             return True
         return False
     
@@ -314,6 +316,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
 
     pause = False
     esclifted = True
+    pauseTime = 0
     
     timer = pygame.time.Clock()
     gemActivate = False
@@ -379,6 +382,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
+                    pauseTime = time.clock()
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
 
@@ -409,7 +413,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             if(player.lives > 0): 
                 if (not(gamestate == 4)):
                     display_box(screen, "Lives: %d", 20, 10, player.lives)
-                display_box(screen, "Time: %d seconds", 20, 40, 150 - start + spawn)
+                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - start + spawn)
+
                 
             if (gamestate == 4):
                 Tutorial(gemActivate, player)
