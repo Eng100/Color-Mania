@@ -325,35 +325,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         start = time.clock()
         player.setTime(start)
         #pygame.mixer.music.play()
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                raise SystemExit
-                active = False
-                return 
-            if event.type == KEYDOWN and event.key == K_UP:
-                up = True
-                Music_Play("Char Jump.wav", 0)
-            if event.type == KEYDOWN and event.key == K_LEFT:
-                left = True
-            if event.type == KEYDOWN and event.key == K_RIGHT:
-                right = True
-            if event.type == KEYDOWN and event.key == K_SPACE:
-                if (len(player.gemsCollected) > 0):  
-                    gemActivate = True
-                    if (player.gemsCollected[0].typeOfGem == "Invisibility"): 
-                        Music_Play("Gem1 GhostInvis.wav", 0)   
-            if event.type == KEYUP and event.key == K_UP:
-                up = False
-            if event.type == KEYUP and event.key == K_RIGHT:
-                right = False
-            if event.type == KEYUP and event.key == K_LEFT:
-                left = False
-            if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
-                esclifted = False
-                pause  = not(pause)
-            if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
-                esclifted = True
-    
+        
         if (gemActivate): 
             if (player.gemsCollected[0].time <= 0): 
                 gemActivate = False
@@ -365,13 +337,51 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             for men in pause_men:
                 screen.blit(men.image, men)
 
-            ev = pygame.event.get()
-            for event in ev:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    raise SystemExit
+                    active = False
+                    return 
                 if (event.type == pygame.MOUSEBUTTONDOWN):
                     pos = pygame.mouse.get_pos()
                     for men in pause_men:
                         if men.rect.collidepoint(pos):
+                            print("shit")
+                if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
+                    esclifted = False
+                    pause  = not(pause)
+                if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
+                    esclifted = True
         else:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    raise SystemExit
+                    active = False
+                    return 
+                if event.type == KEYDOWN and event.key == K_UP:
+                    up = True
+                    Music_Play("Char Jump.wav", 0)
+                if event.type == KEYDOWN and event.key == K_LEFT:
+                    left = True
+                if event.type == KEYDOWN and event.key == K_RIGHT:
+                    right = True
+                if event.type == KEYDOWN and event.key == K_SPACE:
+                    if (len(player.gemsCollected) > 0):  
+                        gemActivate = True
+                        if (player.gemsCollected[0].typeOfGem == "Invisibility"): 
+                            Music_Play("Gem1 GhostInvis.wav", 0)   
+                if event.type == KEYUP and event.key == K_UP:
+                    up = False
+                if event.type == KEYUP and event.key == K_RIGHT:
+                    right = False
+                if event.type == KEYUP and event.key == K_LEFT:
+                    left = False
+                if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
+                    esclifted = False
+                    pause  = not(pause)
+                if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
+                    esclifted = True
+
             for k in range(15):
                 screen.blit(sky, [400, k * 70])
             for k in range(15):
