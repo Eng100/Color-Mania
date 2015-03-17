@@ -195,7 +195,7 @@ class Character(pygame.sprite.Sprite):
     def is_dead(self, level_height, spawn):
         if (self.rect.top >= level_height + 2): 
             return True
-        if ((TOTALTIME - self.time + spawn) <= 0 ): 
+        if ((TOTALTIME - self.getTime()) <= 0 ): 
             return True
         return False
     
@@ -332,7 +332,6 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         timer.tick(60)
         start = time.clock() - spawn
         player.setTime(start - totalPauseTime)
-        print(player.getTime())
         #pygame.mixer.music.play()
         if (gemActivate): 
             if (player.gemsCollected[0].time <= 0): 
