@@ -1,17 +1,17 @@
-import pygame, time
+import pygame, time, math
 from pygame.locals import*
 global screen
 pygame.init()
 
 TOTALTIME = 150
 
-Tile_Length = 70
-
+Tile_Length = 40
 View_Height = 600
 View_Width = 800
 Half_View_Height = (View_Height)/2
 Half_View_Width = (View_Width)/2
 View_Screen = (View_Width, View_Height)
+screen = pygame.display.set_mode(View_Screen)
 
 class Image(pygame.sprite.Sprite):
 
@@ -22,12 +22,13 @@ class Image(pygame.sprite.Sprite):
         self.image = pygame.image.load(filename).convert_alpha()
 
         self.image.set_colorkey(color) 
+        
+        self.image = pygame.transform.scale(self.image, (size[0],size[1]))
         self.rect = self.image.get_rect()
-        if not(location[0] == 70) and not(location[1] == 70): 
-            self.rect = self.rect.inflate(-10, -10)
 
         self.rect.x = location[0]
         self.rect.y = location[1]
+
 
 class Window(object):
     def __init__(self, functionCall, width, height):
@@ -39,6 +40,9 @@ class Window(object):
 
     def update(self, target):
         self.state = self.functionCall(self.state, target.rect)
+
+    def custupdate(self, target):
+        self.state = self.functionCall(self.state, target)
 
 def complex_camera(camera, target_rect):
     j, k, _, _ = target_rect
@@ -56,35 +60,23 @@ def loading(name):
     return image
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, imagesright, imagesleft, size):
         super(Character, self).__init__()
-        self.imagesright = []
-        self.imagesright.append(loading('p1_walk02.png'))
-        self.imagesright.append(loading('p1_walk03.png'))
-        self.imagesright.append(loading('p1_walk04.png'))
-        self.imagesright.append(loading('p1_walk05.png'))
-        self.imagesright.append(loading('p1_walk06.png'))
-        self.imagesright.append(loading('p1_walk07.png'))
-        self.imagesright.append(loading('p1_walk08.png'))
-        self.imagesright.append(loading('p1_walk09.png'))
-        self.imagesright.append(loading('p1_walk10.png'))
+        self.imagesright = imagesright
         # assuming both images are 64x64 pixels
-        self.imagesleft = []
-        self.imagesleft.append(loading('p1_walk12.png'))
-        self.imagesleft.append(loading('p1_walk13.png'))
-        self.imagesleft.append(loading('p1_walk14.png'))
-        self.imagesleft.append(loading('p1_walk15.png'))
-        self.imagesleft.append(loading('p1_walk16.png'))
-        self.imagesleft.append(loading('p1_walk19.png'))
-        self.imagesleft.append(loading('p1_walk17.png'))
-        self.imagesleft.append(loading('p1_walk17.png'))
-        self.imagesleft.append(loading('p1_walk18.png'))
+        self.imagesleft = imagesleft
+
+        for x in range(len(self.imagesright)): 
+            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
+        for x in range(len(self.imagesleft)): 
+            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
         
         
         self.index = 0
         self.image = self.imagesright[self.index]
-        self.x = 100
-        self.y = 960
+
+        self.x = 320
+        self.y = 30
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
         self.xvel = 0 
@@ -94,15 +86,16 @@ class Character(pygame.sprite.Sprite):
         self.lives = 3
         self.time = 0
         self.complete = False
-    def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals):
+    def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
         isInvisibility = False
+        gemInt = -1; 
         if up: 
             if self.onGround: self.yvel -= 11
-            if gemActivate: 
-                if (self.gemsCollected[0].typeOfGem == "Jumping"): 
-                    self.gemsCollected[0].time -= 1; 
-                    if self.onGround: 
-                        self.gemsCollected[0].Jumping(self)
+            #if gemActivate: 
+            #    if (self.gemsCollected[0].typeOfGem == "Jumping"): 
+            #        self.gemsCollected[0].time -= 1; 
+            #        if self.onGround: 
+            #            self.gemsCollected[0].Jumping(self)
         if down: 
             pass 
         if right:
@@ -119,10 +112,24 @@ class Character(pygame.sprite.Sprite):
             if self.index >= len(self.imagesleft):
                 self.index = 0
             self.image = self.imagesleft[self.index]
-        if gemActivate: 
-            self.gemsCollected[0].time -= 1
-            if (self.gemsCollected[0].typeOfGem == "Invisibility"):  
+        #if gemActivate: 
+        #    self.gemsCollected[0].time -= 1
+        #    if (self.gemsCollected[0].typeOfGem == "Invisibility"):  
+        #        isInvisibility = True; 
+        if firstGem: 
+            gemInt = 0
+        if secondGem: 
+            gemInt = 1
+        if thirdGem: 
+            gemInt = 2
+
+        if (firstGem or secondGem or thirdGem): 
+            self.gemsCollected[gemInt].time -= 1
+            if (self.gemsCollected[gemInt].typeOfGem == "Invisibility"): 
                 isInvisibility = True; 
+            if (self.gemsCollected[gemInt].typeOfGem == "Jumping") and up: 
+                if self.onGround: 
+                    self.gemsCollected[gemInt].Jumping(self)
         if not self.onGround: 
             self.yvel += 0.3
             if self.yvel > 100: self.yvel= 100
@@ -180,9 +187,9 @@ class Character(pygame.sprite.Sprite):
                 for g in gems: 
                     if pygame.sprite.collide_rect(self,g):
                         g.Collided()
-                        if len(self.gemsCollected) > 0: 
-                            self.gemsCollected[0] = g
-                        else: 
+                        if len(self.gemsCollected) < 3: 
+                        #    self.gemsCollected[0] = g
+                        #else: 
                             self.gemsCollected.append(g)  
                         
     def victory(self, goals):
@@ -200,10 +207,11 @@ class Character(pygame.sprite.Sprite):
         return False
     
     def reset(self, loc):
-        player.x =  loc[0]
-        player.y = loc[1]
-        player.rect.x = loc[0]
-        player.rect.y = loc[1]
+        self.x =  loc[0]
+        self.y = loc[1]
+        self.rect.x = loc[0]
+        self.rect.y = loc[1]
+        del self.gemsCollected[:]
         
 
 def display_box(screen, message, x, y, lives):
@@ -218,7 +226,7 @@ def display_box(screen, message, x, y, lives):
     screen.blit(prompt, (x, y))  
         
 class Gem(pygame.sprite.Sprite):
-    def __init__(self, color, filename, location, typeOfGem):
+    def __init__(self, color, filename, location, typeOfGem, size):
         # call parent class constructor
         pygame.sprite.Sprite.__init__(self)
         
@@ -227,10 +235,9 @@ class Gem(pygame.sprite.Sprite):
         # make 'color' transparent on the image
         self.image.set_colorkey(color) 
         # set the rectangle defined for this image for collision detection
+        self.image = pygame.transform.scale(self.image, (size[0],size[1]))
       
         # position the image
-        if (filename == "ghost.png"): 
-            self.image = pygame.transform.scale(self.image, (50, 60))
         
         self.rect = self.image.get_rect()
         self.rect.x = location[0]
@@ -243,6 +250,7 @@ class Gem(pygame.sprite.Sprite):
             self.type = "Invisibility"
             self.checkCollision = False
             self.time = 7 * 60
+
         if (self.typeOfGem == "Jumping"): 
             self.type = "Jumping"
             self.yvel = 4
@@ -311,10 +319,60 @@ def Tutorial(gemActivate, Character):
                 display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
     
         pygame.display.update()
+
+def View_Map(platforms, allSprites, level, scale):
+    first_level_height = View_Height
+    first_level_length = len(level[0]) * Tile_Length * scale
+    cameraScrolling = Window(complex_camera, first_level_length, first_level_height)
+
+    invis_objects = pygame.draw.rect(screen, (255, 255, 255), (first_level_length, first_level_height, 10, 10))
+    invis_objects.x = first_level_length - View_Width/2
+    invis_objects.y = 0
+
+    active = True
+    xvel = 0.1
+    font = pygame.font.SysFont("Courier New", 40)
+    prompt = font.render("Level Begins", 1, [0, 0, 255])
     
+
+    while active:
+        for event in pygame.event.get():
+            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                raise SystemExit
+                active = False
+                return 
+
+        cameraScrolling.custupdate(invis_objects)
+        for k in range(15):
+            screen.blit(sky, [400, k * Tile_Length])
+        for k in range(15):
+            screen.blit(sky, [0, k * Tile_Length])
+        for k in range(15):
+            screen.blit(sky, [200, k * Tile_Length])
+        for k in range(15):
+            screen.blit(sky, [600, k * Tile_Length])
+        for sprite in allSprites: 
+            screen.blit(sprite.image, cameraScrolling.apply(sprite))
+
+        if (invis_objects.x > first_level_length/2.0):
+            xvel += 0.05
+        else: 
+            xvel -= 0.03
+
+        if(invis_objects.x < 50): 
+            screen.blit(prompt, (View_Height/2, View_Width/5)) 
+            pygame.display.update()
+            time.sleep(1)
+            return;
+
+        invis_objects.x -= xvel; 
+
+        pygame.display.update()
+
+
 def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals):
-    first_level_height = len(level) * 70
-    first_level_length = len(level[0]) * 70
+    first_level_height = len(level) * Tile_Length
+    first_level_length = len(level[0]) * Tile_Length
     camera = Window(complex_camera, first_level_length, first_level_height)
 
     pause = False #Controls when paused
@@ -327,17 +385,19 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
     gemActivate = False
     active = True
     up = down = left = right = False
+    firstGem = secondGem = thirdGem = False
     spawn = time.clock()
+    precedence = 0; 
     while active:  
         timer.tick(60)
         start = time.clock() - spawn #Takes the time minus the time spent on the menu
         player.setTime(start - totalPauseTime) #Sets the time minus the total time paused
         #pygame.mixer.music.play()
-        if (gemActivate): 
-            if (player.gemsCollected[0].time <= 0): 
-                gemActivate = False
-                del player.gemsCollected[:]
-                #player.gemsCollected.remove(Gem)
+        #if (gemActivate): 
+        #    if (player.gemsCollected[0].time <= 0): 
+        #        gemActivate = False
+        #        del player.gemsCollected[:]
+        #        #player.gemsCollected.remove(Gem)
         if (pause):
             screen.fill([208,244,247]) 
             for men in pause_men:
@@ -383,11 +443,11 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     left = True
                 if event.type == KEYDOWN and event.key == K_RIGHT:
                     right = True
-                if event.type == KEYDOWN and event.key == K_SPACE:
-                    if (len(player.gemsCollected) > 0):  
-                        gemActivate = True
-                        if (player.gemsCollected[0].typeOfGem == "Invisibility"): 
-                            Music_Play("Gem1 GhostInvis.wav", 0)   
+                #if event.type == KEYDOWN and event.key == K_SPACE:
+                #    if (len(player.gemsCollected) > 0):  
+                #        gemActivate = True
+                #        if (player.gemsCollected[0].typeOfGem == "Invisibility"): 
+                #            Music_Play("Gem1 GhostInvis.wav", 0)   
                 if event.type == KEYUP and event.key == K_UP:
                     up = False
                 if event.type == KEYUP and event.key == K_RIGHT:
@@ -400,15 +460,70 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     pauseStartTime = time.clock()
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
+                if event.type == KEYDOWN and event.key == K_1: 
+                    if (len(player.gemsCollected) > 0): 
+                        firstGem = True
+                    if not(secondGem or thirdGem): 
+                        precedence = 1
+                if event.type == KEYDOWN and event.key == K_2: 
+                    if (len(player.gemsCollected) > 1): 
+                        secondGem = True
+                    if not(thirdGem or firstGem): 
+                        precedence = 2 
+                if event.type == KEYDOWN and event.key == K_3:
+                    if (len(player.gemsCollected) > 2): 
+                        thirdGem == True
+                    if not(secondGem or firstGem): 
+                        precedence = 3
+
+            if (firstGem and precedence == 1): 
+                if (secondGem):
+                    player.gemsCollected[0].time = 0
+                    precedence = 1
+                if (thirdGem):
+                    player.gemsCollected[0].time = 0
+                    precedence = 2
+                if (player.gemsCollected[0].time <= 0): 
+                    if not(secondGem): 
+                        firstGem = False
+                    secondGem = False
+                    if (thirdGem):
+                        secondGem = True
+                        thirdGem = False
+                    del player.gemsCollected[0]
+            if (secondGem and precedence == 2): 
+                if (firstGem): 
+                    player.gemsCollected[1].time = 0
+                    precedence = 1
+                if (thirdGem): 
+                    player.gemsCollected[1].time = 0
+                    precedence = 2
+                if (player.gemsCollected[1].time <= 0): 
+                    if not(thirdGem): 
+                        secondGem = False
+                    thirdGem = False
+                    del player.gemsCollected[1]
+            if (thirdGem and precedence == 3): 
+                if (firstGem): 
+                    player.gemsCollected[2].time = 0
+                    precedence = 1
+                    firstGem = True
+                if (secondGem): 
+                    player.gemsCollected[2].time = 0
+                    precedence = 2
+                    secondGem = True
+                if (player.gemsCollected[2].time <= 0): 
+                    thirdGem = False
+                    del player.gemsCollected[2]
 
             for k in range(15):
-                screen.blit(sky, [400, k * 70])
+                screen.blit(sky, [400, k * Tile_Length])
             for k in range(15):
-                screen.blit(sky, [0, k * 70])
+                screen.blit(sky, [0, k * Tile_Length])
             for k in range(15):
-                screen.blit(sky, [200, k * 70])
+                screen.blit(sky, [200, k * Tile_Length])
             for k in range(15):
-                screen.blit(sky, [600, k * 70])
+                screen.blit(sky, [600, k * Tile_Length])
                 
             camera.update(player)
             CheckOutofBounds(player, first_level_height, first_level_length)
@@ -420,7 +535,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             if (player.victory(goals)):
                 return 5; 
             
-            player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals)
+            player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
             for sprite in allSprites: 
                 screen.blit(sprite.image, camera.apply(sprite))
             for p in player_sprite_vec: 
@@ -438,6 +553,14 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
         
 def Level_Vector_Creations(level_one):
     
+    level_scroll = []
+    allSprites_scroll = pygame.sprite.Group()
+
+    totalHeight = Tile_Length * len(level_one)
+    totalWidth = Tile_Length * len(level_one[0])
+    scaleFactor = (View_Height + 0.0)/(0.0 + totalHeight)
+    scaleTile = Tile_Length * scaleFactor
+
     platforms = []
     gems = []
     allSprites = pygame.sprite.Group()
@@ -445,60 +568,93 @@ def Level_Vector_Creations(level_one):
     goal = []
     x = 0
     y = 0
+    x_scaleTile = 0
+    y_scaleTile = 0
     
     for row in level_one: 
         for col in row:
             if col == "M": 
-                Mid_Platform = Image((255,255,255),"grassMid.png", (x,y), (70, 70))
+                Mid_Platform = Image((255,255,255),"grassMid.png", (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Mid_Platform)
                 allSprites.add(Mid_Platform)
-                if (y == 1260): 
+                Mid_Platform_Scroll = Image((255, 255, 255), "grassMid.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(Mid_Platform_Scroll)
+                allSprites_scroll.add(Mid_Platform_Scroll)
+                if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(Mid_Platform)
             if col == "L": 
-                Start_Platform = Image((255,255,255),"grassLeft.png", (x,y), (70, 70))
+                Start_Platform = Image((255,255,255),"grassLeft.png", (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Start_Platform)
                 allSprites.add(Start_Platform)
-                if (y == 1260): 
+                Start_Platform_Scroll = Image((255, 255, 255), "grassLeft.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(Start_Platform_Scroll)
+                allSprites_scroll.add(Start_Platform_Scroll)
+                if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(Start_Platform)
             if col == "R": 
-                End_Platform = Image((255,255,255),"grassRight.png", (x,y), (70, 70))
+                End_Platform = Image((255,255,255),"grassRight.png", (x,y), (Tile_Length, Tile_Length))
                 platforms.append(End_Platform)
                 allSprites.add(End_Platform)
-                if (y == 1260): 
+                End_Platform_Scroll = Image((255, 255, 255), "grassRight.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(End_Platform_Scroll)
+                allSprites_scroll.add(End_Platform_Scroll)
+                if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(End_Platform)
             if col == "C": 
-                Start_Ledge = Image((255,255,255),"grassCliffLeft.png", (x,y), (63,40))
+                Start_Ledge = Image((255,255,255),"grassCliffLeft.png", (x,y), (Tile_Length,Tile_Length))
                 platforms.append(Start_Ledge)
                 allSprites.add(Start_Ledge)
+                Start_Ledge_Scroll = Image((255, 255, 255), "grassCliffLeft.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(Start_Ledge_Scroll)
+                allSprites_scroll.add(Start_Ledge_Scroll)
             if col == "D": 
-                End_Ledge = Image((255,255,255),"grassCliffRight.png", (x,y), (63,40))
+                End_Ledge = Image((255,255,255),"grassCliffRight.png", (x,y), (Tile_Length,Tile_Length))
                 platforms.append(End_Ledge)
                 allSprites.add(End_Ledge)
+                End_Ledge_Scroll = Image((255, 255, 255), "grassCliffRight.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(End_Ledge_Scroll)
+                allSprites_scroll.add(End_Ledge_Scroll)
             if col == "B": 
-                Box = Image((255,255,255),"box.png", (x,y), (70, 70))
+                Box = Image((255,255,255),"box.png", (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Box)
                 allSprites.add(Box)
+                Box_Scroll = Image((255, 255, 255), "box.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(Box_Scroll)
+                allSprites_scroll.add(Box_Scroll)
             if col == "F": 
-                Sign = Image((255,255,255),"signExit.png", (x,y), (70, 70))
+                Sign = Image((255,255,255),"signExit.png", (x,y), (Tile_Length, Tile_Length))
                 goal.append(Sign)
                 allSprites.add(Sign)
+                Sign_Scroll = Image((255, 255, 255), "signExit.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(Sign_Scroll)
+                allSprites_scroll.add(Sign_Scroll)
             if col == "G": 
-                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility")
+                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
                 gems.append(InvisGem)
                 allSprites.add(InvisGem)
+                InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(InvisGem_Scroll)
+                allSprites_scroll.add(InvisGem_Scroll)
             if col == "H": 
-                Sign = Image((255,255,255),"hill_small.png", (x,y - 36), (48, 106))
-                allSprites.add(Sign)
+                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
+                allSprites.add(Hill)
+                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
+                level_scroll.append(Hill_Scroll)
+                allSprites_scroll.add(Hill_Scroll)
             if col == "S": 
-                JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping")     
+                JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
                 gems.append(JumpGem)
                 allSprites.add(JumpGem)    
-            x += 70; 
-        y += 70;
-        x = 0;  
-    return (platforms, gems, allSprites, base_platforms, goal)
-
-screen = pygame.display.set_mode(View_Screen)
+                JUmpGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            x += Tile_Length; 
+            x_scaleTile += scaleTile
+        y += Tile_Length;
+        y_scaleTile += scaleTile
+        x = 0
+        x_scaleTile = 0
+    return (platforms, gems, allSprites, base_platforms, goal, allSprites_scroll, level_scroll, scaleFactor)
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -522,7 +678,7 @@ level_tutorial= [
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
-platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
+#platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
 
 level_one= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -546,6 +702,28 @@ level_one= [
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
+#player vector animation initializations
+imagesright = []
+imagesright.append(loading('p1_walk02.png'))
+imagesright.append(loading('p1_walk03.png'))
+imagesright.append(loading('p1_walk04.png'))
+imagesright.append(loading('p1_walk05.png'))
+imagesright.append(loading('p1_walk06.png'))
+imagesright.append(loading('p1_walk07.png'))
+imagesright.append(loading('p1_walk08.png'))
+imagesright.append(loading('p1_walk09.png'))
+imagesright.append(loading('p1_walk10.png'))
+
+imagesleft = []
+imagesleft.append(loading('p1_walk12.png'))
+imagesleft.append(loading('p1_walk13.png'))
+imagesleft.append(loading('p1_walk14.png'))
+imagesleft.append(loading('p1_walk15.png'))
+imagesleft.append(loading('p1_walk16.png'))
+imagesleft.append(loading('p1_walk19.png'))
+imagesleft.append(loading('p1_walk17.png'))
+imagesleft.append(loading('p1_walk17.png'))
+imagesleft.append(loading('p1_walk18.png'))
 
 gamestate = 1
 
@@ -567,17 +745,17 @@ end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character()
+player_tutorial = Character( imagesright, imagesleft, (60, 60))
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
-player = Character()
+player = Character( imagesright, imagesleft, (60, 60))
 player_sprite_vec.add(player)
 pygame.mixer.init()
 
 done = False
-
+begin = True
 main_men = pygame.display.set_mode([800, 600])
 while (not done):
     quit_game = False
@@ -585,7 +763,10 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1 = Level_Vector_Creations(level_one)
+        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor = Level_Vector_Creations(level_one)
+        if begin:
+            View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+            begin = False
         gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
 
         if (player.lives > 0):
@@ -616,7 +797,7 @@ while (not done):
         gamestate = 0
     elif (gamestate == 4):
         #Change this to Instructions page
-        platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
+        platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor = Level_Vector_Creations(level_tutorial)
         gamestate = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial)
         gamestate = 1
     elif (gamestate == 5):
