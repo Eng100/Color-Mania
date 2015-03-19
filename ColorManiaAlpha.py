@@ -75,6 +75,8 @@ class Character(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.imagesright[self.index]
 
+        self.name = ""
+
         self.x = 320
         self.y = 30
         self.rect = self.image.get_rect()
@@ -743,6 +745,8 @@ end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
+settings_features = []
+
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
 player_tutorial = Character( imagesright, imagesleft, (60, 60))
@@ -763,10 +767,29 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
+        settings_men = pygame.display.set_mode([800, 600])
+        while (player.name == "") and (gamestate == 0):
+            settings_men.fill([208,244,247])
+
+            for event in ev:
+            if (event.type == pygame.MOUSEBUTTONDOWN):
+                pos = pygame.mouse.get_pos()
+                for menu_item in menus:
+                    if menu_item.rect.collidepoint(pos):
+                        gamestate = menu_item.type
+            elif (event.type == QUIT):
+                gamestate = -1
+
+            pygame.display.update()
+
+        if gamestate != 0:
+            continue
+
         platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor = Level_Vector_Creations(level_one)
         if begin:
             View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
             begin = False
+
         gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1)
 
         if (player.lives > 0):
