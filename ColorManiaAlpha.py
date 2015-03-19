@@ -337,7 +337,7 @@ def View_Map(platforms, allSprites, level, scale):
 
     while active:
         for event in pygame.event.get():
-            if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
+            if event.type == QUIT:
                 raise SystemExit
                 active = False
                 return 
