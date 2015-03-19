@@ -1,4 +1,5 @@
 import pygame, time, math
+import eztext # Credit to pywiz32: found online at http://www.pygame.org/project-EzText-920-.html, used for dynamic text input of name
 from pygame.locals import*
 global screen
 pygame.init()
@@ -658,6 +659,11 @@ def Level_Vector_Creations(level_one):
         x_scaleTile = 0
     return (platforms, gems, allSprites, base_platforms, goal, allSprites_scroll, level_scroll, scaleFactor)
 
+def isTyped(event):
+    if event.type == KEYDOWN and event.key == K_UP:
+        up = True
+        Music_Play("Char Jump.wav", 0)
+
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                            B                    B                                      X",
@@ -745,7 +751,9 @@ end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
-settings_features = []
+name_men = []
+name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
+name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
@@ -767,18 +775,39 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        settings_men = pygame.display.set_mode([800, 600])
-        while (player.name == "") and (gamestate == 0):
-            settings_men.fill([208,244,247])
+        name_screen = pygame.display.set_mode([800, 600])
+        userName = eztext.Input(maxlength=16, color=(0,0,255), prompt='')
 
+        while (player.name == "") and (gamestate == 0):
+            name_screen.fill([208,244,247])
+
+            font = pygame.font.SysFont("Courier New", 40)
+
+            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
+            screen.blit(prompt, (View_Height/3, View_Width/5)) 
+
+            userName.set_pos(View_Height/3 , View_Width/5 + 41)
+            userName.set_font(font)
+            userName.update(ev)
+            userName.draw(name_screen)
+
+            for menu_item in name_men:
+                 name_screen.blit(menu_item.image, menu_item)
+
+            ev = pygame.event.get()
             for event in ev:
-            if (event.type == pygame.MOUSEBUTTONDOWN):
-                pos = pygame.mouse.get_pos()
-                for menu_item in menus:
-                    if menu_item.rect.collidepoint(pos):
-                        gamestate = menu_item.type
-            elif (event.type == QUIT):
-                gamestate = -1
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    for menu_item in name_men:
+                        if menu_item.rect.collidepoint(pos):
+                            gamestate = menu_item.type
+                            if gamestate == 0:
+                                player.name = userName.value
+                if (event.type == KEYDOWN and event.key == K_RETURN):
+                    player.name = userName.value
+                    gamestate = 0
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
 
             pygame.display.update()
 
@@ -800,18 +829,22 @@ while (not done):
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
+
         for menu_item in menus:
             main_men.blit(menu_item.image, menu_item)
+
         ev = pygame.event.get()
+
         for event in ev:
             if (event.type == pygame.MOUSEBUTTONDOWN):
                 pos = pygame.mouse.get_pos()
                 for menu_item in menus:
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
-            elif (event.type == QUIT):
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
         pygame.display.update()
+
     elif (gamestate == 2):
         #Change this to settings page
         gamestate = 0
@@ -849,5 +882,5 @@ while (not done):
                 for men in end_men:
                     if men.rect.collidepoint(pos):
                         gamestate = men.type
-            elif (event.type == QUIT):
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
