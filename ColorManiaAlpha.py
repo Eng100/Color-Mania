@@ -283,7 +283,46 @@ class Menu(pygame.sprite.Sprite):
         self.rect.y = location[1]
         
         self.type = types
-    
+
+class HeadsUpDisplay(pygame.sprite.Sprite): 
+    def __init__(self, filename, color, filenameOne, filenameTwo, filenameThree): 
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(filename).convert_alpha()
+        self.image.set_colorkey(color)
+
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
+
+        self.imageOne = pygame.image.load(filenameOne).convert_alpha()
+        self.imageTwo = pygame.image.load(filenameTwo).convert_alpha()
+        self.imageThree = pygame.image.load(filenameThree).convert_alpha()
+
+    def displayToScreen(self, time, lives, screen): 
+        screen.blit(self.image, (0,0))
+        if (len(player.gemsCollected) == 1):
+            screen.blit(self.imageOne, (0,0))
+            screen.blit(player.gemsCollected[0].image, (18, 50))
+        if (len(player.gemsCollected) == 2): 
+            screen.blit(self.imageTwo, (0,0))
+            screen.blit(player.gemsCollected[0].image, (18, 50))
+            screen.blit(player.gemsCollected[1].image, (85, 50))
+        if (len(player.gemsCollected) == 3): 
+            screen.blit(self.imageThree, (0,0))
+            screen.blit(player.gemsCollected[0].image, (18, 50))
+            screen.blit(player.gemsCollected[1].image, (85, 50))
+            screen.blit(player.gemsCollected[2].image, (140, 50))
+        font = pygame.font.SysFont("Courier New", 16)
+        promptTime = font.render("%d Seconds"  % time , 1, [0, 0, 0])
+        screen.blit(promptTime, (78, 25))
+        promptLives = font.render("%d" %lives, 1, [0,0,0])
+        screen.blit(promptLives, (78, 7))
+        white_box = pygame.draw.rect(screen, (255, 255, 255), (0, 0, 10, 10))
+
+       
+
+
+
     
 def CheckOutofBounds(Character, level_height, level_width):
     if (Character.rect.left <= 0): 
@@ -524,6 +563,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 screen.blit(sky, [200, k * Tile_Length])
             for k in range(15):
                 screen.blit(sky, [600, k * Tile_Length])
+
+
                 
             camera.update(player)
             CheckOutofBounds(player, first_level_height, first_level_length)
@@ -540,10 +581,13 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 screen.blit(sprite.image, camera.apply(sprite))
             for p in player_sprite_vec: 
                 screen.blit(p.image, camera.apply(p))
-            if(player.lives > 0): 
-                if (not(gamestate == 4)):
-                    display_box(screen, "Lives: %d", 20, 10, player.lives)
-                display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime()) #now just takes total time minus player time
+
+            #if(player.lives > 0): 
+            #    if (not(gamestate == 4)):
+            #        display_box(screen, "Lives: %d", 20, 10, player.lives)
+            #    display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime()) #now just takes total time minus player time
+            TimeLeft = TOTALTIME - player.getTime()
+            HUD.displayToScreen(TimeLeft , player.lives, screen)
 
                 
             if (gamestate == 4):
@@ -701,6 +745,9 @@ level_one= [
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
+
+HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png")
+
 
 #player vector animation initializations
 imagesright = []
