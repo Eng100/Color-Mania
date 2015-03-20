@@ -60,16 +60,21 @@ def loading(name):
     return image
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, imagesright, imagesleft, size):
+    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne):
         super(Character, self).__init__()
         self.imagesright = imagesright
         # assuming both images are 64x64 pixels
         self.imagesleft = imagesleft
 
+        self.tempimagesright = imagesrightOne
+        self.tempimagesleft = imagesleftOne
+
         for x in range(len(self.imagesright)): 
             self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
+            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
         for x in range(len(self.imagesleft)): 
             self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
+            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
         
         
         self.index = 0
@@ -233,7 +238,7 @@ class Character(pygame.sprite.Sprite):
             self.yvel = -11
         if down:
             self.yvel = 11
-    def resize(self, value):
+    def resize(self, value):    
         tempx = self.rect.x
         tempy = self.rect.y
         self.image = pygame.transform.scale(self.image, (value,value))
@@ -244,6 +249,16 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = tempx
         self.rect.y = tempy
+
+    def hidefResize(self): 
+        tempx = self.rect.x
+        tempy = self.rect.y
+        self.imagesright = self.tempimagesright
+        self.imagesleft = self.tempimagesleft
+        self.rect = self.imagesright[0].get_rect()
+        self.rect.x = tempx
+        self.rect.y = tempy
+        print("hi")
 
 def display_box(screen, message, x, y, lives):
     font = pygame.font.SysFont("Courier New", 20)
@@ -295,7 +310,7 @@ class Gem(pygame.sprite.Sprite):
             self.time = 20 * 60 
         if (self.typeOfGem == "Shrinking"):
             self.type = "Shrinking"
-            self.time = 10 * 60
+            self.time = 4 * 60
         if (self.typeOfGem == "Sprinting"):
             self.type = "Sprinting"
             self.time = 15 * 60
@@ -530,7 +545,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     precedence = 2
                 if (player.gemsCollected[0].time <= 0):
                     if(player.gemsCollected[0].typeOfGem == "Shrinking"):
-                        player.resize(60) 
+                        player.hidefResize()
                     if not(secondGem): 
                         firstGem = False
                     secondGem = False
@@ -547,7 +562,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     precedence = 2
                 if (player.gemsCollected[1].time <= 0):
                     if(player.gemsCollected[1].typeOfGem == "Shrinking"):
-                        player.resize(60)
+                        player.hidefResize()
                     if not(thirdGem): 
                         secondGem = False
                     thirdGem = False
@@ -563,7 +578,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     secondGem = True
                 if (player.gemsCollected[2].time <= 0):
                     if(player.gemsCollected[2].typeOfGem == "Shrinking"):
-                        player.resize(60)
+                        player.hidefResize()
                     thirdGem = False
                     del player.gemsCollected[2]
 
@@ -753,7 +768,7 @@ level_one= [
         "X                                                                               B                                              B        X",
         "X  CMMMMD                               CMMMD              B        CMD         B                 CMMD                    CMD  B        X",
         "X                B                                         B                    B            H                                 B        X",
-        "X         G      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
+        "X        SG      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
@@ -783,6 +798,28 @@ imagesleft.append(loading('p1_walk17.png'))
 imagesleft.append(loading('p1_walk17.png'))
 imagesleft.append(loading('p1_walk18.png'))
 
+imagesrightResize = []
+imagesrightResize.append(loading('p1_walk02.png'))
+imagesrightResize.append(loading('p1_walk03.png'))
+imagesrightResize.append(loading('p1_walk04.png'))
+imagesrightResize.append(loading('p1_walk05.png'))
+imagesrightResize.append(loading('p1_walk06.png'))
+imagesrightResize.append(loading('p1_walk07.png'))
+imagesrightResize.append(loading('p1_walk08.png'))
+imagesrightResize.append(loading('p1_walk09.png'))
+imagesrightResize.append(loading('p1_walk10.png'))
+
+imagesleftResize = []
+imagesleftResize.append(loading('p1_walk12.png'))
+imagesleftResize.append(loading('p1_walk13.png'))
+imagesleftResize.append(loading('p1_walk14.png'))
+imagesleftResize.append(loading('p1_walk15.png'))
+imagesleftResize.append(loading('p1_walk16.png'))
+imagesleftResize.append(loading('p1_walk19.png'))
+imagesleftResize.append(loading('p1_walk17.png'))
+imagesleftResize.append(loading('p1_walk17.png'))
+imagesleftResize.append(loading('p1_walk18.png'))
+
 gamestate = 1
 
 title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
@@ -803,12 +840,12 @@ end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character( imagesright, imagesleft, (60, 60))
+player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
-player = Character( imagesright, imagesleft, (60, 60))
+player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
 player_sprite_vec.add(player)
 pygame.mixer.init()
 
