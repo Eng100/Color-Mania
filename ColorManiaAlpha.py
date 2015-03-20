@@ -86,7 +86,12 @@ class Character(pygame.sprite.Sprite):
         self.lives = 3
         self.time = 0
         self.complete = False
+        self.gems = 0
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
+
+        
+
+
         isInvisibility = False
         gemInt = -1; 
         if up: 
@@ -122,7 +127,7 @@ class Character(pygame.sprite.Sprite):
             gemInt = 1
         if thirdGem: 
             gemInt = 2
-
+        self.gems = gemInt + 1
         if (firstGem or secondGem or thirdGem): 
             self.gemsCollected[gemInt].time -= 1
             if (self.gemsCollected[gemInt].typeOfGem == "Invisibility"): 
@@ -130,6 +135,14 @@ class Character(pygame.sprite.Sprite):
             if (self.gemsCollected[gemInt].typeOfGem == "Jumping") and up: 
                 if self.onGround: 
                     self.gemsCollected[gemInt].Jumping(self)
+            if (self.gemsCollected[gemInt].typeOfGem == "Shrinking"):
+                self.resize(30)
+            if (self.gemsCollected[gemInt].typeOfGem == "Traction"):
+                self.xvel /= 5 
+            if (self.gemsCollected[gemInt].typeOfGem == "Sprinting"):
+                self.xvel *= 2
+            if (self.gemsCollected[gemInt].typeOfGem == "Flying"):
+                self.fly(up, down)
         if not self.onGround: 
             self.yvel += 0.3
             if self.yvel > 100: self.yvel= 100
@@ -153,7 +166,8 @@ class Character(pygame.sprite.Sprite):
         
     def getTime(self):
         return self.time          
-    
+    def getNumGems(self):
+        return self.gems
     def collide (self, xvel, yvel, platforms, gems, isInvisibility, base_platforms, goals):
         if (isInvisibility): 
             for p in base_platforms: 
@@ -212,7 +226,24 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = loc[0]
         self.rect.y = loc[1]
         del self.gemsCollected[:]
-        
+    def fly(self, up, down):
+        self.onGround = False
+        self.yvel -= 0.3
+        if up:
+            self.yvel = -11
+        if down:
+            self.yvel = 11
+    def resize(self, value):
+        tempx = self.rect.x
+        tempy = self.rect.y
+        self.image = pygame.transform.scale(self.image, (value,value))
+        for x in range(len(self.imagesright)): 
+            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (value,value))
+        for x in range(len(self.imagesleft)): 
+            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (value,value))
+        self.rect = self.image.get_rect()
+        self.rect.x = tempx
+        self.rect.y = tempy
 
 def display_box(screen, message, x, y, lives):
     font = pygame.font.SysFont("Courier New", 20)
@@ -255,10 +286,21 @@ class Gem(pygame.sprite.Sprite):
             self.type = "Jumping"
             self.yvel = 4
             self.time = 15 * 60 
-    
+        if (self.typeOfGem == "Traction"):
+            self.type = "Traction"
+            self.xvel = 1
+            self.time = 20 * 60 
+        if (self.typeOfGem == "Flying"):
+            self.type = "Flying"
+            self.time = 20 * 60 
+        if (self.typeOfGem == "Shrinking"):
+            self.type = "Shrinking"
+            self.time = 10 * 60
+        if (self.typeOfGem == "Sprinting"):
+            self.type = "Sprinting"
+            self.time = 15 * 60
     def Jumping(self, Character): 
         Character.yvel -= 4
-        
     def Collided (self):
         self.exist = False
         self.rect = (0, 0, 0 , 0)
@@ -299,27 +341,30 @@ def Music_Play(music_file, repetitions):
     pygame.mixer.music.load(music_file)
     pygame.mixer.music.play(repetitions)
     
-def Tutorial(gemActivate, Character):
-    if Character.rect.x > 0 and Character.rect.x < 2030: #if the player is within the starting section, display these words
+def Tutorial(Character):
+    if (Character.rect.x > 0 and Character.rect.x < 1000): #if the player is within the starting section, display these words
         display_box(screen, "Welcome! To move, use the up or side arrow keys.", View_Width/6, View_Height/3, 4)
         display_box(screen, "Walk right to continue.",View_Width/3,View_Height/2.5,4)
-    else: #else display the next section
-        if (gemActivate == False and Character.rect.x > 2030 and Character.rect.x < 3500):
+    if(Character.getNumGems() == 0):
+        if (Character.rect.x > 1100 and Character.rect.x < 2000):
             display_box(screen, "Walk over the ghost gem to collect it.",View_Width/4,View_Height/3,4)
-            display_box(screen, "Press SPACEBAR to activate gem.",View_Width/3,View_Height/2.5,4)
-        elif(gemActivate == True and Character.gemsCollected[0].type == "Jumping"): 
+            display_box(screen, "Press the Number 1 Key to activate gem.",View_Width/3.8,View_Height/2.5,4)
+        elif (Character.rect.x > 2500 and Character.rect.x < 3500): 
+            display_box(screen, "Walk over the Jumping gem to collect it.",View_Width/4,View_Height/3,4)
+            display_box(screen, "Press the Number 1 Key to activate gem.",View_Width/3.8,View_Height/2.5,4)
+    else:
+        if(Character.gemsCollected[0].type == "Invisibility" and Character.gemsCollected[0].time > 0):
+            display_box(screen, "You can walk through everything for 7 seconds.",View_Width/5.3,View_Height/3,4)
+            display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
+
+        elif(Character.gemsCollected[0].type == "Jumping" and Character.gemsCollected[0].time > 0):
             display_box(screen, "Jump over the wall using your elevated jumping abilities",View_Width/3 - 190,View_Height/3,4)
             display_box(screen, "Hit the exit sign to reach the menu again",View_Width/6,View_Height/2.5,4)
-        elif gemActivate == False and Character.rect.x > 3700 and Character.rect.x < 5500: 
-            display_box(screen, "Walk over the Jumping gem to collect it.",View_Width/4,View_Height/3,4)
-            display_box(screen, "Press SPACEBAR to activate gem.",View_Width/3,View_Height/2.5,4)
-        else: 
-            if (Character.rect.x < 3700):
-                display_box(screen, "You can walk through everything for 7 seconds.",View_Width/5.3,View_Height/3,4)
-                display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
-    
+        
         pygame.display.update()
-
+    if(Character.rect.x > 3600):
+        display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
+        Character.time = 150
 def View_Map(platforms, allSprites, level, scale):
     first_level_height = View_Height
     first_level_length = len(level[0]) * Tile_Length * scale
@@ -483,7 +528,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if (thirdGem):
                     player.gemsCollected[0].time = 0
                     precedence = 2
-                if (player.gemsCollected[0].time <= 0): 
+                if (player.gemsCollected[0].time <= 0):
+                    if(player.gemsCollected[0].typeOfGem == "Shrinking"):
+                        player.resize(60) 
                     if not(secondGem): 
                         firstGem = False
                     secondGem = False
@@ -498,7 +545,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if (thirdGem): 
                     player.gemsCollected[1].time = 0
                     precedence = 2
-                if (player.gemsCollected[1].time <= 0): 
+                if (player.gemsCollected[1].time <= 0):
+                    if(player.gemsCollected[1].typeOfGem == "Shrinking"):
+                        player.resize(60)
                     if not(thirdGem): 
                         secondGem = False
                     thirdGem = False
@@ -512,7 +561,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     player.gemsCollected[2].time = 0
                     precedence = 2
                     secondGem = True
-                if (player.gemsCollected[2].time <= 0): 
+                if (player.gemsCollected[2].time <= 0):
+                    if(player.gemsCollected[2].typeOfGem == "Shrinking"):
+                        player.resize(60)
                     thirdGem = False
                     del player.gemsCollected[2]
 
@@ -547,7 +598,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
 
                 
             if (gamestate == 4):
-                Tutorial(gemActivate, player)
+                Tutorial(player)
     
         pygame.display.update()
         
@@ -629,7 +680,7 @@ def Level_Vector_Creations(level_one):
                 level_scroll.append(Sign_Scroll)
                 allSprites_scroll.add(Sign_Scroll)
             if col == "G": 
-                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
+                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Flying", (Tile_Length - 10, Tile_Length))
                 gems.append(InvisGem)
                 allSprites.add(InvisGem)
                 InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
@@ -641,13 +692,20 @@ def Level_Vector_Creations(level_one):
                 Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
                 level_scroll.append(Hill_Scroll)
                 allSprites_scroll.add(Hill_Scroll)
-            if col == "S": 
+            if col == "J": 
                 JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
                 gems.append(JumpGem)
                 allSprites.add(JumpGem)    
                 JUmpGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(JUmpGem_Scroll)
                 allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "S":
+                ShrinkGem = Gem((255,255,255),"springboardUp.png", (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(ShrinkGem)
+                allSprites.add(ShrinkGem)    
+                ShrinkGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(ShrinkGem_Scroll)
+                allSprites_scroll.add(ShrinkGem_Scroll)
             x += Tile_Length; 
             x_scaleTile += scaleTile
         y += Tile_Length;
@@ -658,23 +716,23 @@ def Level_Vector_Creations(level_one):
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "X                            B                    B                                      X",
-        "X                            B                    B                                      X",
+        "X                            B                                                           X",
+        "X                            B                                                           X",
         "X                            B            CMMMMMD B                                      X",
         "X                            B                    B                                      X",
         "X                            B         CMD        B                                      X",
         "X                            B                    B                                      X",
         "X                            B                    B                                      X",
-        "X                   CMMMD    B              CMMMMMBMMD                       B           X",
+        "X                   CMMMD    B              CMMMMDB                          B           X",
         "X                            B    CMMMMD          B                          B           X",
         "X                            B                    B                          B           X",
         "X        CMMMMMMMMD          B                    B                          B           X",
-        "X                            B           CMMMD    B               S          B           X",
+        "X                            B           CMMMD    B               J          B           X",
         "X                            B                    B              CMMMMMD     B           X",
         "X                    CMMD    B                    B                          B           X",
         "X            CMMMD           B     CMMMMD    BB   B       CMMD               B           X",  
         "X                                            BB   B                          B           X", 
-        "X                                 G          BB   B                          B           X",
+        "X                                 G          BB   B                          B         F X",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -688,7 +746,7 @@ level_one= [
         "X                                                                                                  CMD                                  X",
         "X                      CMMMD          CMD                                                                                               X",
         "X                                                                           CMD            CMD                                          X",
-        "X                                                      H                                             S   H                     B        X",
+        "X                                                      H                                             J   H                     B        X",
         "X               H                CMMMMD               CMMMMD                                        CMMMMD                     B        X",
         "X            CMMMMMMMMMMD                                                       B       H                                      B        X",
         "X                                                                          CMD  B      CMMMMMD                                 B        X",
