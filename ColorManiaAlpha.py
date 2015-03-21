@@ -235,7 +235,7 @@ class Character(pygame.sprite.Sprite):
         self.onGround = False
         self.yvel -= 0.3
         if up:
-            self.yvel = -11
+            self.yvel = -3
         if down:
             self.yvel = 11
     def resize(self, value):    
