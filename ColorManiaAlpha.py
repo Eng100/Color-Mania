@@ -380,6 +380,16 @@ def Tutorial(Character):
     if(Character.rect.x > 3600):
         display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
         Character.time = 150
+def Diagnostics(score):
+    if(score < 200):
+        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/4,View_Height/3, 4)
+    elif(score < 400):
+        display_box(screen, "The player may want to work on making decisions faster.",View_Width/4,View_Height/3, 4)
+    elif(score < 600):
+        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/4,View_Height/3, 4)
+    else:
+        display_box(screen, "The player did a great job!",View_Width/4,View_Height/3, 4)
+
 def View_Map(platforms, allSprites, level, scale):
     first_level_height = View_Height
     first_level_length = len(level[0]) * Tile_Length * scale
