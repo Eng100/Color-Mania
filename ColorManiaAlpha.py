@@ -231,6 +231,7 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = loc[0]
         self.rect.y = loc[1]
         del self.gemsCollected[:]
+        self.gemsCollected = []
     def fly(self, up, down):
         self.onGround = False
         self.yvel -= 0.3
@@ -474,7 +475,7 @@ def View_Map(platforms, allSprites, level, scale):
         pygame.display.update()
 
 
-def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints):
+def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints, levelState):
     first_level_height = len(level) * Tile_Length
     first_level_length = len(level[0]) * Tile_Length
     camera = Window(complex_camera, first_level_length, first_level_height)
@@ -642,10 +643,10 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
 
             if(player.is_dead(first_level_height, spawn)):
                 player.loseLife()
-                return 0; 
+                return (0, level_state); 
             
             if (player.victory(goals)):
-                return 5; 
+                return (5, level_state + 1); 
             
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
             for sprite in allSprites: 
@@ -932,7 +933,7 @@ player_sprite_vec = pygame.sprite.Group()
 player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
 player_sprite_vec.add(player)
 pygame.mixer.init()
-
+level_state = 1
 done = False
 begin = True
 main_men = pygame.display.set_mode([800, 600])
@@ -942,17 +943,18 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
-        if begin:
-            View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
-            begin = False
-        gamestate = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1)
-
-        if (player.lives > 0):
-            player.reset([0,0])
-        else:
+        while(gamestate == 0): 
+            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
+            if level_state == 1:
+                View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+            while (player.lives > 0):
+                if level_state == 1:
+                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
+                    gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
+                player.reset([0,0])
+                if level_state == 2: 
+                    break
             gamestate = 5
-
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
@@ -977,7 +979,7 @@ while (not done):
     elif (gamestate == 4):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial)
-        gamestate = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial)
+        gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
         gamestate = 1
     elif (gamestate == 5):
         #End of game score, etc
