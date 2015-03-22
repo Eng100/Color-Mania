@@ -258,7 +258,6 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.imagesright[0].get_rect()
         self.rect.x = tempx
         self.rect.y = tempy
-        print("hi")
 
 def display_box(screen, message, x, y, lives):
     font = pygame.font.SysFont("Courier New", 20)
@@ -380,6 +379,7 @@ def Tutorial(Character):
     if(Character.rect.x > 3600):
         display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
         Character.time = 150
+
 def Diagnostics(score):
     if(score < 200):
         display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/4,View_Height/3, 4)
@@ -711,12 +711,6 @@ def Level_Vector_Creations(level_one):
                 InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(InvisGem_Scroll)
                 allSprites_scroll.add(InvisGem_Scroll)
-            if col == "H": 
-                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
-                allSprites.add(Hill)
-                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
-                level_scroll.append(Hill_Scroll)
-                allSprites_scroll.add(Hill_Scroll)
             if col == "J": 
                 JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
                 gems.append(JumpGem)
@@ -724,13 +718,33 @@ def Level_Vector_Creations(level_one):
                 JUmpGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(JUmpGem_Scroll)
                 allSprites_scroll.add(JUmpGem_Scroll)
-            if col == "S":
-                ShrinkGem = Gem((255,255,255),"springboardUp.png", (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
-                gems.append(ShrinkGem)
-                allSprites.add(ShrinkGem)    
-                ShrinkGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
-                level_scroll.append(ShrinkGem_Scroll)
-                allSprites_scroll.add(ShrinkGem_Scroll)
+            if col == "S": 
+                JumpGem = Gem((255,255,255),"shrinkinggem.png", (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "shrinkinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "P": 
+                JumpGem = Gem((255,255,255),"sprintinggem.png", (x,y), "Sprinting", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "sprintinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "Y": 
+                JumpGem = Gem((255,255,255),"FlyingGem.png", (x,y), "Flying", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "FlyingGem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "H": 
+                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
+                allSprites.add(Hill)
+                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
+                level_scroll.append(Hill_Scroll)
+                allSprites_scroll.add(Hill_Scroll) 
             x += Tile_Length; 
             x_scaleTile += scaleTile
         y += Tile_Length;
@@ -778,7 +792,7 @@ level_one= [
         "X                                                                               B                                              B        X",
         "X  CMMMMD                               CMMMD              B        CMD         B                 CMMD                    CMD  B        X",
         "X                B                                         B                    B            H                                 B        X",
-        "X        SG      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
+        "X       G        B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
@@ -916,8 +930,10 @@ while (not done):
         if (player.complete): 
             display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
+            Diagnostics(score)
         else: 
             display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
+            Diagnostics(score)
         
         for men in end_men:
             end_screen.blit(men.image, men)
