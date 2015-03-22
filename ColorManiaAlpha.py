@@ -354,31 +354,26 @@ class HeadsUpDisplay(pygame.sprite.Sprite):
         self.imageTwo = pygame.image.load(filenameTwo).convert_alpha()
         self.imageThree = pygame.image.load(filenameThree).convert_alpha()
 
-    def displayToScreen(self, time, lives, screen): 
+    def displayToScreen(self, time, lives, screen, Character): 
         screen.blit(self.image, (0,0))
-        if (len(player.gemsCollected) == 1):
+        if (len(Character.gemsCollected) == 1):
             screen.blit(self.imageOne, (0,0))
-            screen.blit(player.gemsCollected[0].image, (18, 50))
-        if (len(player.gemsCollected) == 2): 
+            screen.blit(Character.gemsCollected[0].image, (18, 50))
+        if (len(Character.gemsCollected) == 2): 
             screen.blit(self.imageTwo, (0,0))
-            screen.blit(player.gemsCollected[0].image, (18, 50))
-            screen.blit(player.gemsCollected[1].image, (85, 50))
-        if (len(player.gemsCollected) == 3): 
+            screen.blit(Character.gemsCollected[0].image, (18, 50))
+            screen.blit(Character.gemsCollected[1].image, (85, 50))
+        if (len(Character.gemsCollected) == 3): 
             screen.blit(self.imageThree, (0,0))
-            screen.blit(player.gemsCollected[0].image, (18, 50))
-            screen.blit(player.gemsCollected[1].image, (85, 50))
-            screen.blit(player.gemsCollected[2].image, (140, 50))
+            screen.blit(Character.gemsCollected[0].image, (18, 50))
+            screen.blit(Character.gemsCollected[1].image, (85, 50))
+            screen.blit(Character.gemsCollected[2].image, (140, 50))
         font = pygame.font.SysFont("Courier New", 16)
         promptTime = font.render("%d Seconds"  % time , 1, [0, 0, 0])
         screen.blit(promptTime, (78, 25))
         promptLives = font.render("%d" %lives, 1, [0,0,0])
         screen.blit(promptLives, (78, 7))
         white_box = pygame.draw.rect(screen, (255, 255, 255), (0, 0, 10, 10))
-
-       
-
-
-
     
 def CheckOutofBounds(Character, level_height, level_width):
     if (Character.rect.left <= 0): 
@@ -413,8 +408,8 @@ def Tutorial(Character):
         elif(Character.gemsCollected[0].type == "Jumping" and Character.gemsCollected[0].time > 0):
             display_box(screen, "Jump over the wall using your elevated jumping abilities",View_Width/3 - 190,View_Height/3,4)
             display_box(screen, "Hit the exit sign to reach the menu again",View_Width/6,View_Height/2.5,4)
-        
-        pygame.display.update()
+    
+        #pygame.display.update()
     if(Character.rect.x > 3600):
         display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
         Character.time = 150
@@ -662,13 +657,16 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             #    if (not(gamestate == 4)):
             #        display_box(screen, "Lives: %d", 20, 10, player.lives)
             #    display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime()) #now just takes total time minus player time
-            TimeLeft = TOTALTIME - player.getTime()
-            HUD.displayToScreen(TimeLeft , player.lives, screen)
+            #TimeLeft = TOTALTIME - player.getTime()
+            #HUD.displayToScreen(TimeLeft , player.lives, screen)
 
                 
             if (gamestate == 4):
                 Tutorial(player)
-    
+
+            TimeLeft = TOTALTIME - player.getTime()
+            HUD.displayToScreen(TimeLeft , player.lives, screen, player)
+            
         pygame.display.update()
         
 def Level_Vector_Creations(level_one):
@@ -749,7 +747,7 @@ def Level_Vector_Creations(level_one):
                 level_scroll.append(Sign_Scroll)
                 allSprites_scroll.add(Sign_Scroll)
             if col == "G": 
-                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Flying", (Tile_Length - 10, Tile_Length))
+                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
                 gems.append(InvisGem)
                 allSprites.add(InvisGem)
                 InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
