@@ -60,16 +60,21 @@ def loading(name):
     return image
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, imagesright, imagesleft, size):
+    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne):
         super(Character, self).__init__()
         self.imagesright = imagesright
         # assuming both images are 64x64 pixels
         self.imagesleft = imagesleft
 
+        self.tempimagesright = imagesrightOne
+        self.tempimagesleft = imagesleftOne
+
         for x in range(len(self.imagesright)): 
             self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
+            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
         for x in range(len(self.imagesleft)): 
             self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
+            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
         
         
         self.index = 0
@@ -86,7 +91,12 @@ class Character(pygame.sprite.Sprite):
         self.lives = 3
         self.time = 0
         self.complete = False
+        self.gems = 0
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
+
+        
+
+
         isInvisibility = False
         gemInt = -1; 
         if up: 
@@ -122,7 +132,7 @@ class Character(pygame.sprite.Sprite):
             gemInt = 1
         if thirdGem: 
             gemInt = 2
-
+        self.gems = gemInt + 1
         if (firstGem or secondGem or thirdGem): 
             self.gemsCollected[gemInt].time -= 1
             if (self.gemsCollected[gemInt].typeOfGem == "Invisibility"): 
@@ -130,6 +140,14 @@ class Character(pygame.sprite.Sprite):
             if (self.gemsCollected[gemInt].typeOfGem == "Jumping") and up: 
                 if self.onGround: 
                     self.gemsCollected[gemInt].Jumping(self)
+            if (self.gemsCollected[gemInt].typeOfGem == "Shrinking"):
+                self.resize(30)
+            if (self.gemsCollected[gemInt].typeOfGem == "Traction"):
+                self.xvel /= 5 
+            if (self.gemsCollected[gemInt].typeOfGem == "Sprinting"):
+                self.xvel *= 2
+            if (self.gemsCollected[gemInt].typeOfGem == "Flying"):
+                self.fly(up, down)
         if not self.onGround: 
             self.yvel += 0.3
             if self.yvel > 100: self.yvel= 100
@@ -153,7 +171,8 @@ class Character(pygame.sprite.Sprite):
         
     def getTime(self):
         return self.time          
-    
+    def getNumGems(self):
+        return self.gems
     def collide (self, xvel, yvel, platforms, gems, isInvisibility, base_platforms, goals):
         if (isInvisibility): 
             for p in base_platforms: 
@@ -212,7 +231,33 @@ class Character(pygame.sprite.Sprite):
         self.rect.x = loc[0]
         self.rect.y = loc[1]
         del self.gemsCollected[:]
-        
+    def fly(self, up, down):
+        self.onGround = False
+        self.yvel -= 0.3
+        if up:
+            self.yvel = -3
+        if down:
+            self.yvel = 11
+    def resize(self, value):    
+        tempx = self.rect.x
+        tempy = self.rect.y
+        self.image = pygame.transform.scale(self.image, (value,value))
+        for x in range(len(self.imagesright)): 
+            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (value,value))
+        for x in range(len(self.imagesleft)): 
+            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (value,value))
+        self.rect = self.image.get_rect()
+        self.rect.x = tempx
+        self.rect.y = tempy
+
+    def hidefResize(self): 
+        tempx = self.rect.x
+        tempy = self.rect.y
+        self.imagesright = self.tempimagesright
+        self.imagesleft = self.tempimagesleft
+        self.rect = self.imagesright[0].get_rect()
+        self.rect.x = tempx
+        self.rect.y = tempy
 
 def display_box(screen, message, x, y, lives):
     font = pygame.font.SysFont("Courier New", 20)
@@ -255,10 +300,21 @@ class Gem(pygame.sprite.Sprite):
             self.type = "Jumping"
             self.yvel = 4
             self.time = 15 * 60 
-    
+        if (self.typeOfGem == "Traction"):
+            self.type = "Traction"
+            self.xvel = 1
+            self.time = 20 * 60 
+        if (self.typeOfGem == "Flying"):
+            self.type = "Flying"
+            self.time = 20 * 60 
+        if (self.typeOfGem == "Shrinking"):
+            self.type = "Shrinking"
+            self.time = 4 * 60
+        if (self.typeOfGem == "Sprinting"):
+            self.type = "Sprinting"
+            self.time = 15 * 60
     def Jumping(self, Character): 
         Character.yvel -= 4
-        
     def Collided (self):
         self.exist = False
         self.rect = (0, 0, 0 , 0)
@@ -299,26 +355,40 @@ def Music_Play(music_file, repetitions):
     pygame.mixer.music.load(music_file)
     pygame.mixer.music.play(repetitions)
     
-def Tutorial(gemActivate, Character):
-    if Character.rect.x > 0 and Character.rect.x < 2030: #if the player is within the starting section, display these words
+def Tutorial(Character):
+    if (Character.rect.x > 0 and Character.rect.x < 1000): #if the player is within the starting section, display these words
         display_box(screen, "Welcome! To move, use the up or side arrow keys.", View_Width/6, View_Height/3, 4)
         display_box(screen, "Walk right to continue.",View_Width/3,View_Height/2.5,4)
-    else: #else display the next section
-        if (gemActivate == False and Character.rect.x > 2030 and Character.rect.x < 3500):
+    if(Character.getNumGems() == 0):
+        if (Character.rect.x > 1100 and Character.rect.x < 2000):
             display_box(screen, "Walk over the ghost gem to collect it.",View_Width/4,View_Height/3,4)
-            display_box(screen, "Press SPACEBAR to activate gem.",View_Width/3,View_Height/2.5,4)
-        elif(gemActivate == True and Character.gemsCollected[0].type == "Jumping"): 
+            display_box(screen, "Press the Number 1 Key to activate gem.",View_Width/3.8,View_Height/2.5,4)
+        elif (Character.rect.x > 2500 and Character.rect.x < 3500): 
+            display_box(screen, "Walk over the Jumping gem to collect it.",View_Width/4,View_Height/3,4)
+            display_box(screen, "Press the Number 1 Key to activate gem.",View_Width/3.8,View_Height/2.5,4)
+    else:
+        if(Character.gemsCollected[0].type == "Invisibility" and Character.gemsCollected[0].time > 0):
+            display_box(screen, "You can walk through everything for 7 seconds.",View_Width/5.3,View_Height/3,4)
+            display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
+
+        elif(Character.gemsCollected[0].type == "Jumping" and Character.gemsCollected[0].time > 0):
             display_box(screen, "Jump over the wall using your elevated jumping abilities",View_Width/3 - 190,View_Height/3,4)
             display_box(screen, "Hit the exit sign to reach the menu again",View_Width/6,View_Height/2.5,4)
-        elif gemActivate == False and Character.rect.x > 3700 and Character.rect.x < 5500: 
-            display_box(screen, "Walk over the Jumping gem to collect it.",View_Width/4,View_Height/3,4)
-            display_box(screen, "Press SPACEBAR to activate gem.",View_Width/3,View_Height/2.5,4)
-        else: 
-            if (Character.rect.x < 3700):
-                display_box(screen, "You can walk through everything for 7 seconds.",View_Width/5.3,View_Height/3,4)
-                display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
-    
+        
         pygame.display.update()
+    if(Character.rect.x > 3600):
+        display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
+        Character.time = 150
+
+def Diagnostics(score):
+    if(score < 200):
+        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/4,View_Height/3, 4)
+    elif(score < 400):
+        display_box(screen, "The player may want to work on making decisions faster.",View_Width/4,View_Height/3, 4)
+    elif(score < 600):
+        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/4,View_Height/3, 4)
+    else:
+        display_box(screen, "The player did a great job!",View_Width/4,View_Height/3, 4)
 
 def View_Map(platforms, allSprites, level, scale):
     first_level_height = View_Height
@@ -483,7 +553,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if (thirdGem):
                     player.gemsCollected[0].time = 0
                     precedence = 2
-                if (player.gemsCollected[0].time <= 0): 
+                if (player.gemsCollected[0].time <= 0):
+                    if(player.gemsCollected[0].typeOfGem == "Shrinking"):
+                        player.hidefResize()
                     if not(secondGem): 
                         firstGem = False
                     secondGem = False
@@ -498,7 +570,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if (thirdGem): 
                     player.gemsCollected[1].time = 0
                     precedence = 2
-                if (player.gemsCollected[1].time <= 0): 
+                if (player.gemsCollected[1].time <= 0):
+                    if(player.gemsCollected[1].typeOfGem == "Shrinking"):
+                        player.hidefResize()
                     if not(thirdGem): 
                         secondGem = False
                     thirdGem = False
@@ -512,7 +586,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     player.gemsCollected[2].time = 0
                     precedence = 2
                     secondGem = True
-                if (player.gemsCollected[2].time <= 0): 
+                if (player.gemsCollected[2].time <= 0):
+                    if(player.gemsCollected[2].typeOfGem == "Shrinking"):
+                        player.hidefResize()
                     thirdGem = False
                     del player.gemsCollected[2]
 
@@ -547,7 +623,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
 
                 
             if (gamestate == 4):
-                Tutorial(gemActivate, player)
+                Tutorial(player)
     
         pygame.display.update()
         
@@ -629,25 +705,46 @@ def Level_Vector_Creations(level_one):
                 level_scroll.append(Sign_Scroll)
                 allSprites_scroll.add(Sign_Scroll)
             if col == "G": 
-                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
+                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Flying", (Tile_Length - 10, Tile_Length))
                 gems.append(InvisGem)
                 allSprites.add(InvisGem)
                 InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(InvisGem_Scroll)
                 allSprites_scroll.add(InvisGem_Scroll)
-            if col == "H": 
-                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
-                allSprites.add(Hill)
-                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
-                level_scroll.append(Hill_Scroll)
-                allSprites_scroll.add(Hill_Scroll)
-            if col == "S": 
+            if col == "J": 
                 JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
                 gems.append(JumpGem)
                 allSprites.add(JumpGem)    
                 JUmpGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(JUmpGem_Scroll)
                 allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "S": 
+                JumpGem = Gem((255,255,255),"shrinkinggem.png", (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "shrinkinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "P": 
+                JumpGem = Gem((255,255,255),"sprintinggem.png", (x,y), "Sprinting", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "sprintinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "Y": 
+                JumpGem = Gem((255,255,255),"FlyingGem.png", (x,y), "Flying", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(JumpGem)
+                allSprites.add(JumpGem)    
+                JUmpGem_Scroll = Image((255, 255, 255), "FlyingGem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JUmpGem_Scroll)
+                allSprites_scroll.add(JUmpGem_Scroll)
+            if col == "H": 
+                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
+                allSprites.add(Hill)
+                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
+                level_scroll.append(Hill_Scroll)
+                allSprites_scroll.add(Hill_Scroll) 
             x += Tile_Length; 
             x_scaleTile += scaleTile
         y += Tile_Length;
@@ -658,23 +755,23 @@ def Level_Vector_Creations(level_one):
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "X                            B                    B                                      X",
-        "X                            B                    B                                      X",
+        "X                            B                                                           X",
+        "X                            B                                                           X",
         "X                            B            CMMMMMD B                                      X",
         "X                            B                    B                                      X",
         "X                            B         CMD        B                                      X",
         "X                            B                    B                                      X",
         "X                            B                    B                                      X",
-        "X                   CMMMD    B              CMMMMMBMMD                       B           X",
+        "X                   CMMMD    B              CMMMMDB                          B           X",
         "X                            B    CMMMMD          B                          B           X",
         "X                            B                    B                          B           X",
         "X        CMMMMMMMMD          B                    B                          B           X",
-        "X                            B           CMMMD    B               S          B           X",
+        "X                            B           CMMMD    B               J          B           X",
         "X                            B                    B              CMMMMMD     B           X",
         "X                    CMMD    B                    B                          B           X",
         "X            CMMMD           B     CMMMMD    BB   B       CMMD               B           X",  
         "X                                            BB   B                          B           X", 
-        "X                                 G          BB   B                          B           X",
+        "X                                 G          BB   B                          B         F X",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -688,14 +785,14 @@ level_one= [
         "X                                                                                                  CMD                                  X",
         "X                      CMMMD          CMD                                                                                               X",
         "X                                                                           CMD            CMD                                          X",
-        "X                                                      H                                             S   H                     B        X",
+        "X                                                      H                                             J   H                     B        X",
         "X               H                CMMMMD               CMMMMD                                        CMMMMD                     B        X",
         "X            CMMMMMMMMMMD                                                       B       H                                      B        X",
         "X                                                                          CMD  B      CMMMMMD                                 B        X",
         "X                                                                               B                                              B        X",
         "X  CMMMMD                               CMMMD              B        CMD         B                 CMMD                    CMD  B        X",
         "X                B                                         B                    B            H                                 B        X",
-        "X         G      B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
+        "X       G        B   CMMD                         CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
@@ -725,6 +822,28 @@ imagesleft.append(loading('p1_walk17.png'))
 imagesleft.append(loading('p1_walk17.png'))
 imagesleft.append(loading('p1_walk18.png'))
 
+imagesrightResize = []
+imagesrightResize.append(loading('p1_walk02.png'))
+imagesrightResize.append(loading('p1_walk03.png'))
+imagesrightResize.append(loading('p1_walk04.png'))
+imagesrightResize.append(loading('p1_walk05.png'))
+imagesrightResize.append(loading('p1_walk06.png'))
+imagesrightResize.append(loading('p1_walk07.png'))
+imagesrightResize.append(loading('p1_walk08.png'))
+imagesrightResize.append(loading('p1_walk09.png'))
+imagesrightResize.append(loading('p1_walk10.png'))
+
+imagesleftResize = []
+imagesleftResize.append(loading('p1_walk12.png'))
+imagesleftResize.append(loading('p1_walk13.png'))
+imagesleftResize.append(loading('p1_walk14.png'))
+imagesleftResize.append(loading('p1_walk15.png'))
+imagesleftResize.append(loading('p1_walk16.png'))
+imagesleftResize.append(loading('p1_walk19.png'))
+imagesleftResize.append(loading('p1_walk17.png'))
+imagesleftResize.append(loading('p1_walk17.png'))
+imagesleftResize.append(loading('p1_walk18.png'))
+
 gamestate = 1
 
 title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
@@ -745,12 +864,12 @@ end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character( imagesright, imagesleft, (60, 60))
+player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
-player = Character( imagesright, imagesleft, (60, 60))
+player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
 player_sprite_vec.add(player)
 pygame.mixer.init()
 
@@ -811,8 +930,10 @@ while (not done):
         if (player.complete): 
             display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
+            Diagnostics(score)
         else: 
             display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
+            Diagnostics(score)
         
         for men in end_men:
             end_screen.blit(men.image, men)
