@@ -763,6 +763,7 @@ pause_men.append(Menu( (255,255,255),"QUIT.png", (450,360), -1))
 end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+end_men.append(Menu( (255,255,255), "Restart.png", (250, 150), 2))
 
 name_men = []
 name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
@@ -840,7 +841,6 @@ while (not done):
             gamestate = 5
 
     elif (gamestate == 1):
-        player.resetStats()
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
 
@@ -896,5 +896,11 @@ while (not done):
                 for men in end_men:
                     if men.rect.collidepoint(pos):
                         gamestate = men.type
+                        if (gamestate == 2):
+                            gamestate = 0
+                            player.resetStats()
+                            player.reset([0,0])
+                        elif (gamestate == 1):
+                            player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
