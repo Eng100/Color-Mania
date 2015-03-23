@@ -431,6 +431,10 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                             elif menSelect == 1:
                                 player.resetStats()
                                 return 1
+                            elif menSelect == 2:
+                                pause = not(pause)
+                                player.resetStats()
+                                player.reset([0,0])
                             elif menSelect == -1:
                                 return -1  
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
@@ -751,9 +755,10 @@ menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
-pause_men.append((Menu( (255,255,255),"PLAY.png", (250,150), 0)) )
-pause_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
-pause_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+pause_men.append(Menu( (255,255,255),"PLAY.png", (150,150), 0)) 
+pause_men.append(Menu( (255,255,255), "Restart.png", (450, 150), 2))
+pause_men.append(Menu( (255,255,255),"MainMenu.png", (150,360), 1)) 
+pause_men.append(Menu( (255,255,255),"QUIT.png", (450,360), -1)) 
 
 end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
