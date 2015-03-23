@@ -692,7 +692,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             
         pygame.display.update()
         
-def Level_Vector_Creations(level_one):
+def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
     
     level_scroll = []
     allSprites_scroll = pygame.sprite.Group()
@@ -717,107 +717,107 @@ def Level_Vector_Creations(level_one):
     
     for row in level_one: 
         for col in row:
-            if col == "M": 
-                Mid_Platform = Image((255,255,255),"grassMid.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "M": #Mid
+                Mid_Platform = Image((255,255,255),levelTileset[0], (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Mid_Platform)
                 allSprites.add(Mid_Platform)
-                Mid_Platform_Scroll = Image((255, 255, 255), "grassMid.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                Mid_Platform_Scroll = Image((255, 255, 255), levelTileset[0], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Mid_Platform_Scroll)
                 allSprites_scroll.add(Mid_Platform_Scroll)
                 if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(Mid_Platform)
-            if col == "L": 
-                Start_Platform = Image((255,255,255),"grassLeft.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "L": #Left or Long
+                Start_Platform = Image((255,255,255),levelTileset[1], (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Start_Platform)
                 allSprites.add(Start_Platform)
-                Start_Platform_Scroll = Image((255, 255, 255), "grassLeft.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                Start_Platform_Scroll = Image((255, 255, 255), levelTileset[1], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Start_Platform_Scroll)
                 allSprites_scroll.add(Start_Platform_Scroll)
                 if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(Start_Platform)
-            if col == "R": 
-                End_Platform = Image((255,255,255),"grassRight.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "R": #Right
+                End_Platform = Image((255,255,255),levelTileset[2], (x,y), (Tile_Length, Tile_Length))
                 platforms.append(End_Platform)
                 allSprites.add(End_Platform)
-                End_Platform_Scroll = Image((255, 255, 255), "grassRight.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                End_Platform_Scroll = Image((255, 255, 255), levelTileset[2], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(End_Platform_Scroll)
                 allSprites_scroll.add(End_Platform_Scroll)
                 if (y == (len(level_one) - 1)*Tile_Length): 
                     base_platforms.append(End_Platform)
-            if col == "C": 
-                Start_Ledge = Image((255,255,255),"grassCliffLeft.png", (x,y), (Tile_Length,Tile_Length))
+            if col == "C": #Cliff Left
+                Start_Ledge = Image((255,255,255),levelTileset[3], (x,y), (Tile_Length,Tile_Length))
                 platforms.append(Start_Ledge)
                 allSprites.add(Start_Ledge)
-                Start_Ledge_Scroll = Image((255, 255, 255), "grassCliffLeft.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                Start_Ledge_Scroll = Image((255, 255, 255), levelTileset[3], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Start_Ledge_Scroll)
                 allSprites_scroll.add(Start_Ledge_Scroll)
-            if col == "D": 
-                End_Ledge = Image((255,255,255),"grassCliffRight.png", (x,y), (Tile_Length,Tile_Length))
+            if col == "D": #Cliff Right
+                End_Ledge = Image((255,255,255),levelTileset[4], (x,y), (Tile_Length,Tile_Length))
                 platforms.append(End_Ledge)
                 allSprites.add(End_Ledge)
-                End_Ledge_Scroll = Image((255, 255, 255), "grassCliffRight.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                End_Ledge_Scroll = Image((255, 255, 255), levelTileset[4], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(End_Ledge_Scroll)
                 allSprites_scroll.add(End_Ledge_Scroll)
-            if col == "B": 
-                Box = Image((255,255,255),"box.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "B": #Box
+                Box = Image((255,255,255),levelTileset[5], (x,y), (Tile_Length, Tile_Length))
                 platforms.append(Box)
                 allSprites.add(Box)
-                Box_Scroll = Image((255, 255, 255), "box.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                Box_Scroll = Image((255, 255, 255), levelTileset[5], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Box_Scroll)
                 allSprites_scroll.add(Box_Scroll)
-            if col == "F": 
-                Sign = Image((255,255,255),"signExit.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "F": #signExit/Finish
+                Sign = Image((255,255,255),levelTileset[6], (x,y), (Tile_Length, Tile_Length))
                 goal.append(Sign)
                 allSprites.add(Sign)
-                Sign_Scroll = Image((255, 255, 255), "signExit.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                Sign_Scroll = Image((255, 255, 255), levelTileset[6], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Sign_Scroll)
                 allSprites_scroll.add(Sign_Scroll)
-            if col == "G": 
-                InvisGem = Gem((255,255,255), "ghost.png", (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
+            if col == "H": #Hill
+                Hill = Image((255,255,255),levelTileset[7], (x,y - 36), (Tile_Length, Tile_Length*2))
+                allSprites.add(Hill)
+                Hill_Scroll = Image((255, 255, 255), levelTileset[7], (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
+                level_scroll.append(Hill_Scroll)
+                allSprites_scroll.add(Hill_Scroll)
+            if col == "G": #Ghost Gem
+                InvisGem = Gem((255,255,255), gemsVector[0], (x,y), "Invisibility", (Tile_Length - 10, Tile_Length))
                 gems.append(InvisGem)
                 allSprites.add(InvisGem)
-                InvisGem_Scroll = Image((255, 255, 255), "ghost.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
+                InvisGem_Scroll = Image((255, 255, 255), gemsVector[0], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(InvisGem_Scroll)
                 allSprites_scroll.add(InvisGem_Scroll)
-            if col == "J": 
-                JumpGem = Gem((255,255,255),"springboardUp.png", (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
+            if col == "J": #Spring/Jump Gem
+                JumpGem = Gem((255,255,255),gemsVector[1], (x,y), "Jumping", ((Tile_Length - 10, Tile_Length)))     
                 gems.append(JumpGem)
                 allSprites.add(JumpGem)    
-                JUmpGem_Scroll = Image((255, 255, 255), "springboardUp.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
-                level_scroll.append(JUmpGem_Scroll)
-                allSprites_scroll.add(JUmpGem_Scroll)
-            if col == "S": 
-                JumpGem = Gem((255,255,255),"shrinkinggem.png", (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
-                gems.append(JumpGem)
-                allSprites.add(JumpGem)    
-                JUmpGem_Scroll = Image((255, 255, 255), "shrinkinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
-                level_scroll.append(JUmpGem_Scroll)
-                allSprites_scroll.add(JUmpGem_Scroll)
-            if col == "P": 
-                JumpGem = Gem((255,255,255),"sprintinggem.png", (x,y), "Sprinting", ((Tile_Length - 10, Tile_Length)))     
-                gems.append(JumpGem)
-                allSprites.add(JumpGem)    
-                JUmpGem_Scroll = Image((255, 255, 255), "sprintinggem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
-                level_scroll.append(JUmpGem_Scroll)
-                allSprites_scroll.add(JUmpGem_Scroll)
-            if col == "Y": 
-                JumpGem = Gem((255,255,255),"FlyingGem.png", (x,y), "Flying", ((Tile_Length - 10, Tile_Length)))     
-                gems.append(JumpGem)
-                allSprites.add(JumpGem)    
-                JUmpGem_Scroll = Image((255, 255, 255), "FlyingGem.png", (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
-                level_scroll.append(JUmpGem_Scroll)
-                allSprites_scroll.add(JUmpGem_Scroll)
-            if col == "H": 
-                Hill = Image((255,255,255),"hill_small.png", (x,y - 36), (Tile_Length, Tile_Length*2))
-                allSprites.add(Hill)
-                Hill_Scroll = Image((255, 255, 255), "hill_small.png", (x_scaleTile,y_scaleTile - math.floor(36*scaleFactor)), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length*2))))
-                level_scroll.append(Hill_Scroll)
-                allSprites_scroll.add(Hill_Scroll) 
-            if col == "1": 
-                EasyHints = Image((255,255,255), "arrow.png", (x,y), (Tile_Length, Tile_Length))
+                JumpGem_Scroll = Image((255, 255, 255), gemsVector[1], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(JumpGem_Scroll)
+                allSprites_scroll.add(JumpGem_Scroll)
+            if col == "S": #Shrinking Gem
+                ShrinkGem = Gem((255,255,255),gemsVector[2], (x,y), "Shrinking", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(ShrinkGem)
+                allSprites.add(ShrinkGem)    
+                ShrinkGem_Scroll = Image((255, 255, 255), gemsVector[2], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(ShrinkGem_Scroll)
+                allSprites_scroll.add(ShrinkGem_Scroll)
+            if col == "P": #Sprinting Gem
+                SprintGem = Gem((255,255,255),gemsVector[3], (x,y), "Sprinting", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(SprintGem)
+                allSprites.add(SprintGem)    
+                SprintGem_Scroll = Image((255, 255, 255), gemsVector[3], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(SprintGem_Scroll)
+                allSprites_scroll.add(SprintGem_Scroll)
+            if col == "Y": #Flying Gem
+                FlyGem = Gem((255,255,255),gemsVector[4], (x,y), "Flying", ((Tile_Length - 10, Tile_Length)))     
+                gems.append(FlyGem)
+                allSprites.add(FlyGem)    
+                FlyGem_Scroll = Image((255, 255, 255), gemsVector[4], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*(Tile_Length - 10))), int(math.floor(scaleFactor*Tile_Length))))
+                level_scroll.append(FlyGem_Scroll)
+                allSprites_scroll.add(FlyGem_Scroll)
+            if col == "1": #Right easy hint arrow
+                EasyHints = Image((255,255,255), hintsVector[0], (x,y), (Tile_Length, Tile_Length))
                 SemiHints.add(EasyHints)
-            if col == "2" or col == "1": 
-                HardHints = Image((255,255,255), "arrow.png", (x,y), (Tile_Length, Tile_Length))
+            if col == "2" or col == "1": #Right hard hint arrow
+                HardHints = Image((255,255,255), hintsVector[0], (x,y), (Tile_Length, Tile_Length))
                 AllHints.add(HardHints)
             x += Tile_Length; 
             x_scaleTile += scaleTile
@@ -878,8 +878,134 @@ level_one= [
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
+#Ghost, Jumping, and Shrink
+level_two= [
+        "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
+        "X     B                                       B                                                                     BBB                  ",
+        "MR    BG                                      B                                                                     BBB                  ",
+        "X     BMD                                     B                                                                                          ",
+        "X    LB          CMMD                         B                                        BBBMMD                       BBBMMD               ",
+        "X     B                                       B            CMMD                        BBB                          BBB                  ",
+        "MR    B                                       B                                     CMMBBB                     CMMMDBBB               CMM",
+        "X     BMD        BBBBMMD                      B                                        BBB                          BBB                  ",
+        "X    LB          BBBB                         B                      CMMD              BBB          CMMD            BBB                  ",
+        "X     B          BBBB                         B                                        BBB                          BBBMMMMMMMMD         ",
+        "X              CMBBBB                         B      CMMMD                             BBB                          BBB                  ",
+        "X                BBBB                         B                                        BBBMMMMMMMMMMMMMMMMMMMMMD    BBB                  ",
+        "X                BBBB                     CMMMB                                        BBB                          BBB     CMMMMMMMMMMMM",
+        "MR    BMD        BBBB                         B                              CMMD      BBB                          BBB                  ",
+        "X     B          BBBB                         B                                        BBB   CMMMMMMMMMMMMMMMMMMMMMMBBB                  ",
+        "X    LB          BBBB           CMMMD                                                  BBB                            CMMMD              ",
+        "X     B        CMBBBBMD                                                                BBB                                               ",
+        "X     B                                                                               JBBB                                              F",
+        "LMMMMMMMMMMMMMMMMMMMMMMMMMMR            M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
+        ]
+
+#For Flying
+level_three= [
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                                                                           B                                        1                   ",
+        "X                                                                           B                                                            ",
+        "X                                                                          JB                  1                   BMMMD                 ",
+        "X                                                                        CMMB        BB                            B                     ",
+        "X                                                                                    BB                            B                     ",
+        "X                                                              CMD                   BB       BMMD                 B           CMMMMMMMMM",
+        "X                                                                                    BB       B                  BMB                     ",
+        "X                                                                                    BB       B                  B                       ",
+        "X               CMMD         CMD         CMMMMD       CMD                CMMD        BBB      B                  B                       ",
+        "X                                                                                    BB       B         BBMMMMMMMMMMMMMMD                ",
+        "X                                                                                    BB       BD        BB                               ",
+        "X                                                                                    BB       B         BB                               ",
+        "X                                                                                    BB       B         BB                       CMMMMMMM",
+        "X                                                                                    BB      BB        CBB       CD                      ",
+        "X                                     1                                                       B         BB                               ",
+        "X                                                                                             B         BB                               ",
+        "XY                                                                                          2 BG                                        F",
+        "LMMMMMMMMMM         M      M     M      M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
+        ]
+
+#For Traction with Ice Tile Set (Must use levelTileset2)
+level_four= [
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBXXXXXXXXXXXXXXXXXXXXX",
+        "X                                                                                                                 BB                     ",
+        "X                     J                                                                                    2                             ",
+        "X                    RR                                                                                                                  ",
+        "X                                                                                                                 BB                     ",
+        "X                                                                                                                BBB                     ",
+        "X                    RR                                                                                                                  ",
+        "X                                                                                                                 HH                     ",
+        "X                                          RR                                                         BB         BRR                     ",
+        "X             R      1                     HH                 LH                                      BB                                 ",
+        "X                                                                               LH                    BB          HH                     ",
+        "X                                LLLLLLR       LLLLLLLLH                                  RRRR        BBB         RR                     ",
+        "X                                                             HH       LH                     RRRR 2 GBB                                 ",
+        "X      BB           LLLL                                      RR                      R           RRRRRR          HH           RR        ",
+        "X      BB                                                     HH                                                 RRR                     ",
+        "X      BB                                                                                                                                ",
+        "X     BBB                                                                                                         HH       R         H  F",
+        "RRRRRRRRRLLLLLLLL          RRRRRRRHHHHRRRRRRRRRHRHRHRHRHRHRHRHHRHHRRHHHRHHHRHHHRRRRRHHHHRRRRHHHHRRRRRRRRRRRRRRRRRRRRRRRRRRRRLLLLHRRRRRRRR",
+        "MMMMMMMMMMMMMMMMM          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        ]
+
+level_five= [
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                                                                                                          B  B                                B                                                                        ",
+        "X            2  J                                                                                                                                                               B                                       ",
+        "X              CMR                                                                           B         BB      B       CD                CD   1     M                           B             2                        F",
+        "X              B MD                           LR                             B                         BBBBBBBBB                                                                B                              B      CM",
+        "X              B            M                                B                                         BB                       CD                  BBBBBBBBBBBB                B                              BB       ",
+        "X              B                                                                             CMMMMMMMMMMD                                            B      B                   B   B         CMD           CMMB        ",
+        "X    BBMD      B                                                                             BBBBBBBBBBBB                                            B                              B                          B      CM",
+        "X    BB        B        CD            1 P                                          CMD       BBBBBBBBBBBB                                            B             BBBB             B                          BB       ",
+        "BB   BB      CMB                     BMMR            CMD            CMD                      BBBBBB    BB                                           BB                B             B                          B        ",
+        "X    BB        B                     B               B               B                       BBBBBB B  BB              BB                            BB               B        CMMD        B                   B      CM",
+        "X   BBBD       BMD                  BB               B               B         B      2             B  BB         B                        M         B              BBB                    B                   BB       ",
+        "X    BB                              B               B               B                     CMMMMMMMMM   B                                            B                B                    B                 CMB        ",
+        "BB   BB                              B               B   Y           B                                  B             CMD         M                 MBB               BMD                  B                   B      CM",
+        "X    BB MMMMMMMMMMMMMMMMMMMMMMD      B           MMMMMMMMMMMMMMM  MMMMMMMMM    B                        B                                                            BB              B     B      B            B        ",
+        "X   BBB B      B        B    B      BBB          B       B     B  B           BB                              CMD                                                     B                    B                   B        ",
+        "X    BBBBB                           B                                         B                                       M                                              B                                  1             B",
+        "XS        1 Y       B                B                B     B         B        B                                                                                     BB                                               BB",
+        "MMMMMMMMMMMMM      LR      MMMMMM    MMMMMMMM    MMM  MMMMMMMMMM  MMMMMMMMMMM  M                     LMM       M                  M              M             M      M        LMMR       MMM       MMMM     MMMMMMMMMMM",
+        ]
+
 HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png")
 
+#Loading tile set for the first level and tutorial. There are 8 elements in this vector
+#Grass Tile set
+levelTileset1 = []
+levelTileset1.append("grassMid.png")
+levelTileset1.append("grassLeft.png")
+levelTileset1.append("grassRight.png")
+levelTileset1.append("grassCliffLeft.png")
+levelTileset1.append("grassCliffRight.png")
+levelTileset1.append("box.png")
+levelTileset1.append("signExit.png")
+levelTileset1.append("hill_small.png")
+
+#Ice Tile set
+levelTileset2 = []
+levelTileset2.append("IceBrick.png")
+levelTileset2.append("IceLongBlock.png")
+levelTileset2.append("IceSnowBlock.png")
+levelTileset2.append("IceLeftIceBerg.png")
+levelTileset2.append("IceRightIceBerg.png")
+levelTileset2.append("box.png")
+levelTileset2.append("signExit.png")
+levelTileset2.append("IceSpike.png")
+
+#Loading tile set for all gems. gems will be called from this vector depending on the level.
+#1 = ghost, 2 = jump, 3 = , 4 = .
+gemsVector = []
+gemsVector.append("ghost.png")
+gemsVector.append("springboardUp.png")
+gemsVector.append("shrinkinggem.png")
+gemsVector.append("sprintinggem.png")
+gemsVector.append("FlyingGem.png")
+
+#vector for hint images
+hintsVector = []
+hintsVector.append("arrow.png")
 
 #player vector animation initializations
 imagesright = []
@@ -1008,13 +1134,13 @@ while (not done):
 
         if gamestate != 0:
             continue
-        while (gamestate == 0):
-            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
+        while(gamestate == 0): 
+            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_two,levelTileset1,gemsVector,hintsVector)            
             if level_state == 1:
                 View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
             while (player.lives > 0 and gamestate == 0):
                 if level_state == 1:
-                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
+                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_two,levelTileset1,gemsVector,hintsVector)
                     gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
                 player.reset([0,0], level_state, originial_level_state)
                 originial_level_state = level_state; 
@@ -1050,7 +1176,7 @@ while (not done):
         gamestate = 0
     elif (gamestate == 4):
         #Change this to Instructions page
-        platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial)
+        platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
         gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
         gamestate = 1
     elif (gamestate == 5):
