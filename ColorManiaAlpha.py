@@ -89,6 +89,13 @@ class Character(pygame.sprite.Sprite):
         self.lives = 3
         self.time = 0
         self.complete = False
+
+    def resetStats(self):
+        self.gemsCollected = []
+        self.lives = 3
+        self.time = 0
+        self.complete = False
+
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
         isInvisibility = False
         gemInt = -1; 
@@ -422,6 +429,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 pauseEndTime = time.clock()
                                 totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
                             elif menSelect == 1:
+                                player.resetStats()
                                 return 1
                             elif menSelect == -1:
                                 return -1  
