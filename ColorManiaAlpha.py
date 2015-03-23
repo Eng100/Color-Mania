@@ -840,6 +840,7 @@ while (not done):
             gamestate = 5
 
     elif (gamestate == 1):
+        player.resetStats()
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
 
