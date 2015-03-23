@@ -334,8 +334,6 @@ class Gem(pygame.sprite.Sprite):
         self.rect = (0, 0, 0 , 0)
         self.kill()
         
-
-
 class Menu(pygame.sprite.Sprite):
     def __init__(self,color, filename, location, types):
         # call parent class constructor
