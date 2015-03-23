@@ -536,13 +536,13 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
                             elif menSelect == 1:
                                 player.resetStats()
-                                return 1
+                                return (1, level_state)
                             elif menSelect == 2:
                                 pause = not(pause)
                                 player.resetStats()
-                                player.reset([0,0])
+                                player.reset([0,0], 0, 0)
                             elif menSelect == -1:
-                                return -1  
+                                return (-1, level_state)
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
@@ -1008,19 +1008,20 @@ while (not done):
 
         if gamestate != 0:
             continue
-
-        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
-        if level_state == 1:
-            View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
-        while (player.lives > 0):
+        while (gamestate == 0):
+            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
             if level_state == 1:
-                platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
-                gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
-            player.reset([0,0], level_state, originial_level_state)
-            originial_level_state = level_state; 
-            if level_state == 2: 
-                break
-        gamestate = 5
+                View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+            while (player.lives > 0):
+                if level_state == 1:
+                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
+                    gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
+                player.reset([0,0], level_state, originial_level_state)
+                originial_level_state = level_state; 
+                if level_state == 2: 
+                    break
+            gamestate = 5
+
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
@@ -1082,7 +1083,7 @@ while (not done):
                         if (gamestate == 2):
                             gamestate = 0
                             player.resetStats()
-                            player.reset([0,0])
+                            player.reset([0,0], 0, 0)
                         elif (gamestate == 1):
                             player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
