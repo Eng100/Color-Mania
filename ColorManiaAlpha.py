@@ -1,4 +1,5 @@
 import pygame, time, math
+import eztext # Credit to pywiz32: found online at http://www.pygame.org/project-EzText-920-.html, used for dynamic text input of name
 from pygame.locals import*
 global screen
 pygame.init()
@@ -80,6 +81,8 @@ class Character(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.imagesright[self.index]
 
+        self.name = ""
+
         self.x = 320
         self.y = 30
         self.rect = self.image.get_rect()
@@ -93,10 +96,15 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
+
+    def resetStats(self):
+        self.gemsCollected = []
+        self.lives = self.lives_start
+        self.gems = 0
+        self.time = 0
+        self.complete = False
+
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
-
-        
-
 
         isInvisibility = False
         gemInt = -1; 
@@ -529,7 +537,12 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 pauseEndTime = time.clock()
                                 totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
                             elif menSelect == 1:
+                                player.resetStats()
                                 return 1
+                            elif menSelect == 2:
+                                pause = not(pause)
+                                player.resetStats()
+                                player.reset([0,0])
                             elif menSelect == -1:
                                 return -1  
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
@@ -816,6 +829,11 @@ def Level_Vector_Creations(level_one):
         x_scaleTile = 0
     return (platforms, gems, allSprites, base_platforms, goal, allSprites_scroll, level_scroll, scaleFactor, SemiHints, AllHints)
 
+def isTyped(event):
+    if event.type == KEYDOWN and event.key == K_UP:
+        up = True
+        Music_Play("Char Jump.wav", 0)
+
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                            B                                                           X",
@@ -920,13 +938,19 @@ menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
-pause_men.append((Menu( (255,255,255),"PLAY.png", (250,150), 0)) )
-pause_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
-pause_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+pause_men.append(Menu( (255,255,255),"PLAY.png", (150,150), 0)) 
+pause_men.append(Menu( (255,255,255), "Restart.png", (450, 150), 2))
+pause_men.append(Menu( (255,255,255),"MainMenu.png", (150,360), 1)) 
+pause_men.append(Menu( (255,255,255),"QUIT.png", (450,360), -1)) 
 
 end_men = []
 end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
 end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
+end_men.append(Menu( (255,255,255), "Restart.png", (250, 150), 2))
+
+name_men = []
+name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
+name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
@@ -941,7 +965,6 @@ pygame.mixer.init()
 level_state = 1
 originial_level_state = 1
 done = False
-begin = True
 main_men = pygame.display.set_mode([800, 600])
 while (not done):
     quit_game = False
@@ -949,34 +972,76 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        while(gamestate == 0): 
-            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
+        name_screen = pygame.display.set_mode([800, 600])
+        userName = eztext.Input(maxlength=16, color=(0,0,255), prompt='')
+
+        while (player.name == "") and (gamestate == 0):
+            name_screen.fill([208,244,247])
+
+            font = pygame.font.SysFont("Courier New", 40)
+
+            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
+            screen.blit(prompt, (View_Height/3, View_Width/5)) 
+
+            userName.set_pos(View_Height/3 , View_Width/5 + 41)
+            userName.set_font(font)
+            userName.update(ev)
+            userName.draw(name_screen)
+
+            for menu_item in name_men:
+                 name_screen.blit(menu_item.image, menu_item)
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    for menu_item in name_men:
+                        if menu_item.rect.collidepoint(pos):
+                            gamestate = menu_item.type
+                            if gamestate == 0:
+                                player.name = userName.value
+                if (event.type == KEYDOWN and event.key == K_RETURN):
+                    player.name = userName.value
+                    gamestate = 0
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
+
+            pygame.display.update()
+
+        if gamestate != 0:
+            continue
+
+        platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
+        if level_state == 1:
+            View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+        while (player.lives > 0):
             if level_state == 1:
-                View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
-            while (player.lives > 0):
-                if level_state == 1:
-                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
-                    gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
-                player.reset([0,0], level_state, originial_level_state)
-                originial_level_state = level_state; 
-                if level_state == 2: 
-                    break
-            gamestate = 5
+                platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
+                gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
+            player.reset([0,0], level_state, originial_level_state)
+            originial_level_state = level_state; 
+            if level_state == 2: 
+                break
+        gamestate = 5
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
+
         for menu_item in menus:
             main_men.blit(menu_item.image, menu_item)
+
         ev = pygame.event.get()
+
         for event in ev:
             if (event.type == pygame.MOUSEBUTTONDOWN):
                 pos = pygame.mouse.get_pos()
                 for menu_item in menus:
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
-            elif (event.type == QUIT):
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
         pygame.display.update()
+
     elif (gamestate == 2):
         #Change this to settings page
         gamestate = 0
@@ -1016,5 +1081,11 @@ while (not done):
                 for men in end_men:
                     if men.rect.collidepoint(pos):
                         gamestate = men.type
-            elif (event.type == QUIT):
+                        if (gamestate == 2):
+                            gamestate = 0
+                            player.resetStats()
+                            player.reset([0,0])
+                        elif (gamestate == 1):
+                            player.resetStats()
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
