@@ -4,6 +4,7 @@ from pygame.locals import*
 global screen
 pygame.init()
 
+
 TOTALTIME = 150
 
 Tile_Length = 40
@@ -13,7 +14,7 @@ Half_View_Height = (View_Height)/2
 Half_View_Width = (View_Width)/2
 View_Screen = (View_Width, View_Height)
 screen = pygame.display.set_mode(View_Screen)
-
+pygame.display.set_caption("ColorMania")
 class Image(pygame.sprite.Sprite):
 
     def __init__(self, color, filename, location, size):
@@ -426,15 +427,16 @@ def Tutorial(Character):
         display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
         Character.time = 150
 
-def Diagnostics(score):
+def Diagnostics(score, screen):
     if(score < 200):
-        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/4,View_Height/3, 4)
+        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/8,View_Height/2, 4)
     elif(score < 400):
-        display_box(screen, "The player may want to work on making decisions faster.",View_Width/4,View_Height/3, 4)
+        display_box(screen, "The player may want to work on making decisions faster.",View_Width/7,View_Height/2, 4)
     elif(score < 600):
-        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/4,View_Height/3, 4)
+        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/7,View_Height/2, 4)
     else:
-        display_box(screen, "The player did a great job!",View_Width/4,View_Height/3, 4)
+        display_box(screen, "The player did a great job!",View_Width/3,View_Height/2, 4)
+    display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3, 4)
 
 def View_Map(platforms, allSprites, level, scale):
     first_level_height = View_Height
@@ -1068,9 +1070,10 @@ pause_men.append(Menu( (255,255,255),"MainMenu.png", (150,360), 1))
 pause_men.append(Menu( (255,255,255),"QUIT.png", (450,360), -1)) 
 
 end_men = []
-end_men.append((Menu( (255,255,255),"MainMenu.png", (150,360), 1)) )
-end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
-end_men.append(Menu( (255,255,255), "Restart.png", (250, 150), 2))
+end_men.append((Menu( (255,255,255),"MainMenu.png", (150,350), 1)) )
+end_men.append((Menu( (255,255,255),"QUIT.png", (450,460), -1)) )
+end_men.append(Menu( (255,255,255), "Restart.png", (450, 350), 2))
+end_men.append(Menu( (255,255,255), "Diagnostics.png", (150, 460), 6))
 
 name_men = []
 name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
@@ -1193,7 +1196,7 @@ while (not done):
             #Diagnostics(score)
         else: 
             display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
-            Diagnostics(score)
+            
         
         for men in end_men:
             end_screen.blit(men.image, men)
@@ -1215,3 +1218,14 @@ while (not done):
                             player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
+    elif (gamestate == 6):
+        diag_screen = pygame.display.set_mode([800, 600])
+        diag_screen.fill([208,244,247])
+        Diagnostics(score, diag_screen)
+        pygame.display.update()
+        ev = pygame.event.get()
+        for event in ev:
+            if (event.type == QUIT):
+                gamestate = -1
+            elif (event.type == KEYDOWN and event.key == K_ESCAPE):
+                gamestate = 5
