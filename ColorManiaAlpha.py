@@ -214,10 +214,8 @@ class Character(pygame.sprite.Sprite):
         
                 for g in gems: 
                     if pygame.sprite.collide_rect(self,g):
-                        g.Collided()
                         if len(self.gemsCollected) < 3: 
-                        #    self.gemsCollected[0] = g
-                        #else: 
+                            g.Collided()
                             self.gemsCollected.append(g)  
                         
     def victory(self, goals):
@@ -388,8 +386,8 @@ class HeadsUpDisplay(pygame.sprite.Sprite):
         if (usingGemOne): 
             screen.blit(self.imageOneUsing, (0,0))
             for x in range(len(Character.gemsCollected)): 
-                if (x > 1): 
-                    screen.blit(Character.gemsCollected[x].image, (18, 50))
+                if (x > 0): 
+                    screen.blit(Character.gemsCollected[x].image, (start_coord, 50))
                 start_coord += 60
         if (usingGemTwo): 
             screen.blit(self.imageTwoUsing, (0,0))
@@ -564,6 +562,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 pause = not(pause)
                                 player.resetStats()
                                 player.reset([0,0], 0, 0)
+                                return (0, level_state)
                             elif menSelect == -1:
                                 return (-1, level_state)
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
@@ -616,7 +615,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                         precedence = 2 
                 if event.type == KEYDOWN and event.key == K_3:
                     if (len(player.gemsCollected) > 2): 
-                        thirdGem == True
+                        thirdGem = True
                     if not(secondGem or firstGem): 
                         precedence = 3
 
@@ -918,7 +917,7 @@ level_two= [
         "X                BBBB                     CMMMB                                        BBB                          BBB     CMMMMMMMMMMMM",
         "MR    BMD        BBBB                         B                              CMMD      BBB                          BBB                  ",
         "X     B          BBBB                         B                                        BBB   CMMMMMMMMMMMMMMMMMMMMMMBBB                  ",
-        "X    LB          BBBB           CMMMD                                                  BBB                            CMMMD              ",
+        "X    LB    GJSPY BBBB           CMMMD                                                  BBB                            CMMMD              ",
         "X     B        CMBBBBMD                                                                BBB                                               ",
         "X     B                                                                               JBBB                                              F",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR            M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
