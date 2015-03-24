@@ -69,18 +69,7 @@ class Character(pygame.sprite.Sprite):
 
         self.tempimagesright = imagesrightOne
         self.tempimagesleft = imagesleftOne
-
-        for x in range(len(self.imagesright)): 
-            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
-            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
-        for x in range(len(self.imagesleft)): 
-            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
-            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
-        
-        
-        self.index = 0
-        self.image = self.imagesright[self.index]
-
+           
         self.name = ""
 
         self.x = 320
@@ -96,8 +85,14 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
+        self.currrentSprite = 1
+
+        changeSprites(currrentSprite)
+        self.index = 0
+        self.image = self.imagesright[self.index]
 
     def changeSprites(self, spritIndex):
+        loadImages(spriteIndex)
         for x in range(len(self.imagesright)): 
             self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
             self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
