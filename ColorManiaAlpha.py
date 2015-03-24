@@ -928,7 +928,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B        X",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -946,8 +946,8 @@ gamestate = 1
 title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
 menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
-menus.append(Menu( (255,255,255),"Setting.png", (450,200), 0))
-menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
+menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
+menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
@@ -1053,6 +1053,8 @@ while (not done):
                 for menu_item in menus:
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
+                        if gamestate == 0:
+                            player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
         pygame.display.update()
@@ -1060,6 +1062,9 @@ while (not done):
     elif (gamestate == 2):
         set_screen = pygame.display.set_mode([800,600])
         
+        set_screen.fill([208,244,247])
+
+        pygame.display.update()
     elif(gamestate == 3):
         #Change this to Level Selector page
         print("Level Selector Pressed!")
