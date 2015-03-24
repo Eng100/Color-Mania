@@ -72,10 +72,11 @@ class Character(pygame.sprite.Sprite):
            
         self.name = ""
 
-        self.x = 320
-        self.y = 30
+        self.image
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
+        self.x = 320
+        self.y = 30
         self.xvel = 0 
         self.yvel = 0
         self.onGround = False
@@ -87,8 +88,9 @@ class Character(pygame.sprite.Sprite):
         self.lives_start = self.lives
         self.currrentSprite = 1
 
-        changeSprites(currrentSprite)
+        self.changeSprites(self.currrentSprite, size)
         self.index = 0
+        
         self.image = self.imagesright[self.index]
 
     def changeSprites(self, spritIndex, size):
