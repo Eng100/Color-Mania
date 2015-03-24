@@ -1058,11 +1058,11 @@ while (not done):
         pygame.display.update()
 
     elif (gamestate == 2):
-        #Change this to settings page
-        gamestate = 0
+        set_screen = pygame.display.set_mode([800,600])
+        
     elif(gamestate == 3):
-        #Change this to customization page
-        gamestate = 0
+        #Change this to Level Selector page
+        print("Level Selector Pressed!")
     elif (gamestate == 4):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial)
