@@ -353,7 +353,7 @@ class Menu(pygame.sprite.Sprite):
         self.type = types
 
 class HeadsUpDisplay(pygame.sprite.Sprite): 
-    def __init__(self, filename, color, filenameOne, filenameTwo, filenameThree): 
+    def __init__(self, filename, color, filenameOne, filenameTwo, filenameThree, filenameFour, filenameFive, filenameSix): 
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(filename).convert_alpha()
         self.image.set_colorkey(color)
@@ -365,21 +365,44 @@ class HeadsUpDisplay(pygame.sprite.Sprite):
         self.imageOne = pygame.image.load(filenameOne).convert_alpha()
         self.imageTwo = pygame.image.load(filenameTwo).convert_alpha()
         self.imageThree = pygame.image.load(filenameThree).convert_alpha()
+        self.imageOneUsing = pygame.image.load(filenameFour).convert_alpha()
+        self.imageTwoUsing = pygame.image.load(filenameFive).convert_alpha()
+        self.imageThreeUsing = pygame.image.load(filenameSix).convert_alpha()
 
-    def displayToScreen(self, time, lives, screen, Character): 
+    def displayToScreen(self, time, lives, screen, Character, usingGemOne, usingGemTwo, usingGemThree): 
         screen.blit(self.image, (0,0))
-        if (len(Character.gemsCollected) == 1):
+
+        if (len(Character.gemsCollected) == 1 and not(usingGemOne)):
             screen.blit(self.imageOne, (0,0))
             screen.blit(Character.gemsCollected[0].image, (18, 50))
-        if (len(Character.gemsCollected) == 2): 
+        if (len(Character.gemsCollected) == 2 and not (usingGemTwo)): 
             screen.blit(self.imageTwo, (0,0))
             screen.blit(Character.gemsCollected[0].image, (18, 50))
             screen.blit(Character.gemsCollected[1].image, (85, 50))
-        if (len(Character.gemsCollected) == 3): 
+        if (len(Character.gemsCollected) == 3 and not(usingGemThree)): 
             screen.blit(self.imageThree, (0,0))
             screen.blit(Character.gemsCollected[0].image, (18, 50))
             screen.blit(Character.gemsCollected[1].image, (85, 50))
-            screen.blit(Character.gemsCollected[2].image, (140, 50))
+            screen.blit(Character.gemsCollected[2].image, (150, 50))
+        start_coord = 18 
+        if (usingGemOne): 
+            screen.blit(self.imageOneUsing, (0,0))
+            for x in range(len(Character.gemsCollected)): 
+                if (x > 1): 
+                    screen.blit(Character.gemsCollected[x].image, (18, 50))
+                start_coord += 60
+        if (usingGemTwo): 
+            screen.blit(self.imageTwoUsing, (0,0))
+            for x in range(len(Character.gemsCollected)): 
+                if (x != 1 and x != 3): 
+                    screen.blit(Character.gemsCollected[x].image, (start_coord, 50))
+                start_coord += 60
+        if (usingGemThree): 
+            screen.blit(self.imageThreeUsing, (0,0)) 
+            for x in range(len(Character.gemsCollected)): 
+                if (x != 3 and x != 2): 
+                    screen.blit(Character.gemsCollected[x].image, (start_coord, 50))
+                start_coord += 60
         font = pygame.font.SysFont("Courier New", 16)
         promptTime = font.render("%d Seconds"  % time , 1, [0, 0, 0])
         screen.blit(promptTime, (78, 25))
@@ -688,7 +711,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 Tutorial(player)
 
             TimeLeft = TOTALTIME - player.getTime()
-            HUD.displayToScreen(TimeLeft , player.lives, screen, player)
+            HUD.displayToScreen(TimeLeft , player.lives, screen, player, firstGem, secondGem, thirdGem)
             
         pygame.display.update()
         
@@ -969,7 +992,7 @@ level_five= [
         "MMMMMMMMMMMMM      LR      MMMMMM    MMMMMMMM    MMM  MMMMMMMMMM  MMMMMMMMMMM  M                     LMM       M                  M              M             M      M        LMMR       MMM       MMMM     MMMMMMMMMMM",
         ]
 
-HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png")
+HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png", "HUDusingOne.png", "HUDusingTwo.png", "HUDusingThree.png")
 
 #Loading tile set for the first level and tutorial. There are 8 elements in this vector
 #Grass Tile set
