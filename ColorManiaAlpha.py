@@ -242,6 +242,7 @@ class Character(pygame.sprite.Sprite):
         self.gemsCollected = []
         if (level_state != originial_level_state): 
             self.lives_start = self.lives 
+        self.hidefResize()
 
 
     def fly(self, up, down):
