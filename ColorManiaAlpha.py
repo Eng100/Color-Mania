@@ -97,6 +97,14 @@ class Character(pygame.sprite.Sprite):
         self.gems = 0
         self.lives_start = self.lives
 
+    def changeSprites(self, spritIndex):
+        for x in range(len(self.imagesright)): 
+            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
+            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
+        for x in range(len(self.imagesleft)): 
+            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
+            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
+
     def resetStats(self):
         self.gemsCollected = []
         self.lives = self.lives_start
@@ -832,6 +840,53 @@ def isTyped(event):
         up = True
         Music_Play("Char Jump.wav", 0)
 
+def loadImages(index):
+    #player vector animation initializations
+    imagesright = []
+    imagesright.append(loading('p' + index + '_walk02.png'))
+    imagesright.append(loading('p' + index + '_walk03.png'))
+    imagesright.append(loading('p' + index + '_walk04.png'))
+    imagesright.append(loading('p' + index + '_walk05.png'))
+    imagesright.append(loading('p' + index + '_walk06.png'))
+    imagesright.append(loading('p' + index + '_walk07.png'))
+    imagesright.append(loading('p' + index + '_walk08.png'))
+    imagesright.append(loading('p' + index + '_walk09.png'))
+    imagesright.append(loading('p' + index + '_walk10.png'))
+
+    imagesleft = []
+    imagesleft.append(loading('p' + index + '_walk12.png'))
+    imagesleft.append(loading('p' + index + '_walk13.png'))
+    imagesleft.append(loading('p' + index + '_walk14.png'))
+    imagesleft.append(loading('p' + index + '_walk15.png'))
+    imagesleft.append(loading('p' + index + '_walk16.png'))
+    imagesleft.append(loading('p' + index + '_walk19.png'))
+    imagesleft.append(loading('p' + index + '_walk17.png'))
+    imagesleft.append(loading('p' + index + '_walk17.png'))
+    imagesleft.append(loading('p' + index + '_walk18.png'))
+
+    imagesrightResize = []
+    imagesrightResize.append(loading('p' + index + '_walk02.png'))
+    imagesrightResize.append(loading('p' + index + '_walk03.png'))
+    imagesrightResize.append(loading('p' + index + '_walk04.png'))
+    imagesrightResize.append(loading('p' + index + '_walk05.png'))
+    imagesrightResize.append(loading('p' + index + '_walk06.png'))
+    imagesrightResize.append(loading('p' + index + '_walk07.png'))
+    imagesrightResize.append(loading('p' + index + '_walk08.png'))
+    imagesrightResize.append(loading('p' + index + '_walk09.png'))
+    imagesrightResize.append(loading('p' + index + '_walk10.png'))
+
+    imagesleftResize = []
+    imagesleftResize.append(loading('p' + index + '_walk12.png'))
+    imagesleftResize.append(loading('p' + index + '_walk13.png'))
+    imagesleftResize.append(loading('p' + index + '_walk14.png'))
+    imagesleftResize.append(loading('p' + index + '_walk15.png'))
+    imagesleftResize.append(loading('p' + index + '_walk16.png'))
+    imagesleftResize.append(loading('p' + index + '_walk19.png'))
+    imagesleftResize.append(loading('p' + index + '_walk17.png'))
+    imagesleftResize.append(loading('p' + index + '_walk17.png'))
+    imagesleftResize.append(loading('p' + index + '_walk18.png'))
+
+
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                            B                                                           X",
@@ -881,50 +936,7 @@ level_one= [
 HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png")
 
 
-#player vector animation initializations
-imagesright = []
-imagesright.append(loading('p1_walk02.png'))
-imagesright.append(loading('p1_walk03.png'))
-imagesright.append(loading('p1_walk04.png'))
-imagesright.append(loading('p1_walk05.png'))
-imagesright.append(loading('p1_walk06.png'))
-imagesright.append(loading('p1_walk07.png'))
-imagesright.append(loading('p1_walk08.png'))
-imagesright.append(loading('p1_walk09.png'))
-imagesright.append(loading('p1_walk10.png'))
 
-imagesleft = []
-imagesleft.append(loading('p1_walk12.png'))
-imagesleft.append(loading('p1_walk13.png'))
-imagesleft.append(loading('p1_walk14.png'))
-imagesleft.append(loading('p1_walk15.png'))
-imagesleft.append(loading('p1_walk16.png'))
-imagesleft.append(loading('p1_walk19.png'))
-imagesleft.append(loading('p1_walk17.png'))
-imagesleft.append(loading('p1_walk17.png'))
-imagesleft.append(loading('p1_walk18.png'))
-
-imagesrightResize = []
-imagesrightResize.append(loading('p1_walk02.png'))
-imagesrightResize.append(loading('p1_walk03.png'))
-imagesrightResize.append(loading('p1_walk04.png'))
-imagesrightResize.append(loading('p1_walk05.png'))
-imagesrightResize.append(loading('p1_walk06.png'))
-imagesrightResize.append(loading('p1_walk07.png'))
-imagesrightResize.append(loading('p1_walk08.png'))
-imagesrightResize.append(loading('p1_walk09.png'))
-imagesrightResize.append(loading('p1_walk10.png'))
-
-imagesleftResize = []
-imagesleftResize.append(loading('p1_walk12.png'))
-imagesleftResize.append(loading('p1_walk13.png'))
-imagesleftResize.append(loading('p1_walk14.png'))
-imagesleftResize.append(loading('p1_walk15.png'))
-imagesleftResize.append(loading('p1_walk16.png'))
-imagesleftResize.append(loading('p1_walk19.png'))
-imagesleftResize.append(loading('p1_walk17.png'))
-imagesleftResize.append(loading('p1_walk17.png'))
-imagesleftResize.append(loading('p1_walk18.png'))
 
 gamestate = 1
 
