@@ -5,6 +5,7 @@ global screen
 pygame.init()
 
 TOTALTIME = 150
+STARTSPRITE = 2
 
 Tile_Length = 40
 View_Height = 600
@@ -61,7 +62,7 @@ def loading(name):
     return image
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne):
+    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne, startSprite):
         super(Character, self).__init__()
         self.imagesright = imagesright
         # assuming both images are 64x64 pixels
@@ -71,6 +72,12 @@ class Character(pygame.sprite.Sprite):
         self.tempimagesleft = imagesleftOne
            
         self.name = ""
+
+        self.currrentSprite = startSprite
+
+        self.changeSprites(self.currrentSprite, size)
+        self.index = 0
+        self.image = self.imagesright[self.index]
 
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
@@ -85,11 +92,8 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
-        self.currrentSprite = 1
+        
 
-        self.changeSprites(self.currrentSprite, size)
-        self.index = 0
-        self.image = self.imagesright[self.index]
 
     def changeSprites(self, spritIndex, size):
         loadImages(spritIndex)
@@ -934,7 +938,7 @@ imagesright = []
 imagesleft = []
 imagesrightResize = []
 imagesleftResize = []
-loadImages(1)
+loadImages(STARTSPRITE)
 
 
 gamestate = 1
@@ -963,12 +967,12 @@ name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
+player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
-player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
+player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_sprite_vec.add(player)
 pygame.mixer.init()
 level_state = 1
