@@ -92,7 +92,7 @@ class Character(pygame.sprite.Sprite):
         self.image = self.imagesright[self.index]
 
     def changeSprites(self, spritIndex):
-        loadImages(spriteIndex)
+        loadImages(str(spriteIndex)
         for x in range(len(self.imagesright)): 
             self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
             self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
@@ -930,7 +930,7 @@ level_one= [
 
 HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png")
 
-
+loadImages(str(1))
 
 
 gamestate = 1
