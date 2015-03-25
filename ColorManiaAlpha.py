@@ -5,7 +5,7 @@ global screen
 pygame.init()
 
 TOTALTIME = 150
-STARTSPRITE = 2
+STARTSPRITE = 1
 
 Tile_Length = 40
 View_Height = 600
@@ -842,6 +842,11 @@ def isTyped(event):
 def loadImages(index):
     #player vector animation initializations
     sindex = str(index)
+    del imagesright[:]
+    del imagesleft[:]
+    del imagesrightResize[:]
+    del imagesleftResize[:]
+
     imagesright.append(loading('p' + sindex + '_walk02.png'))
     imagesright.append(loading('p' + sindex + '_walk03.png'))
     imagesright.append(loading('p' + sindex + '_walk04.png'))
@@ -973,6 +978,7 @@ name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 set_men = []
 set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,360), -1)) )
 set_men.append((Menu( (255,255,255),"ArrowRight.png", (650,360), 1)) )
+set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
 
 
 sky = pygame.image.load('bg.png').convert()
@@ -1035,8 +1041,8 @@ while (not done):
             continue
         while (gamestate == 0):
             platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)            
-            if level_state == 1:
-                View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+            #if level_state == 1:
+                #View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
             while ((player.lives > 0) and (gamestate == 0)):
                 if level_state == 1:
                     platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one)
@@ -1095,9 +1101,10 @@ while (not done):
                             player.currrentSprite += action
                             if player.currrentSprite > len(charaterSelectImages):
                                 player.currrentSprite = 1
-
-                        if pastChar != player.currrentSprite:
+                        elif action == 0:
+                            gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
+                            
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
 
