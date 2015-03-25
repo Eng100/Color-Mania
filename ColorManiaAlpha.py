@@ -419,7 +419,18 @@ class HeadsUpDisplay(pygame.sprite.Sprite):
         promptLives = font.render("%d" %lives, 1, [0,0,0])
         screen.blit(promptLives, (78, 7))
         white_box = pygame.draw.rect(screen, (255, 255, 255), (0, 0, 10, 10))
-    
+
+class LevelMap(pygame.sprite.Sprite):
+    def __init__(self, level, levelTileset, gemsVector, hintsVector): 
+        self.platforms, self.gems, self.allSprites, self.base_platforms, self.goal, self.allSprites_scroll, self.level_scroll, self.scaleFactor, self.EasyHints, self.HardHints = Level_Vector_Creations(level,levelTileset,gemsVector,hintsVector)
+        self.level = level
+
+    def getValues(self):
+        return self.platforms, self.gems, self.allSprites, self.base_platforms, self.level, self.goal, self.EasyHints, self.HardHints
+
+    def getScroll(self):
+        return self.level_scroll, self.allSprites_scroll, self.level, self.scaleFactor
+
 def CheckOutofBounds(Character, level_height, level_width):
     if (Character.rect.left <= 0): 
         Character.rect.left = 0
@@ -521,7 +532,7 @@ def View_Map(platforms, allSprites, level, scale):
         pygame.display.update()
 
 
-def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints, levelState):
+def Level_Screens(platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints, player, player_sprite_vec, sky, level_state):
     first_level_height = len(level) * Tile_Length
     first_level_length = len(level[0]) * Tile_Length
     camera = Window(complex_camera, first_level_length, first_level_height)
@@ -728,13 +739,13 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             
         pygame.display.update()
         
-def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
+def Level_Vector_Creations(level,levelTileset,gemsVector,hintsVector):
     
     level_scroll = []
     allSprites_scroll = pygame.sprite.Group()
 
-    totalHeight = Tile_Length * len(level_one)
-    totalWidth = Tile_Length * len(level_one[0])
+    totalHeight = Tile_Length * len(level)
+    totalWidth = Tile_Length * len(level[0])
     scaleFactor = (View_Height + 0.0)/(0.0 + totalHeight)
     scaleTile = Tile_Length * scaleFactor
 
@@ -751,7 +762,7 @@ def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
     SemiHints = pygame.sprite.Group()
     AllHints = pygame.sprite.Group()
     
-    for row in level_one: 
+    for row in level: 
         for col in row:
             if col == "M": #Mid
                 Mid_Platform = Image((255,255,255),levelTileset[0], (x,y), (Tile_Length, Tile_Length))
@@ -760,7 +771,7 @@ def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
                 Mid_Platform_Scroll = Image((255, 255, 255), levelTileset[0], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Mid_Platform_Scroll)
                 allSprites_scroll.add(Mid_Platform_Scroll)
-                if (y == (len(level_one) - 1)*Tile_Length): 
+                if (y == (len(level) - 1)*Tile_Length): 
                     base_platforms.append(Mid_Platform)
             if col == "L": #Left or Long
                 Start_Platform = Image((255,255,255),levelTileset[1], (x,y), (Tile_Length, Tile_Length))
@@ -769,7 +780,7 @@ def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
                 Start_Platform_Scroll = Image((255, 255, 255), levelTileset[1], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(Start_Platform_Scroll)
                 allSprites_scroll.add(Start_Platform_Scroll)
-                if (y == (len(level_one) - 1)*Tile_Length): 
+                if (y == (len(level) - 1)*Tile_Length): 
                     base_platforms.append(Start_Platform)
             if col == "R": #Right
                 End_Platform = Image((255,255,255),levelTileset[2], (x,y), (Tile_Length, Tile_Length))
@@ -778,7 +789,7 @@ def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
                 End_Platform_Scroll = Image((255, 255, 255), levelTileset[2], (x_scaleTile,y_scaleTile), (int(math.ceil(scaleFactor*Tile_Length)), int(math.floor(scaleFactor*Tile_Length))))
                 level_scroll.append(End_Platform_Scroll)
                 allSprites_scroll.add(End_Platform_Scroll)
-                if (y == (len(level_one) - 1)*Tile_Length): 
+                if (y == (len(level) - 1)*Tile_Length): 
                     base_platforms.append(End_Platform)
             if col == "C": #Cliff Left
                 Start_Ledge = Image((255,255,255),levelTileset[3], (x,y), (Tile_Length,Tile_Length))
@@ -1160,6 +1171,13 @@ level_state = 1
 originial_level_state = 1
 done = False
 main_men = pygame.display.set_mode([800, 600])
+
+levels = []
+levels.append(LevelMap(level_one,levelTileset1,gemsVector,hintsVector))
+levels.append(LevelMap(level_two,levelTileset1,gemsVector,hintsVector))
+levels.append(LevelMap(level_three,levelTileset1,gemsVector,hintsVector))
+levels.append(LevelMap(level_four,levelTileset1,gemsVector,hintsVector))
+
 while (not done):
     quit_game = False
 
@@ -1173,18 +1191,12 @@ while (not done):
         if gamestate != 0:
             continue
         while(gamestate == 0): 
-
-            platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_two,levelTileset1,gemsVector,hintsVector)            
-            if level_state == 1:
-                View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
+            View_Map(levels[level_state].getScroll())
             while (player.lives > 0 and gamestate == 0):
-                if level_state == 1:
-                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one,levelTileset1,gemsVector,hintsVector)
-                    gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
+                platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints = levels[level_state].getValues()
+                gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints,player, player_sprite_vec, sky, level_state)
                 player.reset([0,0], level_state, originial_level_state)
                 originial_level_state = level_state; 
-                if level_state == 2: 
-                    break
             if (player.lives == 0): 
                 gamestate = 5
         #Reset level state 
