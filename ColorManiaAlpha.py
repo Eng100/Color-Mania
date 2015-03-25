@@ -1161,6 +1161,7 @@ while (not done):
         if gamestate != 0:
             continue
         while(gamestate == 0): 
+
             platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_two,levelTileset1,gemsVector,hintsVector)            
             if level_state == 1:
                 View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
@@ -1174,7 +1175,8 @@ while (not done):
                     break
             if (player.lives == 0): 
                 gamestate = 5
-
+        #Reset level state 
+        level_state = 1
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
