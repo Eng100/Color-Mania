@@ -1136,7 +1136,7 @@ set_men = []
 set_men.append((Menu( (255,255,255),"ArrowLeft.png", (480,425), -1)) )
 set_men.append((Menu( (255,255,255),"ArrowRight.png", (680,425), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
-set_men.append((Menu( (255,255,255),"Change.png", (275,100), 6)) )
+set_men.append((Menu( (255,255,255),"Change.png", (275,100), 7)) )
 
 charaterSelectImages = []
 charaterSelectImages.append(loading('GreenBiclops.png'))
@@ -1169,7 +1169,7 @@ while (not done):
         done = True
     elif (gamestate == 0):
         if (player.name == ""):
-            gamestate = 6
+            gamestate = 7
             nameToGame = True
 
         if gamestate != 0:
@@ -1273,8 +1273,8 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
-                        elif action == 6:
-                            gamestate = 6
+                        elif action == 7:
+                            gamestate = 7
                             nameToGame = False
                 if soundStatus[player.sound].rect.collidepoint(pos):
                     player.sound = soundStatus[player.sound].type
@@ -1329,12 +1329,22 @@ while (not done):
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
     elif (gamestate == 6):
-<<<<<<< HEAD
+        diag_screen = pygame.display.set_mode([800, 600])
+        diag_screen.fill([208,244,247])
+        Diagnostics(score, diag_screen)
+        pygame.display.update()
+        ev = pygame.event.get()
+        for event in ev:
+            if (event.type == QUIT):
+                gamestate = -1
+            elif (event.type == KEYDOWN and event.key == K_ESCAPE):
+                gamestate = 5
+    elif (gamestate == 7):
         name_screen = pygame.display.set_mode([800, 600])
         userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
         userName.value = player.name
 
-        while (gamestate == 6):
+        while (gamestate == 7):
             name_screen.fill([208,244,247])
 
             font = pygame.font.SysFont("Courier New", 40)
@@ -1358,7 +1368,7 @@ while (not done):
                         gamestate = name_men[nameToGame].type
                         player.name = userName.value
                         if (player.name == "" and nameToGame):
-                            gamestate = 6
+                            gamestate = 7
                     elif name_men[2].rect.collidepoint(pos):
                         gamestate = name_men[2].type
                         if not(nameToGame):
@@ -1373,15 +1383,3 @@ while (not done):
                     gamestate = -1
 
             pygame.display.update()
-=======
-        diag_screen = pygame.display.set_mode([800, 600])
-        diag_screen.fill([208,244,247])
-        Diagnostics(score, diag_screen)
-        pygame.display.update()
-        ev = pygame.event.get()
-        for event in ev:
-            if (event.type == QUIT):
-                gamestate = -1
-            elif (event.type == KEYDOWN and event.key == K_ESCAPE):
-                gamestate = 5
->>>>>>> master
