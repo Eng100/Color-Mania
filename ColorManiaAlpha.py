@@ -1256,6 +1256,7 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
+                            player_tutorial.changeSprites(player.currrentSprite,[60,60])
                         elif action == 7:
                             gamestate = 7
                             nameToGame = False
