@@ -979,6 +979,7 @@ set_men = []
 set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,310), -1)) )
 set_men.append((Menu( (255,255,255),"ArrowRight.png", (651,310), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
+set_men.append((Menu( (255,255,255),"Change.png", (100,140), 2)) )
 
 
 sky = pygame.image.load('bg.png').convert()
@@ -1002,7 +1003,7 @@ while (not done):
         done = True
     elif (gamestate == 0):
         name_screen = pygame.display.set_mode([800, 600])
-        userName = eztext.Input(maxlength=16, color=(0,0,255), prompt='')
+        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
 
         while (player.name == "") and (gamestate == 0):
             name_screen.fill([208,244,247])
@@ -1077,8 +1078,15 @@ while (not done):
 
     elif (gamestate == 2):
         set_screen = pygame.display.set_mode([800,600])
-        
         set_screen.fill([208,244,247])
+
+        font = pygame.font.SysFont("Courier New", 30)
+        prompt = font.render("Current Name:", 1, [0, 0, 255])
+        currName = font.render(player.name, 1, [0, 0, 255])
+
+
+        set_screen.blit(prompt, [20, 100]) 
+        set_screen.blit (currName,[20,131])
 
         for men in set_men:
             set_screen.blit(men.image, men)
@@ -1104,6 +1112,8 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
+                        elif action == 2:
+                            pass
                             
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
