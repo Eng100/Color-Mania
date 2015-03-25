@@ -6,6 +6,7 @@ pygame.init()
 
 
 TOTALTIME = 150
+STARTSPRITE = 1
 
 Tile_Length = 40
 View_Height = 600
@@ -62,7 +63,7 @@ def loading(name):
     return image
 
 class Character(pygame.sprite.Sprite):
-    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne):
+    def __init__(self, imagesright, imagesleft, size, imagesrightOne, imagesleftOne, startSprite):
         super(Character, self).__init__()
         self.imagesright = imagesright
         # assuming both images are 64x64 pixels
@@ -70,24 +71,21 @@ class Character(pygame.sprite.Sprite):
 
         self.tempimagesright = imagesrightOne
         self.tempimagesleft = imagesleftOne
+           
+        self.name = ""
 
-        for x in range(len(self.imagesright)): 
-            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
-            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
-        for x in range(len(self.imagesleft)): 
-            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
-            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
-        
-        
+        self.currrentSprite = startSprite
+
+        self.changeSprites(self.currrentSprite, size)
         self.index = 0
         self.image = self.imagesright[self.index]
 
-        self.name = ""
+        self.sound = True
 
-        self.x = 320
-        self.y = 30
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
+        self.x = 320
+        self.y = 30
         self.xvel = 0 
         self.yvel = 0
         self.onGround = False
@@ -97,6 +95,17 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
+        
+    def changeSprites(self, spritIndex, size):
+        loadImages(spritIndex)
+        for x in range(len(self.imagesright)):
+            self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
+            self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
+        for x in range(len(self.imagesleft)): 
+            self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
+            self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
+        self.index = 0
+        self.image = self.imagesright[self.index]
 
     def resetStats(self):
         self.gemsCollected = []
@@ -419,10 +428,11 @@ def CheckOutofBounds(Character, level_height, level_width):
         Character.rect.top = 0
         Character.yvel = 1
 
-def Music_Play(music_file, repetitions): 
-    pygame.mixer.init()
-    pygame.mixer.music.load(music_file)
-    pygame.mixer.music.play(repetitions)
+def Music_Play(music_file, repetitions, sound):
+    if sound:
+        pygame.mixer.init()
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play(repetitions)
     
 def Tutorial(Character):
     if (Character.rect.x > 0 and Character.rect.x < 1000): #if the player is within the starting section, display these words
@@ -584,7 +594,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     return 
                 if event.type == KEYDOWN and event.key == K_UP:
                     up = True
-                    Music_Play("Char Jump.wav", 0)
+                    Music_Play("Char Jump.wav", 0, player.sound)
                 if event.type == KEYDOWN and event.key == K_LEFT:
                     left = True
                 if event.type == KEYDOWN and event.key == K_RIGHT:
@@ -855,7 +865,59 @@ def Level_Vector_Creations(level_one,levelTileset,gemsVector,hintsVector):
 def isTyped(event):
     if event.type == KEYDOWN and event.key == K_UP:
         up = True
-        Music_Play("Char Jump.wav", 0)
+        Music_Play("Char Jump.wav", 0, False)
+
+def loadImages(index):
+    #player vector animation initializations
+    sindex = str(index)
+    del imagesright[:]
+    del imagesleft[:]
+    del imagesrightResize[:]
+    del imagesleftResize[:]
+
+    imagesright.append(loading('p' + sindex + '_walk02.png'))
+    imagesright.append(loading('p' + sindex + '_walk03.png'))
+    imagesright.append(loading('p' + sindex + '_walk04.png'))
+    imagesright.append(loading('p' + sindex + '_walk05.png'))
+    imagesright.append(loading('p' + sindex + '_walk06.png'))
+    imagesright.append(loading('p' + sindex + '_walk07.png'))
+    imagesright.append(loading('p' + sindex + '_walk08.png'))
+    imagesright.append(loading('p' + sindex + '_walk09.png'))
+    imagesright.append(loading('p' + sindex + '_walk10.png'))
+
+    
+    imagesleft.append(loading('p' + sindex + '_walk12.png'))
+    imagesleft.append(loading('p' + sindex + '_walk13.png'))
+    imagesleft.append(loading('p' + sindex + '_walk14.png'))
+    imagesleft.append(loading('p' + sindex + '_walk15.png'))
+    imagesleft.append(loading('p' + sindex + '_walk16.png'))
+    imagesleft.append(loading('p' + sindex + '_walk19.png'))
+    imagesleft.append(loading('p' + sindex + '_walk17.png'))
+    imagesleft.append(loading('p' + sindex + '_walk17.png'))
+    imagesleft.append(loading('p' + sindex + '_walk18.png'))
+
+    
+    imagesrightResize.append(loading('p' + sindex + '_walk02.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk03.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk04.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk05.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk06.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk07.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk08.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk09.png'))
+    imagesrightResize.append(loading('p' + sindex + '_walk10.png'))
+
+    
+    imagesleftResize.append(loading('p' + sindex + '_walk12.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk13.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk14.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk15.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk16.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk19.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk17.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk17.png'))
+    imagesleftResize.append(loading('p' + sindex + '_walk18.png'))
+
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -899,7 +961,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B      F X",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -1034,56 +1096,20 @@ hintsVector.append("arrow.png")
 
 #player vector animation initializations
 imagesright = []
-imagesright.append(loading('p1_walk02.png'))
-imagesright.append(loading('p1_walk03.png'))
-imagesright.append(loading('p1_walk04.png'))
-imagesright.append(loading('p1_walk05.png'))
-imagesright.append(loading('p1_walk06.png'))
-imagesright.append(loading('p1_walk07.png'))
-imagesright.append(loading('p1_walk08.png'))
-imagesright.append(loading('p1_walk09.png'))
-imagesright.append(loading('p1_walk10.png'))
-
 imagesleft = []
-imagesleft.append(loading('p1_walk12.png'))
-imagesleft.append(loading('p1_walk13.png'))
-imagesleft.append(loading('p1_walk14.png'))
-imagesleft.append(loading('p1_walk15.png'))
-imagesleft.append(loading('p1_walk16.png'))
-imagesleft.append(loading('p1_walk19.png'))
-imagesleft.append(loading('p1_walk17.png'))
-imagesleft.append(loading('p1_walk17.png'))
-imagesleft.append(loading('p1_walk18.png'))
-
 imagesrightResize = []
-imagesrightResize.append(loading('p1_walk02.png'))
-imagesrightResize.append(loading('p1_walk03.png'))
-imagesrightResize.append(loading('p1_walk04.png'))
-imagesrightResize.append(loading('p1_walk05.png'))
-imagesrightResize.append(loading('p1_walk06.png'))
-imagesrightResize.append(loading('p1_walk07.png'))
-imagesrightResize.append(loading('p1_walk08.png'))
-imagesrightResize.append(loading('p1_walk09.png'))
-imagesrightResize.append(loading('p1_walk10.png'))
-
 imagesleftResize = []
-imagesleftResize.append(loading('p1_walk12.png'))
-imagesleftResize.append(loading('p1_walk13.png'))
-imagesleftResize.append(loading('p1_walk14.png'))
-imagesleftResize.append(loading('p1_walk15.png'))
-imagesleftResize.append(loading('p1_walk16.png'))
-imagesleftResize.append(loading('p1_walk19.png'))
-imagesleftResize.append(loading('p1_walk17.png'))
-imagesleftResize.append(loading('p1_walk17.png'))
-imagesleftResize.append(loading('p1_walk18.png'))
+
+loadImages(STARTSPRITE)
 
 gamestate = 1
+nameToGame = False
 
 title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
 menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
-menus.append(Menu( (255,255,255),"Setting.png", (450,200), 0))
-menus.append(Menu( (255,255,255),"Customize.png", (150,350), 0))
+menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
+menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
@@ -1099,17 +1125,34 @@ end_men.append(Menu( (255,255,255), "Restart.png", (450, 350), 2))
 end_men.append(Menu( (255,255,255), "Diagnostics.png", (150, 460), 6))
 
 name_men = []
+name_men.append((Menu( (255,255,255),"Back.png", (150,360), 2)) )
 name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
 name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
+set_men = []
+set_men.append((Menu( (255,255,255),"ArrowLeft.png", (480,425), -1)) )
+set_men.append((Menu( (255,255,255),"ArrowRight.png", (680,425), 1)) )
+set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
+set_men.append((Menu( (255,255,255),"Change.png", (275,100), 7)) )
+
+charaterSelectImages = []
+charaterSelectImages.append(loading('GreenBiclops.png'))
+charaterSelectImages.append(loading('BlueTriclops.png'))
+charaterSelectImages.append(loading('PinkCyclops.png'))
+
+soundStatus = []
+soundStatus.append(Menu( (255,255,255),"Off.png", (275,250), 1))
+soundStatus.append(Menu( (255,255,255),"On.png", (275,250), 0))
+
+
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
+player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
-player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize)
+player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_sprite_vec.add(player)
 pygame.mixer.init()
 level_state = 1
@@ -1122,41 +1165,9 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        name_screen = pygame.display.set_mode([800, 600])
-        userName = eztext.Input(maxlength=16, color=(0,0,255), prompt='')
-
-        while (player.name == "") and (gamestate == 0):
-            name_screen.fill([208,244,247])
-
-            font = pygame.font.SysFont("Courier New", 40)
-
-            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
-            screen.blit(prompt, (View_Height/3, View_Width/5)) 
-
-            userName.set_pos(View_Height/3 , View_Width/5 + 41)
-            userName.set_font(font)
-            userName.update(ev)
-            userName.draw(name_screen)
-
-            for menu_item in name_men:
-                 name_screen.blit(menu_item.image, menu_item)
-
-            ev = pygame.event.get()
-            for event in ev:
-                if (event.type == pygame.MOUSEBUTTONDOWN):
-                    pos = pygame.mouse.get_pos()
-                    for menu_item in name_men:
-                        if menu_item.rect.collidepoint(pos):
-                            gamestate = menu_item.type
-                            if gamestate == 0:
-                                player.name = userName.value
-                if (event.type == KEYDOWN and event.key == K_RETURN):
-                    player.name = userName.value
-                    gamestate = 0
-                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                    gamestate = -1
-
-            pygame.display.update()
+        if (player.name == ""):
+            gamestate = 7
+            nameToGame = True
 
         if gamestate != 0:
             continue
@@ -1192,16 +1203,74 @@ while (not done):
                 for menu_item in menus:
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
+                        if gamestate == 0:
+                            player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
         pygame.display.update()
 
     elif (gamestate == 2):
-        #Change this to settings page
-        gamestate = 0
+        set_screen = pygame.display.set_mode([800,600])
+        set_screen.fill([208,244,247])
+
+        if player.name == "":
+            dispName = "CLICK CHANGE"
+        else:
+            dispName = player.name
+
+        font = pygame.font.SysFont("Courier New", 30)
+        prompt = font.render("Current Name:", 1, [0, 0, 255])
+        currName = font.render(dispName, 1, [0, 0, 255])
+
+        soundFont = pygame.font.SysFont("Courier New", 50)
+        soundName = soundFont.render("Sound: ", 1, [0,0,255])
+
+
+        set_screen.blit(prompt, [20, 100]) 
+        set_screen.blit (currName,[22,150])
+        set_screen.blit(soundName, [30, 275])
+
+        set_screen.blit(soundStatus[player.sound].image, soundStatus[player.sound])
+
+        for men in set_men:
+            set_screen.blit(men.image, men)
+
+        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [518, 125])
+
+        ev = pygame.event.get()
+        for event in ev:
+            if (event.type == pygame.MOUSEBUTTONDOWN):
+                pos = pygame.mouse.get_pos()
+                for men in set_men:
+                    if men.rect.collidepoint(pos):
+                        action = men.type
+                        pastChar = player.currrentSprite
+                        if action == -1:
+                            player.currrentSprite += action
+                            if player.currrentSprite <= 0:
+                                player.currrentSprite = len(charaterSelectImages)
+                        elif action == 1:
+                            player.currrentSprite += action
+                            if player.currrentSprite > len(charaterSelectImages):
+                                player.currrentSprite = 1
+                        elif action == 0:
+                            gamestate = 1
+                            player.changeSprites(player.currrentSprite, [60,60])
+                            player_tutorial.changeSprites(player.currrentSprite,[60,60])
+                        elif action == 7:
+                            gamestate = 7
+                            nameToGame = False
+                if soundStatus[player.sound].rect.collidepoint(pos):
+                    player.sound = soundStatus[player.sound].type
+                            
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                gamestate = -1
+
+        pygame.display.update()
     elif(gamestate == 3):
-        #Change this to customization page
-        gamestate = 0
+        #Change this to Level Selector page
+        print("Level Selector Pressed!")
+        gamestate = 1
     elif (gamestate == 4):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
@@ -1254,3 +1323,47 @@ while (not done):
                 gamestate = -1
             elif (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = 5
+    elif (gamestate == 7):
+        name_screen = pygame.display.set_mode([800, 600])
+        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
+        userName.value = player.name
+
+        while (gamestate == 7):
+            name_screen.fill([208,244,247])
+
+            font = pygame.font.SysFont("Courier New", 40)
+
+            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
+            screen.blit(prompt, (View_Height/3, View_Width/5)) 
+
+            userName.set_pos(View_Height/3 , View_Width/5 + 41)
+            userName.set_font(font)
+            userName.update(ev)
+            userName.draw(name_screen)
+
+            name_screen.blit(name_men[nameToGame].image, name_men[nameToGame])
+            name_screen.blit(name_men[2].image, name_men[2])
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    if name_men[nameToGame].rect.collidepoint(pos):
+                        gamestate = name_men[nameToGame].type
+                        player.name = userName.value
+                        if (player.name == "" and nameToGame):
+                            gamestate = 7
+                    elif name_men[2].rect.collidepoint(pos):
+                        gamestate = name_men[2].type
+                        if not(nameToGame):
+                                player.name = userName.value
+                if (event.type == KEYDOWN and event.key == K_RETURN):
+                    player.name = userName.value
+                    if nameToGame:
+                        gamestate = 0
+                    else:
+                        gamestate = 2
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
+
+            pygame.display.update()
