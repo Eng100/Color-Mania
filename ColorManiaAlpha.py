@@ -976,8 +976,8 @@ name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
 name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
 set_men = []
-set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,360), -1)) )
-set_men.append((Menu( (255,255,255),"ArrowRight.png", (650,360), 1)) )
+set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,310), -1)) )
+set_men.append((Menu( (255,255,255),"ArrowRight.png", (651,310), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
 
 
@@ -1083,7 +1083,7 @@ while (not done):
         for men in set_men:
             set_screen.blit(men.image, men)
 
-        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [500, 10])
+        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [488, 10])
 
         ev = pygame.event.get()
         for event in ev:
