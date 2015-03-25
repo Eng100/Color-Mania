@@ -103,6 +103,8 @@ class Character(pygame.sprite.Sprite):
         for x in range(len(self.imagesleft)): 
             self.imagesleft[x] = pygame.transform.scale(self.imagesleft[x], (size[0],size[1]))
             self.tempimagesleft[x] = pygame.transform.scale(self.tempimagesleft[x], (size[0],size[1]))
+        self.index = 0
+        self.image = self.imagesright[self.index]
 
     def resetStats(self):
         self.gemsCollected = []
