@@ -79,7 +79,7 @@ class Character(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.imagesright[self.index]
 
-        sound = True
+        self.sound = True
 
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
@@ -949,11 +949,6 @@ imagesleftResize = []
 
 loadImages(STARTSPRITE)
 
-charaterSelectImages = []
-charaterSelectImages.append(loading('GreenBiclops.png'))
-charaterSelectImages.append(loading('BlueTriclops.png'))
-charaterSelectImages.append(loading('PinkCyclops.png'))
-
 gamestate = 1
 nameToGame = False
 
@@ -981,10 +976,19 @@ name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
 name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
 set_men = []
-set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,310), -1)) )
-set_men.append((Menu( (255,255,255),"ArrowRight.png", (651,310), 1)) )
+set_men.append((Menu( (255,255,255),"ArrowLeft.png", (480,425), -1)) )
+set_men.append((Menu( (255,255,255),"ArrowRight.png", (680,425), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
 set_men.append((Menu( (255,255,255),"Change.png", (275,100), 6)) )
+
+charaterSelectImages = []
+charaterSelectImages.append(loading('GreenBiclops.png'))
+charaterSelectImages.append(loading('BlueTriclops.png'))
+charaterSelectImages.append(loading('PinkCyclops.png'))
+
+soundStatus = []
+soundStatus.append(Menu( (255,255,255),"Off.png", (275,250), 1))
+soundStatus.append(Menu( (255,255,255),"On.png", (275,250), 0))
 
 
 sky = pygame.image.load('bg.png').convert()
@@ -1062,14 +1066,20 @@ while (not done):
         prompt = font.render("Current Name:", 1, [0, 0, 255])
         currName = font.render(dispName, 1, [0, 0, 255])
 
+        soundFont = pygame.font.SysFont("Courier New", 50)
+        soundName = soundFont.render("Sound: ", 1, [0,0,255])
+
 
         set_screen.blit(prompt, [20, 100]) 
         set_screen.blit (currName,[22,150])
+        set_screen.blit(soundName, [30, 250])
+
+        set_screen.blit(soundStatus[player.sound].image, soundStatus[player.sound])
 
         for men in set_men:
             set_screen.blit(men.image, men)
 
-        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [488, 10])
+        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [518, 125])
 
         ev = pygame.event.get()
         for event in ev:
@@ -1093,6 +1103,8 @@ while (not done):
                         elif action == 6:
                             gamestate = 6
                             nameToGame = False
+                if soundStatus[player.sound].rect.collidepoint(pos):
+                    player.sound = soundStatus[player.sound].type
                             
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
