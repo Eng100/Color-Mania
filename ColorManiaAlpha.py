@@ -952,6 +952,7 @@ charaterSelectImages.append(loading('BlueTriclops.png'))
 charaterSelectImages.append(loading('PinkCyclops.png'))
 
 gamestate = 1
+nameToGame = False
 
 title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
@@ -972,6 +973,7 @@ end_men.append((Menu( (255,255,255),"QUIT.png", (450,360), -1)) )
 end_men.append(Menu( (255,255,255), "Restart.png", (250, 150), 2))
 
 name_men = []
+name_men.append((Menu( (255,255,255),"Back.png", (150,360), 2)) )
 name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
 name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
 
@@ -979,7 +981,7 @@ set_men = []
 set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,310), -1)) )
 set_men.append((Menu( (255,255,255),"ArrowRight.png", (651,310), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
-set_men.append((Menu( (255,255,255),"Change.png", (100,140), 2)) )
+set_men.append((Menu( (255,255,255),"Change.png", (275,100), 6)) )
 
 
 sky = pygame.image.load('bg.png').convert()
@@ -1002,41 +1004,9 @@ while (not done):
     if (gamestate == -1):
         done = True
     elif (gamestate == 0):
-        name_screen = pygame.display.set_mode([800, 600])
-        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
-
-        while (player.name == "") and (gamestate == 0):
-            name_screen.fill([208,244,247])
-
-            font = pygame.font.SysFont("Courier New", 40)
-
-            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
-            screen.blit(prompt, (View_Height/3, View_Width/5)) 
-
-            userName.set_pos(View_Height/3 , View_Width/5 + 41)
-            userName.set_font(font)
-            userName.update(ev)
-            userName.draw(name_screen)
-
-            for menu_item in name_men:
-                 name_screen.blit(menu_item.image, menu_item)
-
-            ev = pygame.event.get()
-            for event in ev:
-                if (event.type == pygame.MOUSEBUTTONDOWN):
-                    pos = pygame.mouse.get_pos()
-                    for menu_item in name_men:
-                        if menu_item.rect.collidepoint(pos):
-                            gamestate = menu_item.type
-                            if gamestate == 0:
-                                player.name = userName.value
-                if (event.type == KEYDOWN and event.key == K_RETURN):
-                    player.name = userName.value
-                    gamestate = 0
-                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                    gamestate = -1
-
-            pygame.display.update()
+        if (player.name == ""):
+            gamestate = 6
+            nameToGame = True
 
         if gamestate != 0:
             continue
@@ -1080,13 +1050,18 @@ while (not done):
         set_screen = pygame.display.set_mode([800,600])
         set_screen.fill([208,244,247])
 
+        if player.name == "":
+            dispName = "CLICK CHANGE"
+        else:
+            dispName = player.name
+
         font = pygame.font.SysFont("Courier New", 30)
         prompt = font.render("Current Name:", 1, [0, 0, 255])
-        currName = font.render(player.name, 1, [0, 0, 255])
+        currName = font.render(dispName, 1, [0, 0, 255])
 
 
         set_screen.blit(prompt, [20, 100]) 
-        set_screen.blit (currName,[20,131])
+        set_screen.blit (currName,[22,150])
 
         for men in set_men:
             set_screen.blit(men.image, men)
@@ -1112,8 +1087,9 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
-                        elif action == 2:
-                            pass
+                        elif action == 6:
+                            gamestate = 6
+                            nameToGame = False
                             
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
@@ -1164,3 +1140,47 @@ while (not done):
                             player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
+    elif (gamestate == 6):
+        name_screen = pygame.display.set_mode([800, 600])
+        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
+        userName.value = player.name
+
+        while (gamestate == 6):
+            name_screen.fill([208,244,247])
+
+            font = pygame.font.SysFont("Courier New", 40)
+
+            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
+            screen.blit(prompt, (View_Height/3, View_Width/5)) 
+
+            userName.set_pos(View_Height/3 , View_Width/5 + 41)
+            userName.set_font(font)
+            userName.update(ev)
+            userName.draw(name_screen)
+
+            name_screen.blit(name_men[nameToGame].image, name_men[nameToGame])
+            name_screen.blit(name_men[2].image, name_men[2])
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    if name_men[nameToGame].rect.collidepoint(pos):
+                        gamestate = name_men[nameToGame].type
+                        player.name = userName.value
+                        if (player.name == "" and nameToGame):
+                            gamestate = 6
+                    elif name_men[2].rect.collidepoint(pos):
+                        gamestate = name_men[2].type
+                        if not(nameToGame):
+                                player.name = userName.value
+                if (event.type == KEYDOWN and event.key == K_RETURN):
+                    player.name = userName.value
+                    if nameToGame:
+                        gamestate = 0
+                    else:
+                        gamestate = 2
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
+
+            pygame.display.update()
