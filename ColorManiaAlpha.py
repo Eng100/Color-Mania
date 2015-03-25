@@ -1112,6 +1112,7 @@ while (not done):
     elif(gamestate == 3):
         #Change this to Level Selector page
         print("Level Selector Pressed!")
+        gamestate = 1
     elif (gamestate == 4):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial)
