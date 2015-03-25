@@ -93,8 +93,6 @@ class Character(pygame.sprite.Sprite):
         self.gems = 0
         self.lives_start = self.lives
         
-
-
     def changeSprites(self, spritIndex, size):
         loadImages(spritIndex)
         for x in range(len(self.imagesright)):
