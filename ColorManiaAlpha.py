@@ -79,6 +79,8 @@ class Character(pygame.sprite.Sprite):
         self.index = 0
         self.image = self.imagesright[self.index]
 
+        sound = True
+
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
         self.x = 320
@@ -403,10 +405,11 @@ def CheckOutofBounds(Character, level_height, level_width):
         Character.rect.top = 0
         Character.yvel = 1
 
-def Music_Play(music_file, repetitions): 
-    pygame.mixer.init()
-    pygame.mixer.music.load(music_file)
-    pygame.mixer.music.play(repetitions)
+def Music_Play(music_file, repetitions, sound):
+    if sound:
+        pygame.mixer.init()
+        pygame.mixer.music.load(music_file)
+        pygame.mixer.music.play(repetitions)
     
 def Tutorial(Character):
     if (Character.rect.x > 0 and Character.rect.x < 1000): #if the player is within the starting section, display these words
@@ -566,7 +569,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     return 
                 if event.type == KEYDOWN and event.key == K_UP:
                     up = True
-                    Music_Play("Char Jump.wav", 0)
+                    Music_Play("Char Jump.wav", 0, player.sound)
                 if event.type == KEYDOWN and event.key == K_LEFT:
                     left = True
                 if event.type == KEYDOWN and event.key == K_RIGHT:
@@ -837,7 +840,7 @@ def Level_Vector_Creations(level_one):
 def isTyped(event):
     if event.type == KEYDOWN and event.key == K_UP:
         up = True
-        Music_Play("Char Jump.wav", 0)
+        Music_Play("Char Jump.wav", 0, False)
 
 def loadImages(index):
     #player vector animation initializations
