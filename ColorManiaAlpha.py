@@ -988,8 +988,6 @@ level_two= [
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR            M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
         ]
 
-<<<<<<< HEAD
-=======
 #For Flying
 level_three= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -1097,7 +1095,6 @@ hintsVector = []
 hintsVector.append("arrow.png")
 
 #player vector animation initializations
->>>>>>> master
 imagesright = []
 imagesleft = []
 imagesrightResize = []
