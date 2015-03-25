@@ -7,6 +7,7 @@ pygame.init()
 
 TOTALTIME = 150
 STARTSPRITE = 1
+NEW_LIVES = 3
 
 Tile_Length = 40
 View_Height = 600
@@ -109,7 +110,7 @@ class Character(pygame.sprite.Sprite):
 
     def resetStats(self):
         self.gemsCollected = []
-        self.lives = self.lives_start
+        self.lives = NEW_LIVES
         self.gems = 0
         self.time = 0
         self.complete = False
@@ -1178,7 +1179,7 @@ while (not done):
                 View_Map(level_scroll_l1, allSprites_scroll_l1, level_one,  scaleFactor)
             while (player.lives > 0 and gamestate == 0):
                 if level_state == 1:
-                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_two,levelTileset1,gemsVector,hintsVector)
+                    platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, goal_l1, allSprites_scroll_l1, level_scroll_l1, scaleFactor, EasyHints_l1, HardHints_l1 = Level_Vector_Creations(level_one,levelTileset1,gemsVector,hintsVector)
                     gamestate, level_state = Level_Screens(platforms_l1, gems_l1, allSprites_l1, base_platforms_l1, player, level_one, sky, player_sprite_vec, goal_l1, EasyHints_l1, HardHints_l1, level_state)
                 player.reset([0,0], level_state, originial_level_state)
                 originial_level_state = level_state; 
