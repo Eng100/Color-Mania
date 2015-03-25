@@ -1072,7 +1072,7 @@ while (not done):
 
         set_screen.blit(prompt, [20, 100]) 
         set_screen.blit (currName,[22,150])
-        set_screen.blit(soundName, [30, 250])
+        set_screen.blit(soundName, [30, 275])
 
         set_screen.blit(soundStatus[player.sound].image, soundStatus[player.sound])
 
