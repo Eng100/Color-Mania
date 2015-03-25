@@ -938,8 +938,13 @@ imagesright = []
 imagesleft = []
 imagesrightResize = []
 imagesleftResize = []
+
 loadImages(STARTSPRITE)
 
+charaterSelectImages = []
+charaterSelectImages.append(loading('GreenBiclops.png'))
+charaterSelectImages.append(loading('BlueTriclops.png'))
+charaterSelectImages.append(loading('PinkCyclops.png'))
 
 gamestate = 1
 
@@ -964,6 +969,11 @@ end_men.append(Menu( (255,255,255), "Restart.png", (250, 150), 2))
 name_men = []
 name_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
 name_men.append((Menu( (255,255,255),"MainMenu.png", (450,360), 1)) )
+
+set_men = []
+set_men.append((Menu( (255,255,255),"ArrowLeft.png", (450,360), -1)) )
+set_men.append((Menu( (255,255,255),"ArrowRight.png", (650,360), 1)) )
+
 
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
@@ -1063,6 +1073,33 @@ while (not done):
         set_screen = pygame.display.set_mode([800,600])
         
         set_screen.fill([208,244,247])
+
+        for men in set_men:
+            set_screen.blit(men.image, men)
+
+        set_screen.blit(charaterSelectImages[player.currrentSprite - 1], [500, 10])
+
+        ev = pygame.event.get()
+        for event in ev:
+            if (event.type == pygame.MOUSEBUTTONDOWN):
+                pos = pygame.mouse.get_pos()
+                for men in set_men:
+                    if men.rect.collidepoint(pos):
+                        action = men.type
+                        pastChar = player.currrentSprite
+                        if action == -1:
+                            player.currrentSprite += action
+                            if player.currrentSprite <= 0:
+                                player.currrentSprite = len(charaterSelectImages)
+                        elif action == 1:
+                            player.currrentSprite += action
+                            if player.currrentSprite > len(charaterSelectImages):
+                                player.currrentSprite = 1
+
+                        if pastChar != player.currrentSprite:
+                            player.changeSprites(player.currrentSprite, [60,60])
+            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                gamestate = -1
 
         pygame.display.update()
     elif(gamestate == 3):
