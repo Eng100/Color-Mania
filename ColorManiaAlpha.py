@@ -1187,16 +1187,10 @@ while (not done):
                 originial_level_state = level_state; 
                 if level_state == 2: 
                     break
-<<<<<<< HEAD
-            if (player.lives < 0):
-                gamestate = 5
-
-=======
             if (player.lives == 0): 
                 gamestate = 5
         #Reset level state 
         level_state = 1
->>>>>>> master
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
