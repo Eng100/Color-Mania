@@ -731,7 +731,6 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             
             if (player.victory(goals)):
                 player.score = player.score + ((TOTALTIME - player.getTime())*5)
-                print(player.score)
                 return (0, level_state + 1); 
             
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
