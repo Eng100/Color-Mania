@@ -650,16 +650,19 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == KEYDOWN and event.key == K_1: 
                     if (len(player.gemsCollected) > 0): 
                         firstGem = True
+                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or thirdGem): 
                         precedence = 1
                 if event.type == KEYDOWN and event.key == K_2: 
                     if (len(player.gemsCollected) > 1): 
                         secondGem = True
+                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(thirdGem or firstGem): 
                         precedence = 2 
                 if event.type == KEYDOWN and event.key == K_3:
                     if (len(player.gemsCollected) > 2): 
                         thirdGem = True
+                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or firstGem): 
                         precedence = 3
 
@@ -722,6 +725,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             CheckOutofBounds(player, first_level_height, first_level_length)
 
             if(player.is_dead(first_level_height, spawn)):
+                Music_Play("Death.wav", 1, player.sound)
                 player.loseLife()
                 return (0, level_state); 
             
