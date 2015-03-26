@@ -248,7 +248,7 @@ class Character(pygame.sprite.Sprite):
         self.y = loc[1]
         self.rect.x = loc[0]
         self.rect.y = loc[1]
-        hidefResize
+        player.hidefResize()
         del self.gemsCollected[:]
         self.gemsCollected = []
         if (level_state != originial_level_state): 
@@ -955,7 +955,7 @@ def loadLevels(levelnames):
 
     levels = []
     for name in levelnames:
-        levels.append(LevelMap(name,levelTileset1,gemsVector,hintsVector))
+        levels.append(LevelMap(name, levelTileset1, gemsVector, hintsVector))
 
     return levels
 
@@ -1002,7 +1002,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X             F  B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -1235,7 +1235,7 @@ while (not done):
                 
                 if (level_state > len(levels) - 1):
                     gamestate = 5
-                    break
+                    continue
 
                 if (originial_level_state != level_state):
                     level, levelTileset, gemsVector, hintsVector = levels[level_state-1].getRestart()
