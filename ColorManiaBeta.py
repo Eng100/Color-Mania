@@ -965,8 +965,12 @@ def loadLevels(levelnames):
 
     font = pygame.font.SysFont("Courier New", 60)
     prompt = font.render("Loading...", 1, [0, 0, 255])
+    font_2 = pygame.font.SysFont("Courier New", 22)
+    prompt_2 = font_2.render("Press Escape to Pause during game", 1, [0,0, 255])
 
     loading_screen.blit(prompt, (200,270))
+    loading_screen.blit(prompt_2, (160, 340))
+
 
     pygame.display.update()
 
@@ -1220,7 +1224,7 @@ menus = []
 menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
 menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
 #menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
-menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
+menus.append(Menu( (255,255,255),"Instructions.png", (300,350), 4))
 
 pause_men = []
 pause_men.append(Menu( (255,255,255),"PLAY.png", (150,150), 0)) 
