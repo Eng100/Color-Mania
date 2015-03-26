@@ -248,6 +248,7 @@ class Character(pygame.sprite.Sprite):
         self.y = loc[1]
         self.rect.x = loc[0]
         self.rect.y = loc[1]
+        player.hidefResize()
         del self.gemsCollected[:]
         self.gemsCollected = []
         if (level_state != originial_level_state): 
@@ -941,6 +942,23 @@ def levelRestart(levels, index, level, levelTileset1, gemsVector, hintsVector):
     levels[index] = newLevel
     return levels
 
+def loadLevels(levelnames):
+    loading_screen = pygame.display.set_mode([800, 600])
+    loading_screen.fill([208,244,247])
+
+    font = pygame.font.SysFont("Courier New", 60)
+    prompt = font.render("Loading...", 1, [0, 0, 255])
+
+    loading_screen.blit(prompt, (200,270))
+
+    pygame.display.update()
+
+    levels = []
+    for name in levelnames:
+        levels.append(LevelMap(name, levelTileset1, gemsVector, hintsVector))
+
+    return levels
+
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -984,7 +1002,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X             F  B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -1189,10 +1207,8 @@ done = False
 main_men = pygame.display.set_mode([800, 600])
 
 levels = []
-levels.append(LevelMap(level_one,levelTileset1,gemsVector,hintsVector))
-levels.append(LevelMap(level_two,levelTileset1,gemsVector,hintsVector))
-levels.append(LevelMap(level_three,levelTileset1,gemsVector,hintsVector))
-levels.append(LevelMap(level_four,levelTileset1,gemsVector,hintsVector))
+levelNames = [level_one, level_two, level_three, level_four, level_five]
+
 
 while (not done):
     quit_game = False
@@ -1219,9 +1235,7 @@ while (not done):
                 
                 if (level_state > len(levels) - 1):
                     gamestate = 5
-                    break
-
-                
+                    continue
 
                 if (originial_level_state != level_state):
                     level, levelTileset, gemsVector, hintsVector = levels[level_state-1].getRestart()
@@ -1399,6 +1413,8 @@ while (not done):
                     if name_men[nameToGame].rect.collidepoint(pos):
                         gamestate = name_men[nameToGame].type
                         player.name = userName.value
+                        if (gamestate == 0):
+                            levels = loadLevels(levelNames)
                         if (player.name == "" and nameToGame):
                             gamestate = 7
                     elif name_men[2].rect.collidepoint(pos):
@@ -1409,6 +1425,7 @@ while (not done):
                     player.name = userName.value
                     if nameToGame:
                         gamestate = 0
+                        levels = loadLevels(levelNames)
                     else:
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
