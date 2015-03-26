@@ -984,6 +984,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
+        "BBBBB                                                                                                                                    ",
         "X           F    B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B      F X",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
@@ -1213,7 +1214,7 @@ while (not done):
                 platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints = levels[level_state].getValues()
                 gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, player, level, sky, player_sprite_vec, goals, EasyHints, HardHints, level_state)
                 
-                if (levels_state > len(levels) - 1):
+                if (level_state > len(levels) - 1):
                     gamestate = 5
                     break
 
