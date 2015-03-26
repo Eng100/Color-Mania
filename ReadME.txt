@@ -17,6 +17,7 @@ Arrow Key Left: Move Left
 Arrow Key Right: Move Right
 Arrow Key Down: Moving Down - Only activated during flyng
 Number Keys 1, 2, 3: Activate gem (time varies for each gem)
+ESC: Paus in game and quit in menus
 
 FEATURES TO NOTE:
 1. Dynamic camera that moves with a map bigger than the window shown to the player at a given time
@@ -45,7 +46,7 @@ RECOGNIZED BUGS:
 3. In the tutorial, instructional messages are based on the player’s location and what they have accomplished, assuming that player is following all rules. 
 
 
-** Disclaimer: Image Initialization code uses functions used in discussion; however, because these are pygame functions the code is standard - none is purely pasted (all are typed by us). 
-Techniques used to develop game such as passing a vector of strings to create a level were adopted by observation of other games - no code was copied. 
+** Disclaimer: Image Initialization code uses functions used in discussion; however, because these are pygame functions the code is standard - almost none is purely pasted (all are typed by us see bottom for explination). 
+Techniques used to develop game such as passing a vector of strings to create a level were adopted by observation of other games - almost no code was copied (see below for explination of copied code). 
 
-
+** Dynamic Text: editing is a feature we wanted to implement, but because of time, needed to use a 3rd party file and code to allow for this to happen without sinking too much time into it. Because of this, we used a code called EZTEXT. It can be found here: http://www.pygame.org/project-EzText-920-.html and is written by pywiz32. This is the only instance of other code being used, as it is essentially handled like a library that pywiz32 never made into a library. This is the ONLY instance of reused code. 
