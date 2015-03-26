@@ -537,7 +537,7 @@ def View_Map(platforms, allSprites, level, scale, level_state):
             xvel -= 0.03
 
         if(invis_objects.x < 50): 
-            screen.blit(prompt, (View_Height/2, View_Width/5)) 
+            screen.blit(prompt, (View_Height/2 - 15, View_Width/5)) 
             pygame.display.update()
             time.sleep(1)
             return;
