@@ -474,7 +474,7 @@ def Tutorial(Character):
             display_box(screen, "Press the Number 1 Key to activate gem.",View_Width/3.8,View_Height/2.5,4)
     else:
         if(Character.gemsCollected[0].type == "Invisibility" and Character.gemsCollected[0].time > 0):
-            display_box(screen, "You can walk through everything for 7 seconds.",View_Width/5.3,View_Height/3,4)
+            display_box(screen, "You can walk through everything for 4 seconds.",View_Width/5.3,View_Height/3,4)
             display_box(screen, "Walk through the wall on the right to continue.",View_Width/6,View_Height/2.5,4)
 
         elif(Character.gemsCollected[0].type == "Jumping" and Character.gemsCollected[0].time > 0):
@@ -1220,7 +1220,7 @@ title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
 menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
 menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
-menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
+#menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
 menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
