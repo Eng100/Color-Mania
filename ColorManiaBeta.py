@@ -77,6 +77,8 @@ class Character(pygame.sprite.Sprite):
 
         self.currrentSprite = startSprite
 
+        #player vector animation initializations
+        self.size = size 
         self.changeSprites(self.currrentSprite, size)
         self.index = 0
         self.image = self.imagesright[self.index]
@@ -98,7 +100,7 @@ class Character(pygame.sprite.Sprite):
         self.lives_start = self.lives
         
     def changeSprites(self, spritIndex, size):
-        loadImages(spritIndex)
+        self.imagesright, self.imagesleft, self.tempimagesright, self.tempimagesleft = loadImages(spritIndex)
         for x in range(len(self.imagesright)):
             self.imagesright[x] = pygame.transform.scale(self.imagesright[x], (size[0],size[1]))
             self.tempimagesright[x] = pygame.transform.scale(self.tempimagesright[x], (size[0],size[1]))
@@ -248,7 +250,6 @@ class Character(pygame.sprite.Sprite):
         self.y = loc[1]
         self.rect.x = loc[0]
         self.rect.y = loc[1]
-        player.hidefResize()
         del self.gemsCollected[:]
         self.gemsCollected = []
         if (level_state != originial_level_state): 
@@ -263,6 +264,7 @@ class Character(pygame.sprite.Sprite):
             self.yvel = -3
         if down:
             self.yvel = 11
+
     def resize(self, value):    
         tempx = self.rect.x
         tempy = self.rect.y
@@ -276,10 +278,14 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = tempy
 
     def hidefResize(self): 
+        print("hidef called")
         tempx = self.rect.x
         tempy = self.rect.y
+        self.imagesright = []
+        self.imagesleft = []
         self.imagesright = self.tempimagesright
         self.imagesleft = self.tempimagesleft
+        self.changeSprites(self.currrentSprite, (self.size))
         self.rect = self.imagesright[0].get_rect()
         self.rect.x = tempx
         self.rect.y = tempy
@@ -721,10 +727,10 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
             for sprite in allSprites: 
                 screen.blit(sprite.image, camera.apply(sprite))
-            if (player.lives_start - player.lives == 2): 
+            if (player.lives_start - player.lives == 1): 
                 for x in EasyHints: 
                     screen.blit(x.image, camera.apply(x))
-            if (player.lives_start - player.lives == 1): 
+            if (player.lives_start - player.lives == 2): 
                 for x in HardHints: 
                     screen.blit(x.image, camera.apply(x))
             for p in player_sprite_vec: 
@@ -937,6 +943,8 @@ def loadImages(index):
     imagesleftResize.append(loading('p' + sindex + '_walk17.png'))
     imagesleftResize.append(loading('p' + sindex + '_walk18.png'))
 
+    return(imagesright, imagesleft, imagesrightResize, imagesleftResize)
+
 def levelRestart(levels, index, level, levelTileset1, gemsVector, hintsVector):
     newLevel = LevelMap(level, levelTileset1, gemsVector, hintsVector)
     levels[index] = newLevel
@@ -1007,7 +1015,35 @@ level_one= [
         ]
 
 #Ghost, Jumping, and Shrink
-level_two= [
+level_two = [
+            "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                      1                              ",
+            "                H                                                                                                       BB         H          CMMMD                            ",
+            "              CMMD                                                                     1                                BB       CMMMD                                         ",
+            "                                                                                         H         H                    BB                                    CMMMD            ",
+            "   CMD                     B                                                 BBB CMMMMMMMMMMMMMMMMMMMMMMMMMMMMMD        BB                H                                    ",
+            "                     1     B            H                                    BBB                                        BB               CMMMMD     BB                         ",
+            "                    CMD    B          CMMD                            CMD    BBB                                        BB                          BB              CMMMD      ",
+            "          H                B                   BBBBB      1  G               BBB               CMMMMMMMMMMMMMMMMMMMMMMMMMMD                         BB                         ",
+            "       CMMMMD              B   CMD             BBBBB    CMMMMMMD             BBB    1                                   BB     CMMMMD               BB       H                 ",
+            "                           B                   BBBBB                 H       BBB        H        H                      BB                          BB     CMMMMD              ",
+            "          2                B          G        BBBBB                CMD      BBB   CMMMMMMMMMMMMMMMMMMMMMMMMMD          BB        1      H          BB                         ",
+            "              CMD          B         CMMD      BBBBB                         BBB                                        BB            CMMMD         BB          CMMMMMD        ",
+            "   CMD                     B                   BBBBB                         BBB                                        BB                          BB                         ",
+            "                           B                   BBBBB                         BBB               CMMMMMMMMMMMMMMMMMMMMMMMDBB      CMD                 BB                         ",
+            "                     2                         BBBBB        CMMD             BBB                                                                                               ", 
+            "   1  S                    B      H       H    BBBBB                        JBBB          H                                2         S              BB    2   F                ",
+            "LMMMMMMMR      LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR         LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR     LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
+
+            ]
+
+#Ghost, Jumping, and Shrink
+level_two_not_using= [
         "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
         "X     B                                       B                                                                     BBB                  ",
         "X     B                                       B                                                                     BBB                  ",
@@ -1030,6 +1066,7 @@ level_two= [
         "X    SB                                                                               JBBB                                              F",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
         ]
+
 #For Flying
 level_three = [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -1161,13 +1198,7 @@ gemsVector.append("FlyingGem.png")
 hintsVector = []
 hintsVector.append("arrow.png")
 
-#player vector animation initializations
-imagesright = []
-imagesleft = []
-imagesrightResize = []
-imagesleftResize = []
 
-loadImages(STARTSPRITE)
 
 gamestate = 1
 nameToGame = False
@@ -1211,9 +1242,16 @@ soundStatus = []
 soundStatus.append(Menu( (255,255,255),"Off.png", (275,250), 1))
 soundStatus.append(Menu( (255,255,255),"On.png", (275,250), 0))
 
+imagesright = []
+imagesleft  = []
+imagesrightResize = []
+imagesleftResize = []
+
+imagesright, imagesleft, imagesrightResize, imagesleftResize = loadImages(STARTSPRITE)
+
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
+player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_tutorial_sprite_vec.add(player_tutorial)
 pygame.mixer.init()
 
@@ -1222,7 +1260,7 @@ player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, images
 player_sprite_vec.add(player)
 
 pygame.mixer.init()
-level_state = 2
+level_state = 1
 originial_level_state = -1
 done = False
 
