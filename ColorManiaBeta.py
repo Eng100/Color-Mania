@@ -1030,9 +1030,31 @@ level_two= [
         "X    SB                                                                               JBBB                                              F",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
         ]
+#For Flying
+level_three = [
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                                B                                   B                                                                   ",
+        "X                                B                                   B     2             1                                               ",
+        "X                                B                                   B                                                                   ",
+        "X                                B                                   B     2    B                       2      H     1                   ",
+        "X   2                            B                                   B          B                      CMMMMMMMMMMMMMD                   ",
+        "X                                          Y                         B     2    B                                                        ",
+        "X          B                     1        CMMMMMD                    B          B                                                        ",
+        "X          B           H                                             B     2    B                    HH    2                             ",
+        "X          B         CMMMMD                                          B          B    H            CMMMMMMMMMMD                           ",
+        "X          B                                        1                      2    B CMMMD      B                                           ",
+        "X          B                             CMMMD           CMMMD B                B            B                                           ",
+        "X          B                     CMMMD                         B           2    B       CMMMDB                                           ",
+        "X          B                                                   B       1        B            B                                           ",
+        "X                           1                     CMMMD        B                  CMMMD      B                                      HHH  ",
+        "X                               H         2                    B  H G                        B                                   CMMMMMMD",
+        "X        1               CMMMMMMMMMMMMD                          CMMMD      1           CMMMDB                                           ",
+        "XY                CMMMD                  CMMMD       CMMMD                  Y                B         1        1      1             F   ",
+        "LMMMMMMMMMR                                     LMMMR          LMMMMMMMMMMMMMMMR      LMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
+        ]
 
 #For Flying
-level_three= [
+level_three_not_using= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                                                                           B                                        1                   ",
         "X                                                                           B                                                            ",
@@ -1200,7 +1222,7 @@ player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, images
 player_sprite_vec.add(player)
 
 pygame.mixer.init()
-level_state = 0
+level_state = 2
 originial_level_state = -1
 done = False
 
