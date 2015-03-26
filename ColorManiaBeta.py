@@ -988,8 +988,35 @@ level_one= [
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
+level_two = [
+            "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                                                     ",
+            "                                                                             BBB                                        BB                      1                              ",
+            "                H                                                                                                       BB         H          CMMMD                            ",
+            "              CMMD                                                                     1                                BB       CMMMD                                         ",
+            "                                                                                         H         H                    BB                                    CMMMD            ",
+            "   CMD                     B                                                 BBB CMMMMMMMMMMMMMMMMMMMMMMMMMMMMMD        BB                H                                    ",
+            "                     1     B            H                                    BBB                                        BB               CMMMMD     BB                         ",
+            "                    CMD    B          CMMD                            CMD    BBB                                        BB                          BB              CMMMD      ",
+            "          H                B                   BBBBB      1  G               BBB               CMMMMMMMMMMMMMMMMMMMMMMMMMMD                         BB                         ",
+            "       CMMMMD              B   CMD             BBBBB    CMMMMMMD             BBB    1                                   BB     CMMMMD               BB       H                 ",
+            "                           B                   BBBBB                 H       BBB        H        H                      BB                          BB     CMMMMD              ",
+            "          2                B          G        BBBBB                CMD      BBB   CMMMMMMMMMMMMMMMMMMMMMMMMMD          BB        1      H          BB                         ",
+            "              CMD          B         CMMD      BBBBB                         BBB                                        BB            CMMMD         BB          CMMMMMD        ",
+            "   CMD                     B                   BBBBB                         BBB                                        BB                          BB                         ",
+            "                           B                   BBBBB                         BBB               CMMMMMMMMMMMMMMMMMMMMMMMDBB      CMD                 BB                         ",
+            "                     2                         BBBBB        CMMD             BBB                                                                                               ", 
+            "   1  S                    B      H       H    BBBBB                        JBBB          H                                2         S              BB    2   F                ",
+            "LMMMMMMMR      LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR         LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR     LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
+
+            ]
+
 #Ghost, Jumping, and Shrink
-level_two= [
+level_two_not_using= [
         "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
         "X     B                                       B                                                                     BBB                  ",
         "X     B                                       B                                                                     BBB                  ",
@@ -1056,7 +1083,6 @@ level_four= [
         "X      BB                                                                                                                                ",
         "X     BBB                                                                                                         HH       R         H  F",
         "RRRRRRRRRLLLLLLLL          RRRRRRRHHHHRRRRRRRRRHRRRRRHRRRRRRR   RRRRRRRRHHHRRRRRRRRRRR  RRRRHHRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRLLLLHRRRRRRRR",
-        "MMMMMMMMMMMMMMMMM          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM   MMMMMMMMMMMMMMMMMMMMMM  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
         ]
 
 level_five= [
@@ -1182,7 +1208,7 @@ player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, images
 player_sprite_vec.add(player)
 
 pygame.mixer.init()
-level_state = 0
+level_state = 1
 originial_level_state = -1
 done = False
 
