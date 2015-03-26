@@ -984,8 +984,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "BBBBB                                                                                                                                    ",
-        "X           F    B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B      F X",
+        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -993,8 +992,9 @@ level_one= [
 level_two= [
         "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
         "X     B                                       B                                                                     BBB                  ",
-        "MR    BG                                      B                                                                     BBB                  ",
-        "X     BMD                                     B                                                                                          ",
+        "X     B                                       B                                                                     BBB                  ",
+        "X     BG                                      B                                                                                          ",
+        "X     BMD                                     B                                                                     BBB                  ",
         "X    LB          CMMD                         B                                        BBBMMD                       BBBMMD               ",
         "X     B                                       B            CMMD                        BBB                          BBB                  ",
         "MR    B                                       B                                     CMMBBB                     CMMMDBBB               CMM",
@@ -1006,10 +1006,11 @@ level_two= [
         "X                BBBB                     CMMMB                                        BBB                          BBB     CMMMMMMMMMMMM",
         "MR    BMD        BBBB                         B                              CMMD      BBB                          BBB                  ",
         "X     B          BBBB                         B                                        BBB   CMMMMMMMMMMMMMMMMMMMMMMBBB                  ",
-        "X    LB    GJSPY BBBB           CMMMD                                                  BBB                            CMMMD              ",
-        "X     B        CMBBBBMD                                                                BBB                                               ",
-        "X     B                                                                               JBBB                                              F",
-        "LMMMMMMMMMMMMMMMMMMMMMMMMMMR            M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
+        "X    LB          BBBB           CMMMD                                                  BBB                            CMMMD              ",
+        "X     B          BBBB                                                                  BBB                                               ",
+        "X     B        CMBBBBMD           1                                                    BBB                1                              ",
+        "X    SB                                                                               JBBB                                              F",
+        "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
         ]
 
 #For Flying
@@ -1032,54 +1033,56 @@ level_three= [
         "X                                     1                                                       B         BB                               ",
         "X                                                                                             B         BB                               ",
         "XY                                                                                          2 BG                                        F",
-        "LMMMMMMMMMM         M      M     M      M     M      LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
+        "LMMMMMMMMMM        LMR    LMR   LMR    LMR     B     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
         ]
 
 #For Traction with Ice Tile Set (Must use levelTileset2)
 level_four= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBXXXXXXXXXXXXXXXXXXXXX",
         "X                                                                                                                 BB                     ",
-        "X                     J                                                                                    2                             ",
-        "X                    RR                                                                                                                  ",
-        "X                                                                                                                 BB                     ",
-        "X                                                                                                                BBB                     ",
-        "X                    RR                                                                                                                  ",
+        "X                                                                                                          2                             ",
+        "X                                                                                                                                        ",
+        "X                     J                                                                                           BB                     ",
+        "X                    RR                                                                                           BB                     ",
+        "X                                                                                                                B                       ",
         "X                                                                                                                 HH                     ",
         "X                                          RR                                                         BB         BRR                     ",
-        "X             R      1                     HH                 LH                                      BB                                 ",
-        "X                                                                               LH                    BB          HH                     ",
+        "X             R      1                                        LH                                      BB                                 ",
+        "X                                                                              LLH                    BB          HH                     ",
         "X                                LLLLLLR       LLLLLLLLH                                  RRRR        BBB         RR                     ",
-        "X                                                             HH       LH                     RRRR 2 GBB                                 ",
+        "X                                                             HH      LLH                     RRRR 2 GBB                                 ",
         "X      BB           LLLL                                      RR                      R           RRRRRR          HH           RR        ",
-        "X      BB                                                     HH                                                 RRR                     ",
+        "X      BB                                                                                                        RRR                     ",
         "X      BB                                                                                                                                ",
         "X     BBB                                                                                                         HH       R         H  F",
-        "RRRRRRRRRLLLLLLLL          RRRRRRRHHHHRRRRRRRRRHRHRHRHRHRHRHRHHRHHRRHHHRHHHRHHHRRRRRHHHHRRRRHHHHRRRRRRRRRRRRRRRRRRRRRRRRRRRRLLLLHRRRRRRRR",
-        "MMMMMMMMMMMMMMMMM          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
+        "RRRRRRRRRLLLLLLLL          RRRRRRRHHHHRRRRRRRRRHRRRRRHRRRRRRR   RRRRRRRRHHHRRRRRRRRRRR  RRRRHHRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRLLLLHRRRRRRRR",
+        "MMMMMMMMMMMMMMMMM          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM   MMMMMMMMMMMMMMMMMMMMMM  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
         ]
 
 level_five= [
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "X                                                                                                          B  B                                B                                                                        ",
-        "X            2  J                                                                                                                                                               B                                       ",
-        "X              CMR                                                                           B         BB      B       CD                CD   1     M                           B             2                        F",
-        "X              B MD                           LR                             B                         BBBBBBBBB                                                                B                              B      CM",
-        "X              B            M                                B                                         BB                       CD                  BBBBBBBBBBBB                B                              BB       ",
-        "X              B                                                                             CMMMMMMMMMMD                                            B      B                   B   B         CMD           CMMB        ",
-        "X    BBMD      B                                                                             BBBBBBBBBBBB                                            B                              B                          B      CM",
-        "X    BB        B        CD            1 P                                          CMD       BBBBBBBBBBBB                                            B             BBBB             B                          BB       ",
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                                                                                                          BBBB                                B                                                                        ",
+        "X                                                                                                          B  B                                                                                                         ",
+        "X                                                                                                                                                                                                                       ",
+        "X            2  J                                                                                                                                   M                           B                              B        ",
+        "X              CMR                            LR                             B               B         BB      B       CD                CD   1                                 B             2                B       F",
+        "X              B MD                                          B                                         BBBBBBBBB                                                                B                              B      CM",
+        "X              B            M                                                                          BB                       CD                  BBBBBBBBBBBB                B                              BB       ",
+        "X              B                                                                             CMMMMMMMMMMD                                            B      B      BBBB         B   B         CMD           CMMB        ",
+        "X    BBMD      B                                                                             BBBBBBBBBBBB                                            B                B             B                          B      CM",
+        "X    BB        B        CD            1 P                                          CMD       BBBBBBBBBBBB                                            B                B             B                          BB       ",
         "BB   BB      CMB                     BMMR            CMD            CMD                      BBBBBB    BB                                           BB                B             B                          B        ",
-        "X    BB        B                     B               B               B                       BBBBBB B  BB              BB                            BB               B        CMMD        B                   B      CM",
-        "X   BBBD       BMD                  BB               B               B         B      2             B  BB         B                        M         B              BBB                    B                   BB       ",
-        "X    BB                              B               B               B                     CMMMMMMMMM   B                                            B                B                    B                 CMB        ",
-        "BB   BB                              B               B   Y           B                                  B             CMD         M                 MBB               BMD                  B                   B      CM",
-        "X    BB MMMMMMMMMMMMMMMMMMMMMMD      B           MMMMMMMMMMMMMMM  MMMMMMMMM    B                        B                                                            BB              B     B      B            B        ",
-        "X   BBB B      B        B    B      BBB          B       B     B  B           BB                              CMD                                                     B                    B                   B        ",
-        "X    BBBBB                           B                                         B                                       M                                              B                                  1             B",
+        "X    BB        B                     B               B               B                       BBBBBB B  BB              BB                            BB             BBB        CMMD        B                   B      CM",
+        "X   BBBD       BMD                  BB               B               B         B      2             B  BB         B                        M         B                B                    B                   BB       ",
+        "X    BB                              B               B   Y           B                     CMMMMMMMMM   B                                            B                B                    B                 CMB        ",
+        "BB   BB                              B           MMMMMMMMMMMMMMM  MMMMMMMMM                             B             CMD         M                 MBB               BMD                  B                   B      CM",
+        "X    BB MMMMMMMMMMMMMMMMMMMMMMD      BB          BBBBBBBBBBBBBBB  BBBBBBBBB    B                        B                                                            BB              B     B      B            B        ",
+        "X   BBB B      B        B    B      BB           B       B     B  B           BB                              CMD                                                     B                    B                   B        ",
+        "X    BBBBB                           B                                         B                                       M                                              B                                  1     B       B",
+        "X    BBBBB                           B                                         B                                                                                      B                                                 ",
         "XS        1 Y       B                B                B     B         B        B                                                                                     BB                                               BB",
-        "MMMMMMMMMMMMM      LR      MMMMMM    MMMMMMMM    MMM  MMMMMMMMMM  MMMMMMMMMMM  M                     LMM       M                  M              M             M      M        LMMR       MMM       MMMM     MMMMMMMMMMM",
+        "MMMMMMMMMMMMM      LR     LMMMMMR    MMMMMMMMR   MMM  MMMMMMMMMM  MMMMMMMMMMM  M                     LMM       M                  M              M         M          M        LMMR       MMM       MMMM     MMMMMMMMMMM",
         ]
-
 HUD = HeadsUpDisplay("HUDsmaller.png", (255, 255, 255), "HUDgemOne.png", "HUDgemTwo.png", "HUDgemThree.png", "HUDusingOne.png", "HUDusingTwo.png", "HUDusingThree.png")
 
 #Loading tile set for the first level and tutorial. There are 8 elements in this vector
@@ -1218,11 +1221,13 @@ while (not done):
                     gamestate = 5
                     break
 
-                level, levelTileset, gemsVector, hintsVector = levels[level_state].getRestart()
+                
 
                 if (originial_level_state != level_state):
+                    level, levelTileset, gemsVector, hintsVector = levels[level_state-1].getRestart()
                     levels = levelRestart(levels, level_state-1, level, levelTileset, gemsVector, hintsVector)
                 else:
+                    level, levelTileset, gemsVector, hintsVector = levels[level_state].getRestart()
                     levels = levelRestart(levels, level_state, level, levelTileset, gemsVector, hintsVector)
 
                 player.reset([0,0], level_state, originial_level_state)
@@ -1230,7 +1235,7 @@ while (not done):
             if (player.lives == 0): 
                 gamestate = 5
         #Reset level state 
-        level_state = 1
+        level_state = 0
     elif (gamestate == 1):
         main_men.fill([208,244,247]) 
         main_men.blit(title.image, title)
