@@ -424,12 +424,18 @@ class LevelMap(pygame.sprite.Sprite):
     def __init__(self, level, levelTileset, gemsVector, hintsVector): 
         self.platforms, self.gems, self.allSprites, self.base_platforms, self.goal, self.allSprites_scroll, self.level_scroll, self.scaleFactor, self.EasyHints, self.HardHints = Level_Vector_Creations(level,levelTileset,gemsVector,hintsVector)
         self.level = level
+        self.levelTileset = levelTileset
+        self.gemsVector = gemsVector
+        self.hintsVector = hintsVector
 
     def getValues(self):
         return self.platforms, self.gems, self.allSprites, self.base_platforms, self.level, self.goal, self.EasyHints, self.HardHints
 
     def getScroll(self):
         return self.level_scroll, self.allSprites_scroll, self.level, self.scaleFactor
+
+    def getRestart(self):
+        return self.level, self.levelTileset, self.gemsVector, self.hintsVector
 
 def CheckOutofBounds(Character, level_height, level_width):
     if (Character.rect.left <= 0): 
@@ -532,7 +538,7 @@ def View_Map(platforms, allSprites, level, scale):
         pygame.display.update()
 
 
-def Level_Screens(platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints, player, player_sprite_vec, sky, level_state):
+def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints, levelState):
     first_level_height = len(level) * Tile_Length
     first_level_length = len(level[0]) * Tile_Length
     camera = Window(complex_camera, first_level_length, first_level_height)
@@ -709,7 +715,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, level, goals, Eas
                 return (0, level_state); 
             
             if (player.victory(goals)):
-                return (5, level_state + 1); 
+                return (0, level_state + 1); 
             
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
             for sprite in allSprites: 
@@ -930,6 +936,11 @@ def loadImages(index):
     imagesleftResize.append(loading('p' + sindex + '_walk17.png'))
     imagesleftResize.append(loading('p' + sindex + '_walk18.png'))
 
+def levelRestart(levels, index, level, levelTileset1, gemsVector, hintsVector):
+    newLevel = LevelMap(level, levelTileset1, gemsVector, hintsVector)
+    levels[index] = newLevel
+    return levels
+
 
 level_tutorial= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -973,7 +984,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B      F X",
+        "X           F    B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B      F X",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -1156,7 +1167,6 @@ soundStatus = []
 soundStatus.append(Menu( (255,255,255),"Off.png", (275,250), 1))
 soundStatus.append(Menu( (255,255,255),"On.png", (275,250), 0))
 
-
 sky = pygame.image.load('bg.png').convert()
 player_tutorial_sprite_vec = pygame.sprite.Group()
 player_tutorial = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
@@ -1166,10 +1176,12 @@ pygame.mixer.init()
 player_sprite_vec = pygame.sprite.Group()
 player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
 player_sprite_vec.add(player)
+
 pygame.mixer.init()
-level_state = 1
-originial_level_state = 1
+level_state = 0
+originial_level_state = -1
 done = False
+
 main_men = pygame.display.set_mode([800, 600])
 
 levels = []
@@ -1191,12 +1203,29 @@ while (not done):
         if gamestate != 0:
             continue
         while(gamestate == 0): 
-            View_Map(levels[level_state].getScroll())
+            
             while (player.lives > 0 and gamestate == 0):
+                if (originial_level_state != level_state):
+                    platforms, allSprites, level, scale = levels[level_state].getScroll()
+                    View_Map(platforms, allSprites, level, scale)
+                    originial_level_state = level_state;
+
                 platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints = levels[level_state].getValues()
-                gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints,player, player_sprite_vec, sky, level_state)
+                gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, player, level, sky, player_sprite_vec, goals, EasyHints, HardHints, level_state)
+                
+                if (levels_state > len(levels) - 1):
+                    gamestate = 5
+                    break
+
+                level, levelTileset, gemsVector, hintsVector = levels[level_state].getRestart()
+
+                if (originial_level_state != level_state):
+                    levels = levelRestart(levels, level_state-1, level, levelTileset, gemsVector, hintsVector)
+                else:
+                    levels = levelRestart(levels, level_state, level, levelTileset, gemsVector, hintsVector)
+
                 player.reset([0,0], level_state, originial_level_state)
-                originial_level_state = level_state; 
+                 
             if (player.lives == 0): 
                 gamestate = 5
         #Reset level state 
