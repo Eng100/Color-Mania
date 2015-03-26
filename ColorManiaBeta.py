@@ -1016,7 +1016,7 @@ level_one= [
         "X                                                                               B                                              B        X",
         "X  CMMMMD                               CMMMD              B        CMD         B                 CMMD                    CMD  B        X",
         "X                B                             2           B                    B            H                                 B        X",
-        "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
+        "X       G        B   CMMD     1                   CMMMMD   B               CMD  B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
