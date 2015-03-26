@@ -82,9 +82,10 @@ class Character(pygame.sprite.Sprite):
         self.changeSprites(self.currrentSprite, size)
         self.index = 0
         self.image = self.imagesright[self.index]
+        self.score = 0; 
 
         self.sound = True
-
+        self.image_fly = pygame.transform.rotate(self.image, -90)
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
         self.x = 320
@@ -116,6 +117,7 @@ class Character(pygame.sprite.Sprite):
         self.gems = 0
         self.time = 0
         self.complete = False
+        self.score = 0
 
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
 
@@ -258,12 +260,13 @@ class Character(pygame.sprite.Sprite):
 
 
     def fly(self, up, down):
+        self.image = self.image_fly
         self.onGround = False
         self.yvel -= 0.3
         if up:
-            self.yvel = -3
+            self.yvel = -4
         if down:
-            self.yvel = 11
+            self.yvel = 4
 
     def resize(self, value):    
         tempx = self.rect.x
@@ -278,7 +281,6 @@ class Character(pygame.sprite.Sprite):
         self.rect.y = tempy
 
     def hidefResize(self): 
-        print("hidef called")
         tempx = self.rect.x
         tempy = self.rect.y
         self.imagesright = []
@@ -325,25 +327,25 @@ class Gem(pygame.sprite.Sprite):
         if (self.typeOfGem == "Invisibility"): 
             self.type = "Invisibility"
             self.checkCollision = False
-            self.time = 7 * 60
+            self.time = 4 * 60
 
         if (self.typeOfGem == "Jumping"): 
             self.type = "Jumping"
             self.yvel = 4
-            self.time = 15 * 60 
+            self.time = 5 * 60 
         if (self.typeOfGem == "Traction"):
             self.type = "Traction"
             self.xvel = 1
-            self.time = 20 * 60 
+            self.time = 5 * 60 
         if (self.typeOfGem == "Flying"):
             self.type = "Flying"
-            self.time = 20 * 60 
+            self.time = 4 * 60 
         if (self.typeOfGem == "Shrinking"):
             self.type = "Shrinking"
             self.time = 4 * 60
         if (self.typeOfGem == "Sprinting"):
             self.type = "Sprinting"
-            self.time = 15 * 60
+            self.time = 6 * 60
     def Jumping(self, Character): 
         Character.yvel -= 4
     def Collided (self):
@@ -485,17 +487,17 @@ def Tutorial(Character):
         Character.time = 150
 
 def Diagnostics(score, screen):
-    if(score < 200):
+    if(score < 1200):
         display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/8,View_Height/2, 4)
-    elif(score < 400):
+    elif(score < 1600):
         display_box(screen, "The player may want to work on making decisions faster.",View_Width/7,View_Height/2, 4)
-    elif(score < 600):
+    elif(score < 2100):
         display_box(screen, "The player did well but could improve speed of decisions.",View_Width/7,View_Height/2, 4)
     else:
         display_box(screen, "The player did a great job!",View_Width/3,View_Height/2, 4)
     display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3, 4)
 
-def View_Map(platforms, allSprites, level, scale):
+def View_Map(platforms, allSprites, level, scale, level_state):
     first_level_height = View_Height
     first_level_length = len(level[0]) * Tile_Length * scale
     cameraScrolling = Window(complex_camera, first_level_length, first_level_height)
@@ -507,7 +509,7 @@ def View_Map(platforms, allSprites, level, scale):
     active = True
     xvel = 0.1
     font = pygame.font.SysFont("Courier New", 40)
-    prompt = font.render("Level Begins", 1, [0, 0, 255])
+    prompt = font.render("Level %d Begins" %(level_state+1), 1, [0, 0, 255])
     
 
     while active:
@@ -635,6 +637,10 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     right = False
                 if event.type == KEYUP and event.key == K_LEFT:
                     left = False
+                if event.type == KEYDOWN and event.key == K_DOWN: 
+                    down = True 
+                if event.type == KEYUP and event.key == K_DOWN: 
+                    down = False 
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
                     esclifted = False
                     pause  = not(pause)
@@ -711,8 +717,6 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 screen.blit(sky, [200, k * Tile_Length])
             for k in range(15):
                 screen.blit(sky, [600, k * Tile_Length])
-
-
                 
             camera.update(player)
             CheckOutofBounds(player, first_level_height, first_level_length)
@@ -722,6 +726,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 return (0, level_state); 
             
             if (player.victory(goals)):
+                player.score = player.score + ((TOTALTIME - player.getTime())*5)
+                print(player.score)
                 return (0, level_state + 1); 
             
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
@@ -1010,7 +1016,7 @@ level_one= [
         "X       G        B   CMMD     1                   CMMMMD   B              CMD   B          CMMMD                               B        X",
         "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
         "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
-        "X             F  B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
+        "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
@@ -1042,31 +1048,6 @@ level_two = [
 
             ]
 
-#Ghost, Jumping, and Shrink
-level_two_not_using= [
-        "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
-        "X     B                                       B                                                                     BBB                  ",
-        "X     B                                       B                                                                     BBB                  ",
-        "X     BG                                      B                                                                                          ",
-        "X     BMD                                     B                                                                     BBB                  ",
-        "X    LB          CMMD                         B                                        BBBMMD                       BBBMMD               ",
-        "X     B                                       B            CMMD                        BBB                          BBB                  ",
-        "MR    B                                       B                                     CMMBBB                     CMMMDBBB               CMM",
-        "X     BMD        BBBBMMD                      B                                        BBB                          BBB                  ",
-        "X    LB          BBBB                         B                      CMMD              BBB          CMMD            BBB                  ",
-        "X     B          BBBB                         B                                        BBB                          BBBMMMMMMMMD         ",
-        "X              CMBBBB                         B      CMMMD                             BBB                          BBB                  ",
-        "X                BBBB                         B                                        BBBMMMMMMMMMMMMMMMMMMMMMD    BBB                  ",
-        "X                BBBB                     CMMMB                                        BBB                          BBB     CMMMMMMMMMMMM",
-        "MR    BMD        BBBB                         B                              CMMD      BBB                          BBB                  ",
-        "X     B          BBBB                         B                                        BBB   CMMMMMMMMMMMMMMMMMMMMMMBBB                  ",
-        "X    LB          BBBB           CMMMD                                                  BBB                            CMMMD              ",
-        "X     B          BBBB                                                                  BBB                                               ",
-        "X     B        CMBBBBMD           1                                                    BBB                1                              ",
-        "X    SB                                                                               JBBB                                              F",
-        "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMMMMMMMMMMMMMMMMMR",
-        ]
-
 #For Flying
 level_three = [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -1077,21 +1058,23 @@ level_three = [
         "X   2                            B                                   B          B                      CMMMMMMMMMMMMMD                   ",
         "X                                          Y                         B     2    B                                                        ",
         "X          B                     1        CMMMMMD                    B          B                                                        ",
-        "X          B           H                                             B     2    B                    HH    2                             ",
+        "X          B           H                                             B     2    B                    H     2                             ",
         "X          B         CMMMMD                                          B          B    H            CMMMMMMMMMMD                           ",
         "X          B                                        1                      2    B CMMMD      B                                           ",
         "X          B                             CMMMD           CMMMD B                B            B                                           ",
+        "           B                                                   B                B            B                                           ",
         "X          B                     CMMMD                         B           2    B       CMMMDB                                           ",
         "X          B                                                   B       1        B            B                                           ",
-        "X                           1                     CMMMD        B                  CMMMD      B                                      HHH  ",
-        "X                               H         2                    B  H G                        B                                   CMMMMMMD",
-        "X        1               CMMMMMMMMMMMMD                          CMMMD      1           CMMMDB                                           ",
-        "XY                CMMMD                  CMMMD       CMMMD                  Y                B         1        1      1             F   ",
-        "LMMMMMMMMMR                                     LMMMR          LMMMMMMMMMMMMMMMR      LMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
+        "X                           1                     CMMMD        B                BCMMMD       B                                      H H  ",
+        "X                                         2                    B                             B                                   CMMMMMMD",
+        "                                H                              B  H G                        B                                           ",
+        "X        1               CMMMMMMMMMMMMD                        B CMMMD      1           CMMMDB                                           ",
+        "XY   H            CMMMD                              CMMMD     B            Y                B         1        1      1             F   ",
+        "LMMMMMMMMMR                                 LMMMR          LMMMMMMMMMMMMMMMMMR  LMMMMMMMMMMMMR   LMMR    LR     LMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
 #For Flying
-level_three_not_using= [
+level_four= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                                                                           B                                        1                   ",
         "X                                                                           B                                                            ",
@@ -1113,8 +1096,34 @@ level_three_not_using= [
         "LMMMMMMMMMM        LMR    LMR   LMR    LMR     B     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR       LMMR    LR    MMMM      MMMMMMMMMR",
         ]
 
+#Ghost, Jumping, and Shrink
+level_five = [
+        "XXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBXXXXXXXXXXXXXXXXXX",
+        "X     B                                       B                                                                     BBB                  ",
+        "X     B                                       B                                                                     BBB                  ",
+        "X   1 BG                                      B                                                                                          ",
+        "X     BMD                                     B                                                                     BBB                  ",
+        "X    LB          CMMD                         B                                    2   BBBMMD                       BBBMMD               ",
+        "X     B                                       B            CMMD                        BBB                          BBB                  ",
+        "MR    B                                       B                                     CMMBBB                     CMMMDBBB               CMM",
+        "X     BMD        BBBBMMD                      B                                        BBB                          BBB                  ",
+        "X    LB          BBBB                         B                      CMMD              BBB          CMMD            BBB                  ",
+        "X     B          BBBB                         B                                        BBB                          BBBMMMMMMMMD         ",
+        "X              CMBBBB                         B      CMMMD                             BBB                          BBB                  ",
+        "X                BBBB                         B                                        BBBMMMMMMMMMMMMMMMMMMMMMD    BBB                  ",
+        "X                BBBB                     CMMMB                           2            BBB                          BBB     CMMMMMMMMMMMM",
+        "MR    BMD        BBBB                         B                              CMMD      BBB                          BBB                  ",
+        "X     B          BBBB                         B                                        BBB   CMMMMMMMMMMMMMMMMMMMMMMBBB                  ",
+        "X    LB          BBBB           CMMMD                                                  BBB                            CMMMD              ",
+        "X     B          BBBB                                                                  BBB                                               ",
+        "X     B        CMBBBBMD           1                                                    BBB                1                              ",
+        "X    SB                                                                             2 JBBB                                     2        F",
+        "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR     LMMMMR    LR    MMMMMMMMMMMMMMMMMMMR",
+        ]
+
+
 #For Traction with Ice Tile Set (Must use levelTileset2)
-level_four= [
+level_four_not_using= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBXXXXXXXXXXXXXXXXXXXXX",
         "X                                                                                                                 BB                     ",
         "X                                                                                                          2                             ",
@@ -1136,7 +1145,7 @@ level_four= [
         "MMMMMMMMMMMMMMMMM          MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM   MMMMMMMMMMMMMMMMMMMMMM  MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM",
         ]
 
-level_five= [
+level_five_not_using = [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBBBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "X                                                                                                          BBBB                                B                                                                        ",
         "X                                                                                                          B  B                                                                                                         ",
@@ -1260,7 +1269,7 @@ player = Character( imagesright, imagesleft, (60, 60), imagesrightResize, images
 player_sprite_vec.add(player)
 
 pygame.mixer.init()
-level_state = 1
+level_state = 0
 originial_level_state = -1
 done = False
 
@@ -1287,7 +1296,7 @@ while (not done):
             while (player.lives > 0 and gamestate == 0):
                 if (originial_level_state != level_state):
                     platforms, allSprites, level, scale = levels[level_state].getScroll()
-                    View_Map(platforms, allSprites, level, scale)
+                    View_Map(platforms, allSprites, level, scale, level_state)
                     originial_level_state = level_state;
 
                 platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints = levels[level_state].getValues()
@@ -1402,7 +1411,7 @@ while (not done):
         #End of game score, etc
         end_screen = pygame.display.set_mode([800, 600])
         
-        score = player.getTime() * 10
+        score = player.score
         
         end_screen.fill([208,244,247])
         
