@@ -99,7 +99,7 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
-        
+        self.startJump = True
     def changeSprites(self, spritIndex, size):
         self.imagesright, self.imagesleft, self.tempimagesright, self.tempimagesleft = loadImages(spritIndex)
         for x in range(len(self.imagesright)):
@@ -125,6 +125,8 @@ class Character(pygame.sprite.Sprite):
         gemInt = -1; 
         if up: 
             if self.onGround: self.yvel -= 11
+            if self.startJump: 
+                 self.startJump = False
             #if gemActivate: 
             #    if (self.gemsCollected[0].typeOfGem == "Jumping"): 
             #        self.gemsCollected[0].time -= 1; 
@@ -221,6 +223,7 @@ class Character(pygame.sprite.Sprite):
                         self.rect.left = p.rect.right
                     if yvel > 0:
                         self.rect.bottom = p.rect.top
+                        self.startJump = True
                         self.onGround = True
                         self.yvel = 0
                     if yvel < 0:
@@ -621,7 +624,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     return 
                 if event.type == KEYDOWN and event.key == K_UP:
                     up = True
-                    Music_Play("Char Jump.wav", 0, player.sound)
+                    if(player.startJump):
+                        Music_Play("Char Jump.wav", 0, player.sound)
                 if event.type == KEYDOWN and event.key == K_LEFT:
                     left = True
                 if event.type == KEYDOWN and event.key == K_RIGHT:
@@ -649,20 +653,23 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     esclifted = True
                 if event.type == KEYDOWN and event.key == K_1: 
                     if (len(player.gemsCollected) > 0): 
+                        if (not firstGem):
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         firstGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or thirdGem): 
                         precedence = 1
                 if event.type == KEYDOWN and event.key == K_2: 
-                    if (len(player.gemsCollected) > 1): 
+                    if (len(player.gemsCollected) > 1):
+                        if (not secondGem):
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         secondGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(thirdGem or firstGem): 
                         precedence = 2 
                 if event.type == KEYDOWN and event.key == K_3:
-                    if (len(player.gemsCollected) > 2): 
+                    if (len(player.gemsCollected) > 2):
+                        if (not thirdGem):
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         thirdGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or firstGem): 
                         precedence = 3
 
