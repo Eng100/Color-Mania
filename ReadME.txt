@@ -1,4 +1,4 @@
-README
+﻿README
 Color-Mania
 
 HOW TO OPEN WITH ECLIPSE:
@@ -50,12 +50,12 @@ FEATURES TO NOTE:
 16. There is a fully functional pause menu which allows the player to take a break and pick up where they left off.
 17. End menu allows the player to go back to the main menu, restart, quit, and check diagnostics.
 18. The settings menu allows the player to choose their character, enter a name, and turn volume on or off (User Modifiable Settings).
+19. With the ghost gem, the player will fall through platforms as well as go through walls. 
 
 
 RECOGNIZED BUGS:
-1. With the ghost gem, the player will fall through platforms as well as go through walls. 
-2. The frame rate on a Mac computer is much slower, and hence the player moves slower. 
-3. In the tutorial, instructional messages are based on the player’s location and what they have accomplished, assuming that player is following all rules. 
+1. The frame rate on a Mac computer is much slower, and hence the player moves slower. 
+2. In the tutorial, instructional messages are based on the player’s location and what they have accomplished, assuming that player is following all rules. 
 
 
 ** Disclaimer: Image Initialization code uses functions used in discussion; however, because these are pygame functions the code is standard - almost none is purely pasted (all are typed by us see bottom for explination). 
