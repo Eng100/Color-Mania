@@ -124,14 +124,19 @@ class Character(pygame.sprite.Sprite):
         isInvisibility = False
         gemInt = -1; 
         if up: 
-            if self.onGround: self.yvel -= 11
-            if self.startJump: 
-                 self.startJump = False
+            if self.onGround: 
+                self.yvel -= 11
+            if self.startJump:
+                self.startJump = False
+            #else: 
+            #    self.startJump = False
             #if gemActivate: 
             #    if (self.gemsCollected[0].typeOfGem == "Jumping"): 
             #        self.gemsCollected[0].time -= 1; 
             #        if self.onGround: 
             #            self.gemsCollected[0].Jumping(self)
+        #if not(up): 
+        #    self.startJump = False
         if down: 
             pass 
         if right:
@@ -621,8 +626,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == QUIT:
                     raise SystemExit
                     active = False
-                    return 
-                if event.type == KEYDOWN and event.key == K_UP:
+                    return
+                
+                if (event.type == KEYDOWN and event.key == K_UP):
                     up = True
                     if(player.startJump):
                         Music_Play("Char Jump.wav", 0, player.sound)
@@ -637,6 +643,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 #            Music_Play("Gem1 GhostInvis.wav", 0)   
                 if event.type == KEYUP and event.key == K_UP:
                     up = False
+                
                 if event.type == KEYUP and event.key == K_RIGHT:
                     right = False
                 if event.type == KEYUP and event.key == K_LEFT:
@@ -758,8 +765,6 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             #    display_box(screen, "Time: %d seconds", 20, 40, TOTALTIME - player.getTime()) #now just takes total time minus player time
             #TimeLeft = TOTALTIME - player.getTime()
             #HUD.displayToScreen(TimeLeft , player.lives, screen)
-
-                
             if (gamestate == 4):
                 Tutorial(player)
 
@@ -1420,7 +1425,8 @@ while (not done):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
         gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
-        gamestate = 1
+        if(gamestate != -1):
+            gamestate = 1
     elif (gamestate == 5):
         #End of game score, etc
         end_screen = pygame.display.set_mode([800, 600])
