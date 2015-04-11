@@ -118,7 +118,13 @@ class Character(pygame.sprite.Sprite):
         self.time = 0
         self.complete = False
         self.score = 0
-
+    def restartLevel(self):
+        self.gemsCollected = []
+        self.lives -= 1
+        self.gems = 0
+        self.time = 0
+        self.complete = False
+        self.score = 0
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
 
         isInvisibility = False
@@ -608,6 +614,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 return (1, level_state)
                             elif menSelect == 2:
                                 pause = not(pause)
+                                player.restartLevel()
                                 #player.resetStats()
                                 #player.reset([0,0], 0, 0)
                                 return (0, level_state)
