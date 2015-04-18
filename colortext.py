@@ -1,7 +1,7 @@
 from pygame.locals import *
 import pygame, string
 
-class Text
+class Text:
 	def __init__(self, startpos, startfont, startcolor, maxlen):
 		self.x = startpos[0]
 		self.y = startpos[1]
@@ -9,7 +9,7 @@ class Text
 		self.color = startcolor
 		self.maxLength = maxlen
 		self.entered = ""
-		self.shift = False
+		self.shifted = False
 
 	def set_pos(self, pos):
 		self.x = pos[0]
@@ -23,7 +23,7 @@ class Text
 
 	def draw(self, screen):
 		show = self.font.render(self.entered, 1, self.color)
-		screen.blit(show, self.x, self.y)
+		screen.blit(show, (self.x, self.y))
 
 	def update(self, events):
 		for event in events:
@@ -33,137 +33,137 @@ class Text
 			if event.type == KEYDOWN:
 				if event.key == K_LSHIFT or event.key == K_RSHIFT:
 					self.shifted = True
-				elif event.key == K_BACKSPACE and len(self.value)>0:
-					del self.value[len(self.value) - 1]
-				if len(self.value) < self.maxLength:
+				elif event.key == K_BACKSPACE and len(self.entered)>0:
+					self.entered = self.entered[:-1]
+				if len(self.entered) < self.maxLength:
 					if event.key == K_SPACE:
-						self.value += ' '
-					if not self.shifted:
+						self.entered += ' '
+					if self.shifted:
 						if event.key == K_a:
-							self.value += 'A'
+							self.entered += 'A'
 						if event.key == K_b:
-							self.value += 'B'
+							self.entered += 'B'
 						if event.key == K_c:
-							self.value += 'C'
+							self.entered += 'C'
 						if event.key == K_d:
-							self.value += 'D'
+							self.entered += 'D'
 						if event.key == K_e:
-							self.value += 'E'
+							self.entered += 'E'
 						if event.key == K_f:
-							self.value += 'F'
+							self.entered += 'F'
 						if event.key == K_g:
-							self.value += 'G'
+							self.entered += 'G'
 						if event.key == K_h:
-							self.value += 'H'
+							self.entered += 'H'
 						if event.key == K_i:
-							self.value += 'I'
+							self.entered += 'I'
 						if event.key == K_j:
-							self.value += 'J'
+							self.entered += 'J'
 						if event.key == K_k:
-							self.value += 'K'
+							self.entered += 'K'
 						if event.key == K_l:
-							self.value += 'L'
+							self.entered += 'L'
 						if event.key == K_m:
-							self.value += 'M'
+							self.entered += 'M'
 						if event.key == K_n:
-							self.value += 'N'
+							self.entered += 'N'
 						if event.key == K_o:
-							self.value += 'O'
+							self.entered += 'O'
 						if event.key == K_p:
-							self.value += 'P'
+							self.entered += 'P'
 						if event.key == K_q:
-							self.value += 'Q'
+							self.entered += 'Q'
 						if event.key == K_r:
-							self.value += 'R'
+							self.entered += 'R'
 						if event.key == K_s:
-							self.value += 'S'
+							self.entered += 'S'
 						if event.key == K_t:
-							self.value += 'T'
+							self.entered += 'T'
 						if event.key == K_u:
-							self.value += 'U'
+							self.entered += 'U'
 						if event.key == K_v:
-							self.value += 'V'
+							self.entered += 'V'
 						if event.key == K_w:
-							self.value += 'W'
+							self.entered += 'W'
 						if event.key == K_x:
-							self.value += 'X'
+							self.entered += 'X'
 						if event.key == K_y:
-							self.value += 'Y'
+							self.entered += 'Y'
 						if event.key == K_z:
-							self.value += 'Z'
+							self.entered += 'Z'
 					elif not self.shifted:
 						if event.key == K_a:
-							self.value += 'a'
+							self.entered += 'a'
 						if event.key == K_b:
-							self.value += 'b'
+							self.entered += 'b'
 						if event.key == K_c:
-							self.value += 'c'
+							self.entered += 'c'
 						if event.key == K_d:
-							self.value += 'd'
+							self.entered += 'd'
 						if event.key == K_e:
-							self.value += 'e'
+							self.entered += 'e'
 						if event.key == K_f:
-							self.value += 'f'
+							self.entered += 'f'
 						if event.key == K_g:
-							self.value += 'g'
+							self.entered += 'g'
 						if event.key == K_h:
-							self.value += 'h'
+							self.entered += 'h'
 						if event.key == K_i:
-							self.value += 'i'
+							self.entered += 'i'
 						if event.key == K_j:
-							self.value += 'j'
+							self.entered += 'j'
 						if event.key == K_k:
-							self.value += 'k'
+							self.entered += 'k'
 						if event.key == K_l:
-							self.value += 'l'
+							self.entered += 'l'
 						if event.key == K_m:
-							self.value += 'm'
+							self.entered += 'm'
 						if event.key == K_n:
-							self.value += 'n'
+							self.entered += 'n'
 						if event.key == K_o:
-							self.value += 'o'
+							self.entered += 'o'
 						if event.key == K_p:
-							self.value += 'p'
+							self.entered += 'p'
 						if event.key == K_q:
-							self.value += 'q'
+							self.entered += 'q'
 						if event.key == K_r:
-							self.value += 'r'
+							self.entered += 'r'
 						if event.key == K_s:
-							self.value += 's'
+							self.entered += 's'
 						if event.key == K_t:
-							self.value += 't'
+							self.entered += 't'
 						if event.key == K_u:
-							self.value += 'u'
+							self.entered += 'u'
 						if event.key == K_v:
-							self.value += 'v'
+							self.entered += 'v'
 						if event.key == K_w:
-							self.value += 'w'
+							self.entered += 'w'
 						if event.key == K_x:
-							self.value += 'x'
+							self.entered += 'x'
 						if event.key == K_y:
-							self.value += 'y'
+							self.entered += 'y'
 						if event.key == K_z:
-							self.value += 'z'
+							self.entered += 'z'
 						if event.key == K_1:
-							self.value += '1'
+							self.entered += '1'
 						if event.key == K_2:
-							self.value += '2'
+							self.entered += '2'
 						if event.key == K_3:
-							self.value += '3'
+							self.entered += '3'
 						if event.key == K_4:
-							self.value += '4'
+							self.entered += '4'
 						if event.key == K_5:
-							self.value += '5'
+							self.entered += '5'
 						if event.key == K_6:
-							self.value += '6'
+							self.entered += '6'
 						if event.key == K_7:
-							self.value += '7'
+							self.entered += '7'
 						if event.key == K_8:
-							self.value += '8'
+							self.entered += '8'
 						if event.key == K_9:
-							self.value += '9'
+							self.entered += '9'
 						if event.key == K_0:
-							self.value += '0'
+							self.entered += '0'
 	            
 
 

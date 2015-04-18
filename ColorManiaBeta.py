@@ -1,5 +1,6 @@
+from pygame.locals import *
 import pygame, time, math
-from colortext.py import Text
+import colortext
 global screen
 pygame.init()
 
@@ -1466,7 +1467,7 @@ while (not done):
         name_screen = pygame.display.set_mode([800, 600])
         font = pygame.font.SysFont("Courier New", 40)
         userName = colortext.Text([View_Height/3 , View_Width/5 + 41], font,(0,0,255), 13)
-        userName.value = player.name
+        userName.entered = player.name
 
         while (gamestate == 7):
             name_screen.fill([208,244,247])
@@ -1487,7 +1488,7 @@ while (not done):
                     pos = pygame.mouse.get_pos()
                     if name_men[nameToGame].rect.collidepoint(pos):
                         gamestate = name_men[nameToGame].type
-                        player.name = userName.value
+                        player.name = userName.entered
                         if (gamestate == 0 and player.name != ""):
                             levels = loadLevels(levelNames)
                         if (player.name == "" and nameToGame):
@@ -1495,9 +1496,9 @@ while (not done):
                     elif name_men[2].rect.collidepoint(pos):
                         gamestate = name_men[2].type
                         if not(nameToGame):
-                                player.name = userName.value
+                                player.name = userName.entered
                 if (event.type == KEYDOWN and event.key == K_RETURN):
-                    player.name = userName.value
+                    player.name = userName.entered
                     if nameToGame:
                         if player.name != "":
                             gamestate = 0
