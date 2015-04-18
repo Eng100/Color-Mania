@@ -1302,6 +1302,7 @@ while (not done):
             
             while (player.lives > 0 and gamestate == 0):
                 if (originial_level_state != level_state):
+                    print level_state
                     platforms, allSprites, level, scale = levels[level_state].getScroll()
                     View_Map(platforms, allSprites, level, scale, level_state)
                     originial_level_state = level_state;
@@ -1342,6 +1343,8 @@ while (not done):
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
                         if gamestate == 0:
+                            if player.name != "":
+                                levels = loadLevels(levelNames)
                             player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
@@ -1489,7 +1492,7 @@ while (not done):
                     if name_men[nameToGame].rect.collidepoint(pos):
                         gamestate = name_men[nameToGame].type
                         player.name = userName.value
-                        if (gamestate == 0):
+                        if (gamestate == 0 and player.name != ""):
                             levels = loadLevels(levelNames)
                         if (player.name == "" and nameToGame):
                             gamestate = 7
@@ -1500,8 +1503,9 @@ while (not done):
                 if (event.type == KEYDOWN and event.key == K_RETURN):
                     player.name = userName.value
                     if nameToGame:
-                        gamestate = 0
-                        levels = loadLevels(levelNames)
+                        if player.name != "":
+                            gamestate = 0
+                            levels = loadLevels(levelNames)
                     else:
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
