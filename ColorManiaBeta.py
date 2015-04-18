@@ -1266,9 +1266,7 @@ imagesleftResize = []
 imagesright, imagesleft, imagesrightResize, imagesleftResize = loadImages(STARTSPRITE)
 
 sky = pygame.image.load('bg.png').convert()
-player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
-player_tutorial_sprite_vec.add(player_tutorial)
+
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
@@ -1302,7 +1300,6 @@ while (not done):
             
             while (player.lives > 0 and gamestate == 0):
                 if (originial_level_state != level_state):
-                    print level_state
                     platforms, allSprites, level, scale = levels[level_state].getScroll()
                     View_Map(platforms, allSprites, level, scale, level_state)
                     originial_level_state = level_state;
@@ -1413,6 +1410,9 @@ while (not done):
         print("Level Selector Pressed!")
         gamestate = 1
     elif (gamestate == 4):
+        player_tutorial_sprite_vec = pygame.sprite.Group()
+        player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
+        player_tutorial_sprite_vec.add(player_tutorial)
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
         gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
