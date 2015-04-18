@@ -1,6 +1,5 @@
 import pygame, time, math
-import eztext # Credit to pywiz32: found online at http://www.pygame.org/project-EzText-920-.html, used for dynamic text input of name
-from pygame.locals import*
+from colortext.py import Text
 global screen
 pygame.init()
 
@@ -1465,19 +1464,17 @@ while (not done):
                 gamestate = 5
     elif (gamestate == 7):
         name_screen = pygame.display.set_mode([800, 600])
-        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
+        font = pygame.font.SysFont("Courier New", 40)
+        userName = colortext.Text([View_Height/3 , View_Width/5 + 41], font,(0,0,255), 13)
         userName.value = player.name
 
         while (gamestate == 7):
             name_screen.fill([208,244,247])
 
-            font = pygame.font.SysFont("Courier New", 40)
-
+            
             prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
             screen.blit(prompt, (View_Height/3, View_Width/5)) 
 
-            userName.set_pos(View_Height/3 , View_Width/5 + 41)
-            userName.set_font(font)
             userName.update(ev)
             userName.draw(name_screen)
 
