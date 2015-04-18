@@ -1394,7 +1394,6 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
-                            player_tutorial.changeSprites(player.currrentSprite,[60,60])
                         elif action == 7:
                             gamestate = 7
                             nameToGame = False
@@ -1411,7 +1410,7 @@ while (not done):
         gamestate = 1
     elif (gamestate == 4):
         player_tutorial_sprite_vec = pygame.sprite.Group()
-        player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
+        player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, player.currrentSprite)
         player_tutorial_sprite_vec.add(player_tutorial)
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
