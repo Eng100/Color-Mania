@@ -1021,7 +1021,6 @@ class Diagnostics(pygame.sprite.Sprite):
 
     def newProfileCreated(self, player): 
         self.name = player.name; 
-        print(self.name)
         #output to file
         #can you call constructor
 
@@ -1056,13 +1055,15 @@ class Diagnostics(pygame.sprite.Sprite):
             if (level == 0): 
                 self.averageCompletion = average
             else: 
-                self.averageCompletion = ((self.averageCompletion) + average)/2.0
+                self.averageCompletion = ((self.averageCompletion)*(level + 1) + average)/(level+2)
+        print "average competion: ", self.averageCompletion
         
 
     def printALL(self, screen, player): 
         screen.blit(self.image, (0,0))
         screen.blit(player.imagesright[0], (345, 93))
         font_2 = pygame.font.SysFont("Courier New", 22)
+        font_3 = pygame.font.SysFont("Courier New", 18)
         prompt_Name = font_2.render(self.name, 1, [0,0, 255])
         if (self.totalLevelsPassed == 0): 
             prompt_Levels = font_2.render("No levels Passed", 1, [0,0, 255])
@@ -1070,23 +1071,24 @@ class Diagnostics(pygame.sprite.Sprite):
         else: 
             prompt_Levels = font_2.render("%d seconds" %(player.totalLevelTime / self.totalLevelsPassed), 1, [0,0, 255])
             prompt_DynDiff = font_2.render("%d levels out of %d" %(self.levelsPassedAlone, self.totalLevelsPassed), 1, [0,0, 255])
-        if (self.averageCompletion > 50): 
+
+        if (self.averageCompletion > 30): 
             prompt_Navigation = font_2.render("Extremely slow.", 1, [0,0, 255])
-            prompt_Navigation2 = font_2.render("The player is often losing before getting the chance to fully navigate levels", 1, [0,0, 255])
+            prompt_Navigation2 = font_3.render("The player often loses early and isn't able to navigate the level fully.", 1, [0,0, 255])
         elif (self.averageCompletion > 10): 
             prompt_Navigation = font_2.render("Speed is average", 1, [0,0, 255])
-            prompt_Navigation2 = font_2.render("The player's navigation is average and weaker on difficult levels.", 1, [0,0, 255])
+            prompt_Navigation2 = font_3.render("The player's navigation is average and weaker on difficult levels.", 1, [0,0, 255])
         elif (self.averageCompletion > 5): 
-            prompt_Navigation = font_2.render("Great speed!", 1, [0,0, 255])
-            prompt_Navigation2 = font_2.render("The player thoroughly understands Color-Mania's levels", 1, [0,0, 255])
+            prompt_Navigation = font_2.render("Good speed!", 1, [0,0, 255])
+            prompt_Navigation2 = font_3.render("The player thoroughly understands the avatar's ability.", 1, [0,0, 255])
         else: 
-            prompt_Navigation = font_2.render("Extremely slow.", 1, [0,0, 255])
-            prompt_Navigation2 = font_2.render("The player is often losing before getting the chance to navigate levels", 1, [0,0, 255])
-        screen.blit(prompt_Name, (325,165))
+            prompt_Navigation = font_2.render("Amazing!", 1, [0,0, 255])
+            prompt_Navigation2 = font_2.render("You have mastered the art.", 1, [0,0, 255])
+        screen.blit(prompt_Name, (365 - ((len(self.name)/2)*10),165))
         screen.blit(prompt_Levels, (528, 265))
         screen.blit(prompt_DynDiff, (546, 316))
         screen.blit(prompt_Navigation, (427, 369))
-        screen.blit(prompt_Navigation2, (14, 412))
+        screen.blit(prompt_Navigation2, (8, 412))
 
 
         pygame.display.update()
@@ -1659,7 +1661,6 @@ while (not done):
                     gamestate = -1
             if (player.name != "Enter Your Name:"): 
                 diagnostics.newProfileCreated(player); 
-                print(player.name, "after call to change name")
             pygame.display.update()
     elif (gamestate == 8):
         lscreen = pygame.display.set_mode([800, 600])
