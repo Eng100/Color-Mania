@@ -1233,8 +1233,8 @@ gemsVector = []
 gemsVector.append("ghost.png")
 gemsVector.append("springboardUp.png")
 gemsVector.append("shrinkinggem.png")
-gemsVector.append("sprintinggem.png")
-gemsVector.append("FlyingGem.png")
+gemsVector.append("LightningGem.png")
+gemsVector.append("JetPack.png")
 
 #vector for hint images
 hintsVector = []
