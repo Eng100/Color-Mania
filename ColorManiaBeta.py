@@ -118,7 +118,13 @@ class Character(pygame.sprite.Sprite):
         self.time = 0
         self.complete = False
         self.score = 0
-
+    def restartLevel(self):
+        self.gemsCollected = []
+        self.lives -= 1
+        self.gems = 0
+        self.time = 0
+        self.complete = False
+        self.score = 0
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
 
         isInvisibility = False
