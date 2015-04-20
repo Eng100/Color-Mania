@@ -1493,44 +1493,49 @@ while (not done):
                 gamestate = 5
     elif (gamestate == 7):
         name_screen = pygame.display.set_mode([800, 600])
-        name_screen.fill([208,244,247])
-  
-        prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
-        screen.blit(prompt, (View_Height/3, View_Width/5)) 
+        font = pygame.font.SysFont("Courier New", 40)
+        userName = colortext.Text([View_Height/3 , View_Width/5 + 41], font,(0,0,255), 13)
+        userName.entered = player.name
 
-        userName.update(ev)
-        userName.draw(name_screen)
+        while (gamestate == 7):
+            name_screen.fill([208,244,247])
 
-        name_screen.blit(name_men[nameToGame].image, name_men[nameToGame])
-        name_screen.blit(name_men[2].image, name_men[2])
+            prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
+            screen.blit(prompt, (View_Height/3, View_Width/5)) 
 
-        ev = pygame.event.get()
-        for event in ev:
-            if (event.type == pygame.MOUSEBUTTONDOWN):
-                pos = pygame.mouse.get_pos()
-                if name_men[nameToGame].rect.collidepoint(pos):
-                    gamestate = name_men[nameToGame].type
+            userName.update(ev)
+            userName.draw(name_screen)
+
+            name_screen.blit(name_men[nameToGame].image, name_men[nameToGame])
+            name_screen.blit(name_men[2].image, name_men[2])
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    if name_men[nameToGame].rect.collidepoint(pos):
+                        gamestate = name_men[nameToGame].type
+                        player.name = userName.entered
+                        if (gamestate == 0 and player.name != ""):
+                            levels = loadLevels(levelNames)
+                        if (player.name == "" and nameToGame):
+                            gamestate = 7
+                    elif name_men[2].rect.collidepoint(pos):
+                        gamestate = name_men[2].type
+                        if not(nameToGame):
+                                player.name = userName.entered
+                if (event.type == KEYDOWN and event.key == K_RETURN):
                     player.name = userName.entered
-                    if (gamestate == 0 and player.name != ""):
-                        levels = loadLevels(levelNames)
-                    if (player.name == "" and nameToGame):
-                        gamestate = 7
-                elif name_men[2].rect.collidepoint(pos):
-                    gamestate = name_men[2].type
-                    if not(nameToGame):
-                            player.name = userName.entered
-            if (event.type == KEYDOWN and event.key == K_RETURN):
-                player.name = userName.entered
-                if nameToGame:
-                    if player.name != "":
-                        gamestate = 0
-                        levels = loadLevels(levelNames)
-                else:
-                    gamestate = 2
-            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                gamestate = -1
+                    if nameToGame:
+                        if player.name != "":
+                            gamestate = 0
+                            levels = loadLevels(levelNames)
+                    else:
+                        gamestate = 2
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
 
-        pygame.display.update()
+            pygame.display.update()
     elif (gamestate == 8):
         lscreen = pygame.display.set_mode([800, 600])
         while (gamestate == 8):
