@@ -604,8 +604,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 return (1, 0)
                             elif menSelect == 2:
                                 pause = not(pause)
-                                player.resetStats()
-                                player.reset([0,0], 0, 0)
+                                player.restartLevel()
                                 return (gamestate, level_state)
                             elif menSelect == -1:
                                 return (-1, level_state)
@@ -1026,7 +1025,7 @@ class Diagnostics(pygame.sprite.Sprite):
         #output to file
         #can you call constructor
 
-    def reset(): 
+    def reset(self): 
         self.gemSpeed = 0 
         self.totalLevelsPassed = 0 
         self.DynDifOn = False
@@ -1052,12 +1051,13 @@ class Diagnostics(pygame.sprite.Sprite):
         total = 0 
         for y in range(0, len(diffTimes)): 
             total += diffTimes[y]
-        average = total/len(diffTimes)
-        if (level == 0): 
-            self.averageCompletion = average
-        else: 
-            self.averageCompletion = ((self.averageCompletion) + average)/2.0
-        print average
+        if (len(diffTimes) != 0): 
+            average = total/len(diffTimes)
+            if (level == 0): 
+                self.averageCompletion = average
+            else: 
+                self.averageCompletion = ((self.averageCompletion) + average)/2.0
+        
 
     def printALL(self, screen, player): 
         screen.blit(self.image, (0,0))
@@ -1071,20 +1071,23 @@ class Diagnostics(pygame.sprite.Sprite):
             prompt_Levels = font_2.render("%d seconds" %(player.totalLevelTime / self.totalLevelsPassed), 1, [0,0, 255])
             prompt_DynDiff = font_2.render("%d levels out of %d" %(self.levelsPassedAlone, self.totalLevelsPassed), 1, [0,0, 255])
         if (self.averageCompletion > 50): 
-            prompt_Navigation = fond_2.render("Extremely slow.")
-            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
-        else if (self.averageCompletion > 10): 
-            prompt_Navigation = fond_2.render("Extremely slow.")
-            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
-        else if (self.averageCompletion > 5): 
-            prompt_Navigation = fond_2.render("Extremely slow.")
-            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+            prompt_Navigation = font_2.render("Extremely slow.", 1, [0,0, 255])
+            prompt_Navigation2 = font_2.render("The player is often losing before getting the chance to fully navigate levels", 1, [0,0, 255])
+        elif (self.averageCompletion > 10): 
+            prompt_Navigation = font_2.render("Speed is average", 1, [0,0, 255])
+            prompt_Navigation2 = font_2.render("The player's navigation is average and weaker on difficult levels.", 1, [0,0, 255])
+        elif (self.averageCompletion > 5): 
+            prompt_Navigation = font_2.render("Great speed!", 1, [0,0, 255])
+            prompt_Navigation2 = font_2.render("The player thoroughly understands Color-Mania's levels", 1, [0,0, 255])
         else: 
-            prompt_Navigation = fond_2.render("Extremely slow.")
-            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+            prompt_Navigation = font_2.render("Extremely slow.", 1, [0,0, 255])
+            prompt_Navigation2 = font_2.render("The player is often losing before getting the chance to navigate levels", 1, [0,0, 255])
         screen.blit(prompt_Name, (325,165))
         screen.blit(prompt_Levels, (528, 265))
         screen.blit(prompt_DynDiff, (546, 316))
+        screen.blit(prompt_Navigation, (427, 369))
+        screen.blit(prompt_Navigation2, (14, 412))
+
 
         pygame.display.update()
 
@@ -1439,6 +1442,8 @@ while (not done):
                     x += 12
                 diagnostics.createCheckPoints(arrx, size)
                 gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, player, level, sky, player_sprite_vec, goals, EasyHints, HardHints, level_state, diagnostics)
+                
+                
                 diagnostics.levelCheckPointReport(originial_level_state)
 
                 if (gamestate == 1): 
@@ -1589,11 +1594,13 @@ while (not done):
                     if men.rect.collidepoint(pos):
                         gamestate = men.type
                         if (gamestate == 2):
+                            diagnostics.reset()
                             gamestate = 0
                             player.resetStats()
                             player.reset([0,0], 0, 0)
                         elif (gamestate == 1):
                             player.resetStats()
+                            diagnostics.reset()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
     elif (gamestate == 6):
