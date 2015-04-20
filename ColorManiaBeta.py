@@ -1034,15 +1034,15 @@ level_one= [
         "X                      CMMMD          CMD                                                                                               X",
         "X                                                                           CMD            CMD                                          X",
         "X                                                      H                                          1  J   H                     B        X",
-        "X               H                CMMMMD               CMMMMD                                        CMMMMD               2     B        X",
+        "X               H                CMMMMD               CMMMMD                4                       CMMMMD               4     B        X",
         "X            CMMMMMMMMMMD                                             2         B       H                                      B        X",
         "X                                                                          CMD  B      CMMMMMD                                 B        X",
         "X                                                                               B                                              B        X",
         "X  CMMMMD                               CMMMD              B        CMD         B                 CMMD                    CMD  B        X",
         "X                B                             2           B                    B            H                                 B        X",
         "X       G        B   CMMD     1                   CMMMMD   B               CMD  B          CMMMD                               B        X",
-        "X      CMMMD     B                CMMMMD                   B                    B                                      CMD     B        X",  
-        "X                B           B                H            B         CMMD       B    CMD                          BB           B        X", 
+        "X      CMMMD     B                CMMMMD                   B                    B                                   3  CMD     B        X",  
+        "X                B         3 B                H            B         CMMD       B    CMD                          BB           B        X", 
         "X                B   H  H    B               CMMMMD        B    H               B             H        H         BBB           B       FX",
         "LMMMMMMR   LMMMMMMMMMMMMMMMMMMMMMR                   LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
@@ -1232,8 +1232,8 @@ gemsVector.append("FlyingGem.png")
 
 #vector for hint images
 hintsVector = []
-hintsVector.append("arrow.png")
-
+hintsVector.append("hintleft.png")
+hintsVector.append("hintup.png")
 
 
 gamestate = 1
@@ -1534,6 +1534,17 @@ while (not done):
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     gamestate = -1
+            if (player.name == "Chesney"):
+                TOTALTIME = 10000
+            else:
+                TOTALTIME = 150
+
+            if (player.name == "Noah"):
+                player.lives = 100
+                player.lives_start = 100
+            else:
+                player.lives = 3
+                player.lives_start = 3
 
             pygame.display.update()
     elif (gamestate == 8):
