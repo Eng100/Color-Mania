@@ -1007,7 +1007,7 @@ level_tutorial= [
         "X            CMMMD           B     CMMMMD    BB   B       CMMD               B           X",  
         "X                                            BB   B                          B           X", 
         "X                                 G          BB   B                          B         F X",
-        "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
+        "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
 #platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
@@ -1434,6 +1434,7 @@ while (not done):
         if (player.complete): 
             display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
+            player.complete = False
             #Diagnostics(score)
         else: 
             display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
