@@ -606,8 +606,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 return (1, level_state)
                             elif menSelect == 2:
                                 pause = not(pause)
-                                player.resetStats()
-                                player.reset([0,0], 0, 0)
+                                player.restartLevel()
+                                #player.resetStats()
+                                #player.reset([0,0], 0, 0)
                                 return (0, level_state)
                             elif menSelect == -1:
                                 return (-1, level_state)
