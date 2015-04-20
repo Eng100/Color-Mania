@@ -1457,6 +1457,7 @@ while (not done):
                 arrx = []
                 size = 0
                 x = 12; 
+                
                 while x < len(level[0]): 
                     arrx.append(x * Tile_Length)
                     size += 1
@@ -1472,6 +1473,10 @@ while (not done):
                 
                 if (level_state > len(levels) - 1):
                     gamestate = 5
+                    diagnostics.totalLevelsPassed += 1
+                    if (diagnostics.DynDifOn): 
+                        diagnostics.levelsPassedAlone += 1
+                        diagnostics.DynDifOn = False
                     continue
 
                 if (originial_level_state != level_state):
@@ -1593,7 +1598,7 @@ while (not done):
         
         end_screen.fill([208,244,247])
         
-        if (player.complete): 
+        if (diagnostics.totalLevelsPassed == 5): 
             display_box(end_screen, "Game Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
             player.complete = False
