@@ -502,17 +502,6 @@ def Tutorial(Character):
         display_box(screen, "LEVEL COMPLETED!",View_Width/3 - 190,View_Height/3,4)
         Character.time = 150
 
-def Diagnostics(score, screen):
-    if(score < 1200):
-        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/8,View_Height/2, 4)
-    elif(score < 1600):
-        display_box(screen, "The player may want to work on making decisions faster.",View_Width/7,View_Height/2, 4)
-    elif(score < 2100):
-        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/7,View_Height/2, 4)
-    else:
-        display_box(screen, "The player did a great job!",View_Width/3,View_Height/2, 4)
-    display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3, 4)
-
 def View_Map(platforms, allSprites, level, scale, level_state):
     first_level_height = View_Height
     first_level_length = len(level[0]) * Tile_Length * scale
@@ -780,7 +769,6 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 
             if (gamestate == 4):
                 Tutorial(player)
-
             TimeLeft = TOTALTIME - player.getTime()
             HUD.displayToScreen(TimeLeft , player.lives, screen, player, firstGem, secondGem, thirdGem)
             
@@ -1005,9 +993,19 @@ def loadLevels(levelnames):
 
     return levels
 
+#def Diagnostics(score, screen):
+#    if(score < 1200):
+#        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/8,View_Height/2, 4)
+#    elif(score < 1600):
+#        display_box(screen, "The player may want to work on making decisions faster.",View_Width/7,View_Height/2, 4)
+#    elif(score < 2100):
+#        display_box(screen, "The player did well but could improve speed of decisions.",View_Width/7,View_Height/2, 4)
+#    else:
+#        display_box(screen, "The player did a great job!",View_Width/3,View_Height/2, 4)
+#    display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3, 4)
+
 class Diagnostics(pygame.sprite.Sprite): 
     def __init__(self, player, file): 
-        self.name = player.name
         self.levelsPassedAlone = 0
         self.isNewProfile = False
         file_obj = open(file, "r+")
@@ -1017,6 +1015,7 @@ class Diagnostics(pygame.sprite.Sprite):
         self.averageCompletion = 0; 
         self.CheckPointArray = []; 
         self.averageSpeed = 0; 
+        self.image = pygame.image.load("diagnostic.png").convert_alpha()
 
     def Increment_Levels_Passed_Alone(self):
         ++self.levelsPassedAlone; 
@@ -1024,9 +1023,19 @@ class Diagnostics(pygame.sprite.Sprite):
     def newProfileCreated(self, player): 
         self.name = player.name; 
         print(self.name)
-        self.__init__(player, "record.txt")
         #output to file
         #can you call constructor
+
+    def reset(): 
+        self.gemSpeed = 0 
+        self.totalLevelsPassed = 0 
+        self.DynDifOn = False
+        self.averageCompletion = 0; 
+        self.CheckPointArray = []; 
+        self.averageSpeed = 0; 
+        self.levelsPassedAlone = 0
+        self.isNewProfile = False
+        self.image = pygame.image.load("diagnostic.png").convert_alpha()
 
     def createCheckPoints(self, arrx, size):
         self.CheckPointArray = []
@@ -1050,8 +1059,35 @@ class Diagnostics(pygame.sprite.Sprite):
             self.averageCompletion = ((self.averageCompletion) + average)/2.0
         print average
 
-    def PrintALL(self): 
-        pass
+    def printALL(self, screen, player): 
+        screen.blit(self.image, (0,0))
+        screen.blit(player.imagesright[0], (345, 93))
+        font_2 = pygame.font.SysFont("Courier New", 22)
+        prompt_Name = font_2.render(self.name, 1, [0,0, 255])
+        if (self.totalLevelsPassed == 0): 
+            prompt_Levels = font_2.render("No levels Passed", 1, [0,0, 255])
+            prompt_DynDiff = font_2.render("No levels Passed", 1, [0,0, 255])
+        else: 
+            prompt_Levels = font_2.render("%d seconds" %(player.totalLevelTime / self.totalLevelsPassed), 1, [0,0, 255])
+            prompt_DynDiff = font_2.render("%d levels out of %d" %(self.levelsPassedAlone, self.totalLevelsPassed), 1, [0,0, 255])
+        if (self.averageCompletion > 50): 
+            prompt_Navigation = fond_2.render("Extremely slow.")
+            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+        else if (self.averageCompletion > 10): 
+            prompt_Navigation = fond_2.render("Extremely slow.")
+            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+        else if (self.averageCompletion > 5): 
+            prompt_Navigation = fond_2.render("Extremely slow.")
+            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+        else: 
+            prompt_Navigation = fond_2.render("Extremely slow.")
+            prompt_Navigation2 = fond_2.render("The player is often losing before getting the chance to navigate levels")
+        screen.blit(prompt_Name, (325,165))
+        screen.blit(prompt_Levels, (528, 265))
+        screen.blit(prompt_DynDiff, (546, 316))
+
+        pygame.display.update()
+
 
 class CheckPoint(pygame.sprite.Sprite): 
     def __init__(self, location): 
@@ -1060,7 +1096,6 @@ class CheckPoint(pygame.sprite.Sprite):
     def checkPlayer(self, Player): 
         if(player.x > self.x and self.passedTime == 0): 
             self.passedTime = Player.getTime(); 
-
 
 
 
@@ -1533,7 +1568,7 @@ while (not done):
         end_screen.fill([208,244,247])
         
         if (player.complete): 
-            display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
+            display_box(end_screen, "Game Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
             player.complete = False
             #Diagnostics(score)
@@ -1563,8 +1598,8 @@ while (not done):
                 gamestate = -1
     elif (gamestate == 6):
         diag_screen = pygame.display.set_mode([800, 600])
-        diag_screen.fill([208,244,247])
-        Diagnostics(score, diag_screen)
+        #diag_screen.fill([208,244,247])
+        diagnostics.printALL(diag_screen, player)
         pygame.display.update()
         ev = pygame.event.get()
         for event in ev:
@@ -1615,8 +1650,9 @@ while (not done):
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     gamestate = -1
-
-            diagnostics.newProfileCreated(player); 
+            if (player.name != "Enter Your Name:"): 
+                diagnostics.newProfileCreated(player); 
+                print(player.name, "after call to change name")
             pygame.display.update()
     elif (gamestate == 8):
         lscreen = pygame.display.set_mode([800, 600])
