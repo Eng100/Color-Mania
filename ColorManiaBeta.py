@@ -497,19 +497,15 @@ def Tutorial(Character):
         Character.time = 150
 
 def Diagnostics(score, screen):
-    display_box(screen, "DIAGNOSTIC REPORT",View_Width/2 - 30, 25, 4)
     if(score < 1200):
-        display_box(screen, "The player must learn to make quick decisions",0,View_Height/2 + 25, 4)
-        display_box(screen, "Currently the gem usage of the player is extremely delayed" ,0,View_Height/2 + 50, 4)
-        display_box(screen, "The player cleared level 1 in 120 seconds which is below average" ,0,View_Height/2 + 75, 4)
-        display_box(screen, "The player should practice more!" ,0,View_Height/2 + 100, 4)
+        display_box(screen, "The player should continue to play to practice making quick decisions.",View_Width/8,View_Height/2, 4)
     elif(score < 1600):
         display_box(screen, "The player may want to work on making decisions faster.",View_Width/7,View_Height/2, 4)
     elif(score < 2100):
         display_box(screen, "The player did well but could improve speed of decisions.",View_Width/7,View_Height/2, 4)
     else:
         display_box(screen, "The player did a great job!",View_Width/3,View_Height/2, 4)
-    display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3 + 30, 4)
+    display_box(screen, "Press the Escape Key to go back",View_Width/3 - 35 , 2*View_Height/3, 4)
 
 def View_Map(platforms, allSprites, level, scale, level_state):
     first_level_height = View_Height
