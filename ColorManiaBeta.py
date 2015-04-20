@@ -100,6 +100,9 @@ class Character(pygame.sprite.Sprite):
         self.gems = 0
         self.lives_start = self.lives
         self.startJump = True
+        self.maxLevel = 0 #This is the max level reached
+
+
     def changeSprites(self, spritIndex, size):
         self.imagesright, self.imagesleft, self.tempimagesright, self.tempimagesleft = loadImages(spritIndex)
         for x in range(len(self.imagesright)):
@@ -745,6 +748,9 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             
             if (player.victory(goals)):
                 player.score = player.score + ((TOTALTIME - player.getTime())*5)
+                player.maxLevel += 1
+                if player.maxLevel == len(levels):
+                    player.maxLevel -= 1
                 return (0, level_state + 1); 
             
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
@@ -1237,8 +1243,8 @@ title = Menu( (255,255,255), "TITLE.png", (30, 50), 0)
 menus = []
 menus.append(Menu( (255,255,255),"PLAY.png", (150,200), 0))
 menus.append(Menu( (255,255,255),"Setting.png", (450,200), 2))
-#menus.append(Menu( (255,255,255),"Customize.png", (150,350), 3))
-menus.append(Menu( (255,255,255),"Instructions.png", (300,350), 4))
+menus.append(Menu( (255,255,255),"Levels.png", (150,350), 8))
+menus.append(Menu( (255,255,255),"Instructions.png", (450,350), 4))
 
 pause_men = []
 pause_men.append(Menu( (255,255,255),"PLAY.png", (150,150), 0)) 
@@ -1262,6 +1268,12 @@ set_men.append((Menu( (255,255,255),"ArrowLeft.png", (480,425), -1)) )
 set_men.append((Menu( (255,255,255),"ArrowRight.png", (680,425), 1)) )
 set_men.append((Menu( (255,255,255),"Back.png", (30,400), 0)) )
 set_men.append((Menu( (255,255,255),"Change.png", (275,100), 7)) )
+
+level_men = []
+level_men.append((Menu( (255,255,255),"Back.png", (150,360), 2)) )
+level_men.append((Menu( (255,255,255),"PLAY.png", (450,360), 0)) )
+level_men.append((Menu( (255,255,255),"ArrowLeft.png", (View_Width/2-120, View_Height/3+50), -1)) )
+level_men.append((Menu( (255,255,255),"ArrowRight.png", (View_Width/2+40, View_Height/3+50), 1)) )
 
 charaterSelectImages = []
 charaterSelectImages.append(loading('GreenBiclops.png'))
@@ -1488,7 +1500,6 @@ while (not done):
         while (gamestate == 7):
             name_screen.fill([208,244,247])
 
-            
             prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
             screen.blit(prompt, (View_Height/3, View_Width/5)) 
 
@@ -1525,3 +1536,46 @@ while (not done):
                     gamestate = -1
 
             pygame.display.update()
+    elif (gamestate == 8):
+        lscreen = pygame.display.set_mode([800, 600])
+        while (gamestate == 8):
+
+            lscreen.fill([208,244,247])
+
+            font = pygame.font.SysFont("Courier New", 40)
+
+            prompt = font.render("Select your level: ", 1, [0, 0, 255])
+            lscreen.blit(prompt, (View_Width/2-200, View_Height/3)) 
+
+            for men in level_men:
+                lscreen.blit(men.image, men)
+
+            currLevel = font.render(str(level_state + 1), 1, [0, 0, 255])
+            lscreen.blit(currLevel, (View_Width/2-13, View_Height/3+65))
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    for men in level_men:
+                        if men.rect.collidepoint(pos):
+                            menType = men.type
+                            if (menType == 2):
+                                gamestate = 1
+                            elif (menType == 0):
+                                gamestate = 0
+                                if player.name != "":
+                                    levels = loadLevels(levelNames)
+                                player.resetStats()
+                            else:
+                                level_state += menType
+                                if level_state < 0:
+                                    level_state = player.maxLevel
+                                if level_state > player.maxLevel:
+                                    level_state = 0
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
+            pygame.display.update()
+
+
+
