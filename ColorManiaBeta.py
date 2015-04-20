@@ -602,7 +602,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 pause = not(pause)
                                 player.resetStats()
                                 player.reset([0,0], 0, 0)
-                                return (0, level_state)
+                                return (gamestate, level_state)
                             elif menSelect == -1:
                                 return (-1, level_state)
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
@@ -1415,7 +1415,9 @@ while (not done):
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
         gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
-        gamestate = 1
+        if gamestate != 4:
+          gamestate = 1
+
     elif (gamestate == 5):
         #End of game score, etc
         end_screen = pygame.display.set_mode([800, 600])
