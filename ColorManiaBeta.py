@@ -1,5 +1,5 @@
 from pygame.locals import *
-import pygame, time, math
+import pygame, time, math, io
 import colortext
 global screen
 pygame.init()
@@ -101,6 +101,7 @@ class Character(pygame.sprite.Sprite):
         self.lives_start = self.lives
         self.startJump = True
         self.maxLevel = 0 #This is the max level reached
+        self.totalLevelTime = 0
 
 
     def changeSprites(self, spritIndex, size):
@@ -191,9 +192,11 @@ class Character(pygame.sprite.Sprite):
             self.xvel = 0
         
         self.rect.right += self.xvel 
+        self.x += self.xvel 
         self.collide(self.xvel, 0, platforms, gems, isInvisibility, base_platforms, goals)
         
         self.rect.top += self.yvel
+        self.y += self.yvel
         self.onGround = False
         self.collide(0, self.yvel, platforms, gems, isInvisibility, base_platforms, goals)
 
@@ -523,7 +526,6 @@ def View_Map(platforms, allSprites, level, scale, level_state):
     xvel = 0.1
     font = pygame.font.SysFont("Courier New", 40)
     prompt = font.render("Level %d Begins" %(level_state+1), 1, [0, 0, 255])
-    
 
     while active:
         for event in pygame.event.get():
@@ -560,7 +562,7 @@ def View_Map(platforms, allSprites, level, scale, level_state):
         pygame.display.update()
 
 
-def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints, levelState):
+def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, background, player_sprite_vec, goals, EasyHints, HardHints, levelState, diagnostics):
     first_level_height = len(level) * Tile_Length
     first_level_length = len(level[0]) * Tile_Length
     camera = Window(complex_camera, first_level_length, first_level_height)
@@ -610,7 +612,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 totalPauseTime += pauseEndTime - pauseStartTime #Adds total time paused for that pausing time
                             elif menSelect == 1:
                                 player.resetStats()
-                                return (1, level_state)
+                                return (1, 0)
                             elif menSelect == 2:
                                 pause = not(pause)
                                 player.resetStats()
@@ -748,12 +750,15 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
             
             if (player.victory(goals)):
                 player.score = player.score + ((TOTALTIME - player.getTime())*5)
+                player.totalLevelTime += player.getTime(); 
                 player.maxLevel += 1
                 if player.maxLevel == len(levels):
                     player.maxLevel -= 1
                 return (0, level_state + 1); 
-            
+
             player.update(up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem)
+            for x in range(len(diagnostics.CheckPointArray)):
+                diagnostics.CheckPointArray[x].checkPlayer(player) 
             for sprite in allSprites: 
                 screen.blit(sprite.image, camera.apply(sprite))
             if (player.lives_start - player.lives == 1): 
@@ -999,6 +1004,64 @@ def loadLevels(levelnames):
         levels.append(LevelMap(name, levelTileset1, gemsVector, hintsVector))
 
     return levels
+
+class Diagnostics(pygame.sprite.Sprite): 
+    def __init__(self, player, file): 
+        self.name = player.name
+        self.levelsPassedAlone = 0
+        self.isNewProfile = False
+        file_obj = open(file, "r+")
+        self.gemSpeed = 0 
+        self.totalLevelsPassed = 0 
+        self.DynDifOn = False
+        self.averageCompletion = 0; 
+        self.CheckPointArray = []; 
+        self.averageSpeed = 0; 
+
+    def Increment_Levels_Passed_Alone(self):
+        ++self.levelsPassedAlone; 
+
+    def newProfileCreated(self, player): 
+        self.name = player.name; 
+        print(self.name)
+        self.__init__(player, "record.txt")
+        #output to file
+        #can you call constructor
+
+    def createCheckPoints(self, arrx, size):
+        self.CheckPointArray = []
+        for x in range(0, size): 
+            self.CheckPointArray.append(CheckPoint(arrx[x])); 
+
+    def levelCheckPointReport(self, level): 
+        diffTimes = []
+        for x in range(0, len(self.CheckPointArray) - 1): 
+            if (self.CheckPointArray[x].passedTime == 0): 
+                diffTimes.append(75)
+            else: 
+                diffTimes.append(self.CheckPointArray[x+1].passedTime - self.CheckPointArray[x].passedTime)
+        total = 0 
+        for y in range(0, len(diffTimes)): 
+            total += diffTimes[y]
+        average = total/len(diffTimes)
+        if (level == 0): 
+            self.averageCompletion = average
+        else: 
+            self.averageCompletion = ((self.averageCompletion) + average)/2.0
+        print average
+
+    def PrintALL(self): 
+        pass
+
+class CheckPoint(pygame.sprite.Sprite): 
+    def __init__(self, location): 
+        self.x = location; 
+        self.passedTime = 0
+    def checkPlayer(self, Player): 
+        if(player.x > self.x and self.passedTime == 0): 
+            self.passedTime = Player.getTime(); 
+
+
 
 
 level_tutorial= [
@@ -1309,6 +1372,7 @@ main_men = pygame.display.set_mode([800, 600])
 levels = []
 levelNames = [level_one, level_two, level_three, level_four, level_five]
 
+diagnostics = Diagnostics(player, "record.txt"); 
 
 while (not done):
     quit_game = False
@@ -1331,7 +1395,19 @@ while (not done):
                     originial_level_state = level_state;
 
                 platforms, gems, allSprites, base_platforms, level, goals, EasyHints, HardHints = levels[level_state].getValues()
-                gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, player, level, sky, player_sprite_vec, goals, EasyHints, HardHints, level_state)
+                arrx = []
+                size = 0
+                x = 12; 
+                while x < len(level[0]): 
+                    arrx.append(x * Tile_Length)
+                    size += 1
+                    x += 12
+                diagnostics.createCheckPoints(arrx, size)
+                gamestate, level_state = Level_Screens(platforms, gems, allSprites, base_platforms, player, level, sky, player_sprite_vec, goals, EasyHints, HardHints, level_state, diagnostics)
+                diagnostics.levelCheckPointReport(originial_level_state)
+
+                if (gamestate == 1): 
+                    originial_level_state = -1; 
                 
                 if (level_state > len(levels) - 1):
                     gamestate = 5
@@ -1340,9 +1416,14 @@ while (not done):
                 if (originial_level_state != level_state):
                     level, levelTileset, gemsVector, hintsVector = levels[level_state-1].getRestart()
                     levels = levelRestart(levels, level_state-1, level, levelTileset, gemsVector, hintsVector)
+                    diagnostics.totalLevelsPassed += 1
+                    if (diagnostics.DynDifOn): 
+                        diagnostics.levelsPassedAlone += 1
+                        diagnostics.DynDifOn = False
                 else:
                     level, levelTileset, gemsVector, hintsVector = levels[level_state].getRestart()
                     levels = levelRestart(levels, level_state, level, levelTileset, gemsVector, hintsVector)
+                    diagnostics.DynDifOn = True
 
                 player.reset([0,0], level_state, originial_level_state)
                  
@@ -1535,6 +1616,7 @@ while (not done):
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     gamestate = -1
 
+            diagnostics.newProfileCreated(player); 
             pygame.display.update()
     elif (gamestate == 8):
         lscreen = pygame.display.set_mode([800, 600])
