@@ -1271,9 +1271,9 @@ set_men.append((Menu( (255,255,255),"Change.png", (275,100), 7)) )
 
 level_men = []
 level_men.append((Menu( (255,255,255),"Back.png", (150,360), 2)) )
-level_men.append((Menu( (255,255,255),"PLAY.png", (150,360), 0)) )
-level_men.append((Menu( (255,255,255),"ArrowLeft.png", (480,425), -1)) )
-level_men.append((Menu( (255,255,255),"ArrowRight.png", (680,425), 1)) )
+level_men.append((Menu( (255,255,255),"PLAY.png", (450,360), 0)) )
+level_men.append((Menu( (255,255,255),"ArrowLeft.png", (View_Width/2-120, View_Height/3+50), -1)) )
+level_men.append((Menu( (255,255,255),"ArrowRight.png", (View_Width/2+40, View_Height/3+50), 1)) )
 
 charaterSelectImages = []
 charaterSelectImages.append(loading('GreenBiclops.png'))
@@ -1534,40 +1534,46 @@ while (not done):
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     gamestate = -1
-
     elif (gamestate == 8):
-        lscreen.fill([208,244,247])
         lscreen = pygame.display.set_mode([800, 600])
+        while (gamestate == 8):
 
-        font = pygame.font.SysFont("Courier New", 40)
+            lscreen.fill([208,244,247])
 
-        prompt = font.render("Select your level: ", 1, [0, 0, 255])
-        lscreen.blit(prompt, (View_Height/3, View_Width/5)) 
+            font = pygame.font.SysFont("Courier New", 40)
 
-        for men in level_men:
-            lscreen.blit(men.image, men)
+            prompt = font.render("Select your level: ", 1, [0, 0, 255])
+            lscreen.blit(prompt, (View_Width/2-200, View_Height/3)) 
 
-        currLevel = font.render(str(level_state + 1), 1, [0, 0, 255])
-        lscreen.blit(currLevel, (View_Height/3 + 50, View_Width/2 - 5))
+            for men in level_men:
+                lscreen.blit(men.image, men)
 
-        ev = pygame.event.get()
-        for event in ev:
-            if (event.type == pygame.MOUSEBUTTONDOWN):
-                pos = pygame.mouse.get_pos()
-                for men in level_men:
-                    if men.rect.collidepoint(pos):
-                        menType = men.type
-                        if (menType == 2):
-                            gamestate = 1
-                        else:
-                            level_state += menType
-                            if level_state < 0:
-                                level_state = player.maxLevel
-                            if level_state > player.maxLevel:
-                                level_state = 0
-            elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
-                gamestate = -1
-        pygame.display.update()
+            currLevel = font.render(str(level_state + 1), 1, [0, 0, 255])
+            lscreen.blit(currLevel, (View_Width/2-13, View_Height/3+65))
+
+            ev = pygame.event.get()
+            for event in ev:
+                if (event.type == pygame.MOUSEBUTTONDOWN):
+                    pos = pygame.mouse.get_pos()
+                    for men in level_men:
+                        if men.rect.collidepoint(pos):
+                            menType = men.type
+                            if (menType == 2):
+                                gamestate = 1
+                            elif (menType == 0):
+                                gamestate = 0
+                                if player.name != "":
+                                    levels = loadLevels(levelNames)
+                                player.resetStats()
+                            else:
+                                level_state += menType
+                                if level_state < 0:
+                                    level_state = player.maxLevel
+                                if level_state > player.maxLevel:
+                                    level_state = 0
+                elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
+                    gamestate = -1
+            pygame.display.update()
 
 
 
