@@ -1058,12 +1058,29 @@ class Diagnostics(pygame.sprite.Sprite):
                 self.averageCompletion = ((self.averageCompletion)*(level + 1) + average)/(level+2)
         print "average competion: ", self.averageCompletion
         
+    def calculateGrade(self, player): 
+        if (self.totalLevelsPassed >= 4 and self.levelsPassedAlone <= 2): 
+            if (self.averageCompletion < 4): 
+                return "A+"
+            return "A"
+        elif (self.totalLevelsPassed >= 2): 
+            if (self.averageCompletion < 10): 
+                return "B+"
+            elif (self.averageCompletion < 30):
+                return "B"
+            else: 
+                return "B-"
+        else: 
+            return "C"
+
+        pass
 
     def printALL(self, screen, player): 
         screen.blit(self.image, (0,0))
         screen.blit(player.imagesright[0], (345, 93))
         font_2 = pygame.font.SysFont("Courier New", 22)
         font_3 = pygame.font.SysFont("Courier New", 18)
+        font_4 = pygame.font.SysFont("Courier New", 24)
         prompt_Name = font_2.render(self.name, 1, [0,0, 255])
         if (self.totalLevelsPassed == 0): 
             prompt_Levels = font_2.render("No levels Passed", 1, [0,0, 255])
@@ -1078,19 +1095,21 @@ class Diagnostics(pygame.sprite.Sprite):
         elif (self.averageCompletion > 10): 
             prompt_Navigation = font_2.render("Speed is average", 1, [0,0, 255])
             prompt_Navigation2 = font_3.render("The player's navigation is average and weaker on difficult levels.", 1, [0,0, 255])
-        elif (self.averageCompletion > 5): 
+        elif (self.averageCompletion > 4): 
             prompt_Navigation = font_2.render("Good speed!", 1, [0,0, 255])
             prompt_Navigation2 = font_3.render("The player thoroughly understands the avatar's ability.", 1, [0,0, 255])
         else: 
             prompt_Navigation = font_2.render("Amazing!", 1, [0,0, 255])
             prompt_Navigation2 = font_2.render("You have mastered the art.", 1, [0,0, 255])
+        overallGrade = self.calculateGrade(player); 
+        prompt_Grade = font_4.render(overallGrade, 1, [0,0,255])
+
         screen.blit(prompt_Name, (365 - ((len(self.name)/2)*10),165))
         screen.blit(prompt_Levels, (528, 265))
         screen.blit(prompt_DynDiff, (546, 316))
         screen.blit(prompt_Navigation, (427, 369))
         screen.blit(prompt_Navigation2, (8, 412))
-
-
+        screen.blit(prompt_Grade, (512, 517))
         pygame.display.update()
 
 
