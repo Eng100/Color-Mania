@@ -1,6 +1,6 @@
+from pygame.locals import *
 import pygame, time, math
-import eztext # Credit to pywiz32: found online at http://www.pygame.org/project-EzText-920-.html, used for dynamic text input of name
-from pygame.locals import*
+import colortext
 global screen
 pygame.init()
 
@@ -99,7 +99,7 @@ class Character(pygame.sprite.Sprite):
         self.complete = False
         self.gems = 0
         self.lives_start = self.lives
-        
+        self.startJump = True
     def changeSprites(self, spritIndex, size):
         self.imagesright, self.imagesleft, self.tempimagesright, self.tempimagesleft = loadImages(spritIndex)
         for x in range(len(self.imagesright)):
@@ -118,13 +118,22 @@ class Character(pygame.sprite.Sprite):
         self.time = 0
         self.complete = False
         self.score = 0
-
+    def restartLevel(self):
+        self.gemsCollected = []
+        self.lives -= 1
+        self.gems = 0
+        self.time = 0
+        self.complete = False
+        self.score = 0
     def update(self, up, down, left, right, platforms, gemActivate, gems, base_platforms, goals, firstGem, secondGem, thirdGem):
 
         isInvisibility = False
         gemInt = -1; 
         if up: 
-            if self.onGround: self.yvel -= 11
+            if self.onGround: 
+                self.yvel -= 11
+            if self.startJump:
+                self.startJump = False
             #if gemActivate: 
             #    if (self.gemsCollected[0].typeOfGem == "Jumping"): 
             #        self.gemsCollected[0].time -= 1; 
@@ -221,6 +230,7 @@ class Character(pygame.sprite.Sprite):
                         self.rect.left = p.rect.right
                     if yvel > 0:
                         self.rect.bottom = p.rect.top
+                        self.startJump = True
                         self.onGround = True
                         self.yvel = 0
                     if yvel < 0:
@@ -602,7 +612,7 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                                 pause = not(pause)
                                 player.resetStats()
                                 player.reset([0,0], 0, 0)
-                                return (0, level_state)
+                                return (gamestate, level_state)
                             elif menSelect == -1:
                                 return (-1, level_state)
                 if event.type == KEYDOWN and event.key == K_ESCAPE and esclifted:
@@ -621,7 +631,8 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                     return 
                 if event.type == KEYDOWN and event.key == K_UP:
                     up = True
-                    Music_Play("Char Jump.wav", 0, player.sound)
+                    if(player.startJump):
+                        Music_Play("Char Jump.wav", 0, player.sound)
                 if event.type == KEYDOWN and event.key == K_LEFT:
                     left = True
                 if event.type == KEYDOWN and event.key == K_RIGHT:
@@ -648,21 +659,24 @@ def Level_Screens(platforms, gems, allSprites, base_platforms, player, level, ba
                 if event.type == KEYUP and event.key == K_ESCAPE and not(esclifted):
                     esclifted = True
                 if event.type == KEYDOWN and event.key == K_1: 
-                    if (len(player.gemsCollected) > 0): 
+                    if (len(player.gemsCollected) > 0):
+                        if(not firstGem): 
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         firstGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or thirdGem): 
                         precedence = 1
                 if event.type == KEYDOWN and event.key == K_2: 
-                    if (len(player.gemsCollected) > 1): 
+                    if (len(player.gemsCollected) > 1):
+                        if(not secondGem): 
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         secondGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(thirdGem or firstGem): 
                         precedence = 2 
                 if event.type == KEYDOWN and event.key == K_3:
-                    if (len(player.gemsCollected) > 2): 
+                    if (len(player.gemsCollected) > 2):
+                        if(not thirdGem): 
+                            Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                         thirdGem = True
-                        Music_Play("Gem1 GhostInvis.wav", 0, player.sound)
                     if not(secondGem or firstGem): 
                         precedence = 3
 
@@ -1000,7 +1014,7 @@ level_tutorial= [
         "X            CMMMD           B     CMMMMD    BB   B       CMMD               B           X",  
         "X                                            BB   B                          B           X", 
         "X                                 G          BB   B                          B         F X",
-        "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
+        "LMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMR",
         ]
 
 #platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial = Level_Vector_Creations(level_tutorial)
@@ -1266,9 +1280,7 @@ imagesleftResize = []
 imagesright, imagesleft, imagesrightResize, imagesleftResize = loadImages(STARTSPRITE)
 
 sky = pygame.image.load('bg.png').convert()
-player_tutorial_sprite_vec = pygame.sprite.Group()
-player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, STARTSPRITE)
-player_tutorial_sprite_vec.add(player_tutorial)
+
 pygame.mixer.init()
 
 player_sprite_vec = pygame.sprite.Group()
@@ -1342,6 +1354,8 @@ while (not done):
                     if menu_item.rect.collidepoint(pos):
                         gamestate = menu_item.type
                         if gamestate == 0:
+                            if player.name != "":
+                                levels = loadLevels(levelNames)
                             player.resetStats()
             elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                 gamestate = -1
@@ -1394,7 +1408,6 @@ while (not done):
                         elif action == 0:
                             gamestate = 1
                             player.changeSprites(player.currrentSprite, [60,60])
-                            player_tutorial.changeSprites(player.currrentSprite,[60,60])
                         elif action == 7:
                             gamestate = 7
                             nameToGame = False
@@ -1410,10 +1423,14 @@ while (not done):
         print("Level Selector Pressed!")
         gamestate = 1
     elif (gamestate == 4):
+        player_tutorial_sprite_vec = pygame.sprite.Group()
+        player_tutorial = Character(imagesright, imagesleft, (60, 60), imagesrightResize, imagesleftResize, player.currrentSprite)
+        player_tutorial_sprite_vec.add(player_tutorial)
         #Change this to Instructions page
         platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, goals_tutorial, allSprites_scroll_tu, level_scroll_tu, scaleFactor, EasyHints_tutorial, HardHints_tutorial = Level_Vector_Creations(level_tutorial,levelTileset1,gemsVector,hintsVector)
         gamestate, x = Level_Screens(platforms_tutorial, gems_tutorial, allSprites_tutorial, base_platforms_tutorial, player_tutorial, level_tutorial, sky, player_tutorial_sprite_vec, goals_tutorial, EasyHints_tutorial, HardHints_tutorial, 0)
-        gamestate = 1
+        if gamestate != 4:
+          gamestate = 1
     elif (gamestate == 5):
         #End of game score, etc
         end_screen = pygame.display.set_mode([800, 600])
@@ -1425,6 +1442,7 @@ while (not done):
         if (player.complete): 
             display_box(end_screen, "Great Job! Level Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
+            player.complete = False
             #Diagnostics(score)
         else: 
             display_box(end_screen, "Better Luck Next Time!", 150, 250, 0)
@@ -1463,19 +1481,17 @@ while (not done):
                 gamestate = 5
     elif (gamestate == 7):
         name_screen = pygame.display.set_mode([800, 600])
-        userName = eztext.Input(maxlength= 13, color=(0,0,255), prompt='')
-        userName.value = player.name
+        font = pygame.font.SysFont("Courier New", 40)
+        userName = colortext.Text([View_Height/3 , View_Width/5 + 41], font,(0,0,255), 13)
+        userName.entered = player.name
 
         while (gamestate == 7):
             name_screen.fill([208,244,247])
 
-            font = pygame.font.SysFont("Courier New", 40)
-
+            
             prompt = font.render("Enter Your Name:", 1, [0, 0, 255])
             screen.blit(prompt, (View_Height/3, View_Width/5)) 
 
-            userName.set_pos(View_Height/3 , View_Width/5 + 41)
-            userName.set_font(font)
             userName.update(ev)
             userName.draw(name_screen)
 
@@ -1488,20 +1504,21 @@ while (not done):
                     pos = pygame.mouse.get_pos()
                     if name_men[nameToGame].rect.collidepoint(pos):
                         gamestate = name_men[nameToGame].type
-                        player.name = userName.value
-                        if (gamestate == 0):
+                        player.name = userName.entered
+                        if (gamestate == 0 and player.name != ""):
                             levels = loadLevels(levelNames)
                         if (player.name == "" and nameToGame):
                             gamestate = 7
                     elif name_men[2].rect.collidepoint(pos):
                         gamestate = name_men[2].type
                         if not(nameToGame):
-                                player.name = userName.value
+                                player.name = userName.entered
                 if (event.type == KEYDOWN and event.key == K_RETURN):
-                    player.name = userName.value
+                    player.name = userName.entered
                     if nameToGame:
-                        gamestate = 0
-                        levels = loadLevels(levelNames)
+                        if player.name != "":
+                            gamestate = 0
+                            levels = loadLevels(levelNames)
                     else:
                         gamestate = 2
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
