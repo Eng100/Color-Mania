@@ -1146,7 +1146,29 @@ level_five = [
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR      CMMD    B       LMMMMMMMMMMMMMMMMMR",
         ]
 
-
+level_six = [
+        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "X                                                                                                                                          B",
+        "X         B            B                                                 H       H     H   H                                               B",
+        "X       BBB            B                                               LMMR   LMMMMMMMMMMMMMMMR                                            B",
+        "X         B           BB                                                                                                                   B",
+        "X         B            B                                         G                                                                         B",
+        "X       BBB           YB                                        LMR        LMMR                     BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB   B",
+        "M         B           BB                                                                               B                                   B",
+        "X         B            B                                                                               B                                   B",
+        "X       BBB            B                                               LMMR                            B                                   B",
+        "X         B            B                                                                               B                                   B",
+        "X         B           BB                                                                               B               BBBBBBBBBBBBBBBBBBBBB",
+        "X       BBB            B                                      LMMR                                     B                                   B",
+        "X         B            B                                                                               B                                   B",
+        "M         B           YB                                                  LMR                          B                                   B",
+        "X       BBB           BB                                                                               B                        BBBBBBBBBBBB",
+        "X         B            B                                                                               B                        BB         B",
+        "X    Y    B           BB                                          LMMR                                 B                                   B",
+        "X    B    B            B                                                                               B                        BB         B",
+        "X    B    B         G  B                 B             Y        H                                      B        S               BB        FB",
+        "LMMMMMMMMMMR       LMMMMMMR             LMR           LMR      LMR                                  LMRB       LMR     LMMMMMMMMMMMM   LMMMR",
+        ]
 #For Traction with Ice Tile Set (Must use levelTileset2)
 level_four_not_using= [
         "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBBXXXXXXXXXXXXXXXXXXXXX",
