@@ -61,14 +61,8 @@ DIAGNOSTICS:
 3. Diagnostics is in depth and analyzes the number of levels completed without hints a long with other metrics
 4. Color-Mania feels this is a very rich feature within our game. 
 
-BUGS FIXED
-1. Our game does not crash when the user enters their name early anymore
-2. 
-
-
 RECOGNIZED BUGS:
 1. The frame rate on a Mac computer is much slower, and hence the player moves slower. 
-
 
 ** Disclaimer: Image Initialization code uses functions used in discussion; however, because these are pygame functions the code is standard - almost none is purely pasted (all are typed by us see bottom for explanation). 
 Techniques used to develop game such as passing a vector of strings to create a level were adopted by observation of other games - no code was copied
