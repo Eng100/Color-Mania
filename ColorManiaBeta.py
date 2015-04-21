@@ -268,7 +268,7 @@ class Character(pygame.sprite.Sprite):
         self.x =  loc[0]
         self.y = loc[1]
         self.rect.x = loc[0]
-        self.rect.y = loc[1]
+        self.rect.y = 580
         del self.gemsCollected[:]
         self.gemsCollected = []
         if (level_state != originial_level_state): 
