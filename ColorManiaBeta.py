@@ -89,7 +89,8 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
         self.x = 320
-        self.y = 30
+        self.y = 330
+        self.rect.y = 580
         self.xvel = 0 
         self.yvel = 0
         self.onGround = False
