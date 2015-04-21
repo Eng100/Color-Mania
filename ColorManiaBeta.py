@@ -89,7 +89,8 @@ class Character(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect = self.rect.inflate(-10, 0)
         self.x = 320
-        self.y = 30
+        self.y = 330
+        self.rect.y = 580
         self.xvel = 0 
         self.yvel = 0
         self.onGround = False
@@ -267,7 +268,7 @@ class Character(pygame.sprite.Sprite):
         self.x =  loc[0]
         self.y = loc[1]
         self.rect.x = loc[0]
-        self.rect.y = loc[1]
+        self.rect.y = 580
         del self.gemsCollected[:]
         self.gemsCollected = []
         if (level_state != originial_level_state): 
@@ -1275,7 +1276,6 @@ level_five = [
         "X    SB                                                                             4 JBBB                                     2        F",
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR     LMMMMR    LR    MMMMMMMMMMMMMMMMMMMR",
         ]
-
 
 #For Traction with Ice Tile Set (Must use levelTileset2)
 level_four_not_using= [
