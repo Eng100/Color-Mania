@@ -87,9 +87,10 @@ class Character(pygame.sprite.Sprite):
         self.sound = True
         self.image_fly = pygame.transform.rotate(self.image, -90)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.inflate(-10, 0)
+        self.rect = self.rect.inflate(-15, 0)
         self.x = 320
         self.y = 330
+        self.rect.x = 60
         self.rect.y = 580
         self.xvel = 0 
         self.yvel = 0
@@ -267,7 +268,7 @@ class Character(pygame.sprite.Sprite):
     def reset(self, loc, level_state, originial_level_state):
         self.x =  loc[0]
         self.y = loc[1]
-        self.rect.x = loc[0]
+        self.rect.x = loc[0] + 40 
         self.rect.y = 580
         del self.gemsCollected[:]
         self.gemsCollected = []
@@ -1259,7 +1260,7 @@ level_five = [
         "X       B            P                         CMMD            CMD                   BB  B     MMD         BB    BBB             CMMMMMMM",
         "X       B           CMMD                                                             BB  B     B           BBBB  BMB                     ",
         "X     BBB                                                                            BB  BBBBBBB        B   1    B                       ",
-        "X       B                                                                    CMD     BB       B         B HHHHHHHB                       ",
+        "X       B                                                                    CMD     BB       B         B H   H  B                       ",
         "X       B                 4                                                          BB       B         BBMMMMMMMMMMMMMMD                ",
         "X       B                                                                            BBBBBBB  BD        BB                               ",
         "X       B                      B                 LMR                                 BB       B         BB                               ",
@@ -1295,31 +1296,8 @@ level_six = [
         "LMMMMMMMMMMMMMMMMMMMMMMMMMMR           LMR   LMR     LMR      LMR         LMMMMMMMMMMMMMMMMMMMMR      CMMD    B       LMMMMMMMMMMMMMMMMMR",
         ]
 
-level_seven = [
-        "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        "X                                                                                                                                          B",
-        "X         B            B                                                 H       H     H   H                                               B",
-        "X       BBB            B                                               LMMR   LMMMMMMMMMMMMMMMR                                            B",
-        "X         B           BB                                                                                                                   B",
-        "X         B            B                                         G                                                                         B",
-        "X       BBB           YB                                        LMR        LMMR                     BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB   B",
-        "M         B           BB                                                                               B                                   B",
-        "X         B            B                                                                               B                                   B",
-        "X       BBB            B                                               LMMR                            B                                   B",
-        "X         B            B                                                                               B                                   B",
-        "X         B           BB                                                                               B               BBBBBBBBBBBBBBBBBBBBB",
-        "X       BBB            B                                      LMMR                                     B                                   B",
-        "X         B            B                                                                               B                                   B",
-        "M         B           YB                                                  LMR                          B                                   B",
-        "X       BBB           BB                                                                               B                        BBBBBBBBBBBB",
-        "X         B            B                                                                               B                        BB         B",
-        "X    Y    B           BB                                          LMMR                                 B                                   B",
-        "X    B    B            B                                                                               B                        BB         B",
-        "X    B    B         G  B                 B             Y        H                                      B        S               BB        FB",
-        "LMMMMMMMMMMR       LMMMMMMR             LMR           LMR      LMR                                  LMRB       LMR     LMMMMMMMMMMMM   LMMMR",
-        ]
 
-level_eight = [
+level_seven = [
         "BXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         "B          B                                                                                        B     B                                    B                                B                                       ",
         "B          B    J                                                                                   B     B                                                                     B                                       ",
@@ -1335,7 +1313,7 @@ level_eight = [
         "B    BB        B                     B               B               B         1             BBBBBB B  BB           4                      H         BB             BBB        CMMMMD      B                   B      CM",
         "B   BBBD       BMD                  BB               B               B         B                    B  BB                                  M         B                B                    B                   BB       ",
         "B    BB         1                    B               BSHHHH          B                     CMMMMMMMMM   BMD                                          B                B                    B                 CMB        ",
-        "BB   BB                              B           MMMMMMMMMMMMMMM  MMMMMMMMM                             B               CMD                         MBB               BMD                  B                   B      CM",
+        "BB   BB                              B           MMMMMMMMMMMMMMM  MMMMMMMMM                             B               CMD                         MBB               BMD                  B                   B     CMM",
         "B    BB MMMMMMMMMMMMMMMMMMMMMMD      BB          BBBBBBBBBBBBBBB  BBBBBBBBB    B                        B                                                            BB              B     B                   B        ",
         "B  3BBB B      B        B    B      BB           B       B     B  B           BB   2                                                                                  B                    B                   B        ",
         "B    BBBBB                           B                                         B                         1                                                            B                                        B       B",
@@ -1455,7 +1433,7 @@ done = False
 main_men = pygame.display.set_mode([800, 600])
 
 levels = []
-levelNames = [level_one, level_two, level_three, level_four, level_five, level_six, level_seven, level_eight]
+levelNames = [level_one, level_two, level_three, level_four, level_five, level_six, level_seven]
 
 diagnostics = Diagnostics(player, "record.txt"); 
 
@@ -1624,7 +1602,7 @@ while (not done):
         
         end_screen.fill([208,244,247])
         
-        if (diagnostics.totalLevelsPassed == 8): 
+        if (diagnostics.totalLevelsPassed == 7): 
             display_box(end_screen, "Game Completed!", 150, 210, 0)
             display_box(end_screen, "Score: %d", 325, 270, score)
             player.complete = False
