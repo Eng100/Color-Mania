@@ -1056,7 +1056,7 @@ class Diagnostics(pygame.sprite.Sprite):
         diffTimes = []
         for x in range(0, len(self.CheckPointArray) - 1): 
             if (self.CheckPointArray[x].passedTime == 0): 
-                diffTimes.append(75)
+                diffTimes.append(55)
             else: 
                 diffTimes.append(self.CheckPointArray[x+1].passedTime - self.CheckPointArray[x].passedTime)
         total = 0 
