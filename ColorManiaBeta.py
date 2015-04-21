@@ -30,6 +30,10 @@ class Image(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (size[0],size[1]))
         self.rect = self.image.get_rect()
 
+        if (filename == "grassLeft.png" or filename == "grassRight.png" or filename == "grassCliffLeft.png" or filename == "grassCliffRight.png"): 
+            self.rect.inflate(-15, -10)
+
+
         self.rect.x = location[0]
         self.rect.y = location[1]
 
@@ -87,7 +91,7 @@ class Character(pygame.sprite.Sprite):
         self.sound = True
         self.image_fly = pygame.transform.rotate(self.image, -90)
         self.rect = self.image.get_rect()
-        self.rect = self.rect.inflate(-15, 0)
+        self.rect = self.rect.inflate(-7, 0)
         self.x = 320
         self.y = 330
         self.rect.x = 60
