@@ -1430,6 +1430,7 @@ player_sprite_vec.add(player)
 pygame.mixer.init()
 level_state = 0
 originial_level_state = -1
+selectorChanged = False #is whether the level selector changed the level
 done = False
 
 main_men = pygame.display.set_mode([800, 600])
@@ -1454,7 +1455,7 @@ while (not done):
         while(gamestate == 0): 
             
             while (player.lives > 0 and gamestate == 0):
-                if (originial_level_state != level_state):
+                if ((originial_level_state != level_state) or selectorChanged):
                     platforms, allSprites, level, scale = levels[level_state].getScroll()
                     View_Map(platforms, allSprites, level, scale, level_state)
                     originial_level_state = level_state;
@@ -1740,6 +1741,7 @@ while (not done):
                                     level_state = player.maxLevel
                                 if level_state > player.maxLevel:
                                     level_state = 0
+                                selectorChanged = True
                 elif (event.type == QUIT) or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     gamestate = -1
             pygame.display.update()
