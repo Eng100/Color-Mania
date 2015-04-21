@@ -2,13 +2,13 @@
 Color-Mania
 
 HOW TO OPEN WITH ECLIPSE:
-1. Open ColorManiaBeta.py in Eclipse 
+1. Open ColorMania.py in Eclipse 
 2. Make sure all assets are NOT in a resources folder!
 3. Run
 
 HOW TO OPEN WITH TERMINAL:
 1. Go to the terminal and set your scope to the folder given to you
-2.1. If you are on a PC, type in "ColorManiaBeta.py" (without the quotes) and enter to run the game
+2.1. If you are on a PC, type in "ColorMania.py" (without the quotes) and enter to run the game
 2.2. If you are on a Mac, type in "python ColorMania.py" (without the quotes) and enter to run the game
 
 ***Esc will pause and un-pause the game if in game and not scrolling, or quit the game if in a menu
