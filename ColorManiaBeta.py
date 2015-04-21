@@ -343,7 +343,7 @@ class Gem(pygame.sprite.Sprite):
         if (self.typeOfGem == "Invisibility"): 
             self.type = "Invisibility"
             self.checkCollision = False
-            self.time = 4 * 60
+            self.time = 3 * 60
 
         if (self.typeOfGem == "Jumping"): 
             self.type = "Jumping"
@@ -355,13 +355,13 @@ class Gem(pygame.sprite.Sprite):
             self.time = 5 * 60 
         if (self.typeOfGem == "Flying"):
             self.type = "Flying"
-            self.time = 4 * 60 
+            self.time = 3 * 60 
         if (self.typeOfGem == "Shrinking"):
             self.type = "Shrinking"
             self.time = 4 * 60
         if (self.typeOfGem == "Sprinting"):
             self.type = "Sprinting"
-            self.time = 6 * 60
+            self.time = 2 * 60
     def Jumping(self, Character): 
         Character.yvel -= 4
     def Collided (self):
