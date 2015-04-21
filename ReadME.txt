@@ -56,6 +56,8 @@ More Features:
 The player is not supposed to collide with smiling bushes (serve as part of background).
 There are three lives which decrease every time the player dies. 
 With the ghost gem, the player will fall through platforms as well as go through walls. When ghost gem is activated player cannot land on elevated platforms and pick up other gems. This is intentional.  
+If the player is invisible and then collides with a box wall after the gem powers end, he is automatically transported upwards till there is a place he can properly stand. This is intentional. 
+For the level selector button, the levels reachable are the only ones that the player has passed so far. 
 
 DIAGNOSTICS:
 1. Checkpoints are made throughout the game. They are invisible to the player, but the game will track his/her progress behind the scenes.
