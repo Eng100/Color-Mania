@@ -21,7 +21,7 @@ In each level, the player will have approx. 150 seconds and 3 lives to reach the
 The first level of the game is not impossible to win, but if the gem power-ups are used too soon, it will become extremely difficult. 
 
 Gems:
-Gems will modify the player's ability and make the level easier and quicker to complete. Gems will be necessary to use to finish the nearly every level. Gems' abilities are active for a certain amount of time dependent on the gem. Currently, there are several gems available: Invisibility, Jumping, Sprinting, Shrinking, Flying, and Traction.
+Gems will modify the player's ability and make the level easier and quicker to complete. Gems will be necessary to use to finish the nearly every level. Gems' abilities are active for a certain amount of time dependent on the gem. Currently, there are several gems available: Invisibility, Jumping, Sprinting, Shrinking, Flying.
 
 Controls: 
 Arrow Key Up: Jump
@@ -29,7 +29,7 @@ Arrow Key Left: Move Left
 Arrow Key Right: Move Right
 Arrow Key Down: Moving Down - Only activated during flyng
 Number Keys 1, 2, 3: Activate gem (time varies for each gem)
-ESC: Paus in game and quit in menus
+ESC: Pause in game and quit in menus
 
 FEATURES TO NOTE:
 1. Dynamic camera that moves with a map bigger than the window shown to the player at a given time
@@ -59,10 +59,10 @@ DIAGNOSTICS:
 1. Checkpoints are made throughout the game. They are invisible to the player, but the game will track his/her progress behind the scenes.
 2. Once the game is over, either by being beaten or losing all lives, the diagnostics button is available to see the diagnostics.
 3. Diagnostics is in depth and analyzes the number of levels completed without hints a long with other metrics
-4. Color-Mania feels this is a very rich feature within our game. 
+4. Color-Mania feels this is a very rich feature within our game which provides a great amount of feedback. 
 
-RECOGNIZED BUGS:
-1. The frame rate on a Mac computer is much slower, and hence the player moves slower. 
+NOTE:
+1. The frame rate on a Mac computer is slower than that on a PC, and hence the player moves slower. The solution for framerate is already implmented in the code but Macs are inherently slow.
 
 ** Disclaimer: Image Initialization code uses functions used in discussion; however, because these are pygame functions the code is standard - almost none is purely pasted (all are typed by us see bottom for explanation). 
 Techniques used to develop game such as passing a vector of strings to create a level were adopted by observation of other games - no code was copied
